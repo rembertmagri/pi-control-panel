@@ -15,11 +15,56 @@
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly ISubject<CpuTemperature> cpuTemperatureSubject;
+        private readonly ISubject<CpuAverageLoad> cpuAverageLoadSubject;
+        private readonly ISubject<CpuRealTimeLoad> cpuRealTimeLoadSubject;
 
-        public CpuService(ISubject<CpuTemperature> cpuTemperatureSubject, ILogger logger)
+        public CpuService(ISubject<CpuTemperature> cpuTemperatureSubject,
+            ISubject<CpuAverageLoad> cpuAverageLoadSubject,
+            ISubject<CpuRealTimeLoad> cpuRealTimeLoadSubject,
+            ILogger logger)
             : base(logger)
         {
             this.cpuTemperatureSubject = cpuTemperatureSubject;
+            this.cpuAverageLoadSubject = cpuAverageLoadSubject;
+            this.cpuRealTimeLoadSubject = cpuRealTimeLoadSubject;
+        }
+
+        public Task<CpuAverageLoad> GetAverageLoadAsync(int cores)
+        {
+            logger.Info("Infra layer -> CpuService -> GetAverageLoadAsync");
+            var averageLoad = this.GetAverageLoad(cores);
+            return Task.FromResult(averageLoad);
+        }
+
+        public IObservable<CpuAverageLoad> GetAverageLoadObservable()
+        {
+            logger.Info("Infra layer -> CpuService -> GetAverageLoadObservable");
+            return this.cpuAverageLoadSubject.AsObservable();
+        }
+
+        public void PublishAverageLoad(CpuAverageLoad averageLoad)
+        {
+            logger.Info("Infra layer -> CpuService -> PublishAverageLoad");
+            this.cpuAverageLoadSubject.OnNext(averageLoad);
+        }
+
+        public Task<CpuRealTimeLoad> GetRealTimeLoadAsync()
+        {
+            logger.Info("Infra layer -> CpuService -> GetRealTimeLoadAsync");
+            var realTimeLoad = this.GetRealTimeLoad();
+            return Task.FromResult(realTimeLoad);
+        }
+
+        public IObservable<CpuRealTimeLoad> GetRealTimeLoadObservable()
+        {
+            logger.Info("Infra layer -> CpuService -> GetRealTimeLoadObservable");
+            return this.cpuRealTimeLoadSubject.AsObservable();
+        }
+
+        public void PublishRealTimeLoad(CpuRealTimeLoad realTimeLoad)
+        {
+            logger.Info("Infra layer -> CpuService -> PublishRealTimeLoad");
+            this.cpuRealTimeLoadSubject.OnNext(realTimeLoad);
         }
 
         public Task<CpuTemperature> GetTemperatureAsync()
@@ -33,20 +78,6 @@
         {
             logger.Info("Infra layer -> CpuService -> GetTemperatureObservable");
             return this.cpuTemperatureSubject.AsObservable();
-        }
-
-        public Task<CpuAverageLoad> GetAverageLoadAsync(int cores)
-        {
-            logger.Info("Infra layer -> CpuService -> GetAverageLoadAsync");
-            var averageLoad = this.GetAverageLoad(cores);
-            return Task.FromResult(averageLoad);
-        }
-
-        public Task<CpuRealTimeLoad> GetRealTimeLoadAsync()
-        {
-            logger.Info("Infra layer -> CpuService -> GetRealTimeLoadAsync");
-            var realTimeLoad = this.GetRealTimeLoad();
-            return Task.FromResult(realTimeLoad);
         }
 
         public void PublishTemperature(CpuTemperature temperature)

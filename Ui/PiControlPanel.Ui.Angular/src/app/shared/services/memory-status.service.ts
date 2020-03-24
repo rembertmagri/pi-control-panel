@@ -81,7 +81,7 @@ export class MemoryStatusService {
     return this.searchQueryResult;
   }
 
-  getNextPage(): any {
+  getNextPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -158,7 +158,7 @@ export class MemoryStatusService {
     return this.searchQueryResult;
   }
 
-  getPreviousPage(): any {
+  getPreviousPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -185,6 +185,39 @@ export class MemoryStatusService {
         })
       });
     }
+  }
+
+  subscribeToNewMemoryStatuses() {
+    this.searchQuery.subscribeToMore({
+      document: gql`
+      subscription MemoryStatus {
+        memoryStatus {
+          used
+          available
+          dateTime
+        }
+      }`,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newMemoryStatus = subscriptionData.data.memoryStatus;
+        return Object.assign({}, prev, {
+          raspberryPi: {
+            memory: {
+              statuses: {
+                items: [newMemoryStatus, ...prev.raspberryPi.memory.statuses.items],
+                pageInfo: prev.raspberryPi.memory.statuses.pageInfo,
+                totalCount: prev.raspberryPi.memory.statuses.totalCount + 1,
+                __typename: 'MemoryStatusConnection'
+              },
+              __typename: 'MemoryType'
+            },
+            __typename: 'RaspberryPiType'
+          }
+        });
+      }
+    });
   }
 
 }

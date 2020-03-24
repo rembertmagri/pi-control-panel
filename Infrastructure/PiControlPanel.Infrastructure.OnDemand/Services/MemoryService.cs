@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Reactive.Linq;
+    using System.Reactive.Subjects;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using NLog;
@@ -13,9 +14,12 @@
 
     public class MemoryService : BaseService<Memory>, IMemoryService
     {
-        public MemoryService(ILogger logger)
+        private readonly ISubject<MemoryStatus> memoryStatusSubject;
+
+        public MemoryService(ISubject<MemoryStatus> memoryStatusSubject, ILogger logger)
             : base(logger)
         {
+            this.memoryStatusSubject = memoryStatusSubject;
         }
 
         public Task<MemoryStatus> GetStatusAsync()
@@ -23,6 +27,18 @@
             logger.Info("Infra layer -> MemoryService -> GetStatusAsync");
             var memoryStatus = this.GetMemoryStatus();
             return Task.FromResult(memoryStatus);
+        }
+
+        public IObservable<MemoryStatus> GetStatusObservable()
+        {
+            logger.Info("Infra layer -> MemoryService -> GetStatusObservable");
+            return this.memoryStatusSubject.AsObservable();
+        }
+
+        public void PublishStatus(MemoryStatus status)
+        {
+            logger.Info("Infra layer -> MemoryService -> PublishStatus");
+            this.memoryStatusSubject.OnNext(status);
         }
 
         protected override Memory GetModel()

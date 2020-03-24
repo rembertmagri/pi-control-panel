@@ -3,6 +3,8 @@
     using System.Reactive.Subjects;
     using LightInject;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
+    using PiControlPanel.Domain.Models.Hardware.Disk;
+    using PiControlPanel.Domain.Models.Hardware.Memory;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Repositories;
     using AutoMapper;
@@ -46,7 +48,12 @@
             serviceRegistry.Register<Contracts.OnDemand.IUserAccountService, OnDemand.UserAccountService>();
             
             serviceRegistry.RegisterSingleton<IMapper>(factory => new AutoMapperConfiguration().GetIMapper());
+
             serviceRegistry.RegisterSingleton<ISubject<CpuTemperature>>(factory => new ReplaySubject<CpuTemperature>(1));
+            serviceRegistry.RegisterSingleton<ISubject<CpuAverageLoad>>(factory => new ReplaySubject<CpuAverageLoad>(1));
+            serviceRegistry.RegisterSingleton<ISubject<CpuRealTimeLoad>>(factory => new ReplaySubject<CpuRealTimeLoad>(1));
+            serviceRegistry.RegisterSingleton<ISubject<MemoryStatus>>(factory => new ReplaySubject<MemoryStatus>(1));
+            serviceRegistry.RegisterSingleton<ISubject<DiskStatus>>(factory => new ReplaySubject<DiskStatus>(1));
         }
     }
 }

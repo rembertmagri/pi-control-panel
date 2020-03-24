@@ -76,6 +76,9 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
           });
           this.chartData[1].series = orderBy(averageLoadData, 'name');
           this.chartData = [...this.chartData];
+          if(!this.averageLoadDataReady) {
+            this.cpuAverageLoadService.subscribeToNewCpuAverageLoads();
+          }
           this.averageLoadDataReady = true;
         },
         error => this.errorMessage = <any>error
@@ -93,6 +96,9 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
           });
           this.chartData[2].series = orderBy(realTimeLoadData, 'name');
           this.chartData = [...this.chartData];
+          if(!this.realTimeLoadDataReady) {
+            this.cpuRealTimeLoadService.subscribeToNewCpuRealTimeLoads();
+          }
           this.realTimeLoadDataReady = true;
         },
         error => this.errorMessage = <any>error
@@ -110,6 +116,9 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
           });
           this.chartData[3].series = orderBy(memoryStatusData, 'name');
           this.chartData = [...this.chartData];
+          if(!this.memoryStatusDataReady) {
+            this.memoryStatusService.subscribeToNewMemoryStatuses();
+          }
           this.memoryStatusDataReady = true;
         },
         error => this.errorMessage = <any>error

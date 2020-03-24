@@ -82,7 +82,7 @@ export class CpuRealTimeLoadService {
     return this.searchQueryResult;
   }
 
-  getNextPage(): any {
+  getNextPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -160,7 +160,7 @@ export class CpuRealTimeLoadService {
     return this.searchQueryResult;
   }
 
-  getPreviousPage(): any {
+  getPreviousPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -187,6 +187,40 @@ export class CpuRealTimeLoadService {
         })
       });
     }
+  }
+
+  subscribeToNewCpuRealTimeLoads() {
+    this.searchQuery.subscribeToMore({
+      document: gql`
+      subscription CpuRealTimeLoad {
+        cpuRealTimeLoad {
+          kernel
+          user
+          total
+          dateTime
+        }
+      }`,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newCpuRealTimeLoad = subscriptionData.data.cpuRealTimeLoad;
+        return Object.assign({}, prev, {
+          raspberryPi: {
+            cpu: {
+              realTimeLoads: {
+                items: [newCpuRealTimeLoad, ...prev.raspberryPi.cpu.realTimeLoads.items],
+                pageInfo: prev.raspberryPi.cpu.realTimeLoads.pageInfo,
+                totalCount: prev.raspberryPi.cpu.realTimeLoads.totalCount + 1,
+                __typename: 'CpuRealTimeLoadConnection'
+              },
+              __typename: 'CpuType'
+            },
+            __typename: 'RaspberryPiType'
+          }
+        });
+      }
+    });
   }
 
 }

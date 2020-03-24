@@ -82,7 +82,7 @@ export class CpuAverageLoadService {
     return this.searchQueryResult;
   }
 
-  getNextPage(): any {
+  getNextPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -160,7 +160,7 @@ export class CpuAverageLoadService {
     return this.searchQueryResult;
   }
 
-  getPreviousPage(): any {
+  getPreviousPage() {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
@@ -187,6 +187,40 @@ export class CpuAverageLoadService {
         })
       });
     }
+  }
+
+  subscribeToNewCpuAverageLoads() {
+    this.searchQuery.subscribeToMore({
+      document: gql`
+      subscription CpuAverageLoad {
+        cpuAverageLoad {
+          lastMinute
+          last5Minutes
+          last15Minutes
+          dateTime
+        }
+      }`,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newCpuAverageLoad = subscriptionData.data.cpuAverageLoad;
+        return Object.assign({}, prev, {
+          raspberryPi: {
+            cpu: {
+              averageLoads: {
+                items: [newCpuAverageLoad, ...prev.raspberryPi.cpu.averageLoads.items],
+                pageInfo: prev.raspberryPi.cpu.averageLoads.pageInfo,
+                totalCount: prev.raspberryPi.cpu.averageLoads.totalCount + 1,
+                __typename: 'CpuAverageLoadConnection'
+              },
+              __typename: 'CpuType'
+            },
+            __typename: 'RaspberryPiType'
+          }
+        });
+      }
+    });
   }
 
 }

@@ -2,6 +2,8 @@
 {
     using System;
     using System.Linq;
+    using System.Reactive.Linq;
+    using System.Reactive.Subjects;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using NLog;
@@ -12,9 +14,12 @@
 
     public class DiskService : BaseService<Disk>, IDiskService
     {
-        public DiskService(ILogger logger)
+        private readonly ISubject<DiskStatus> diskStatusSubject;
+
+        public DiskService(ISubject<DiskStatus> diskStatusSubject, ILogger logger)
             : base(logger)
         {
+            this.diskStatusSubject = diskStatusSubject;
         }
 
         public Task<DiskStatus> GetStatusAsync()
@@ -22,6 +27,18 @@
             logger.Info("Infra layer -> DiskService -> GetStatusAsync");
             var diskStatus = this.GetDiskStatus();
             return Task.FromResult(diskStatus);
+        }
+
+        public IObservable<DiskStatus> GetStatusObservable()
+        {
+            logger.Info("Infra layer -> DiskService -> GetStatusObservable");
+            return this.diskStatusSubject.AsObservable();
+        }
+
+        public void PublishStatus(DiskStatus status)
+        {
+            logger.Info("Infra layer -> DiskService -> PublishStatus");
+            this.diskStatusSubject.OnNext(status);
         }
 
         protected override Disk GetModel()
