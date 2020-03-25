@@ -46,8 +46,8 @@
             logger.Info("Application layer -> DiskService -> SaveStatusAsync");
             var status = await ((OnDemand.IDiskService)this.onDemandService).GetStatusAsync();
 
-            ((OnDemand.IDiskService)this.onDemandService).PublishStatus(status);
             await this.persistenceStatusService.AddAsync(status);
+            ((OnDemand.IDiskService)this.onDemandService).PublishStatus(status);
         }
 
         protected override async Task<Disk> GetPersistedInfoAsync(Disk onDemandInfo)

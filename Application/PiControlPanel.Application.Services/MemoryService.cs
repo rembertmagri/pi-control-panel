@@ -46,8 +46,8 @@
             logger.Info("Application layer -> MemoryService -> SaveStatusAsync");
             var status = await ((OnDemand.IMemoryService)this.onDemandService).GetStatusAsync();
 
-            ((OnDemand.IMemoryService)this.onDemandService).PublishStatus(status);
             await this.persistenceStatusService.AddAsync(status);
+            ((OnDemand.IMemoryService)this.onDemandService).PublishStatus(status);
         }
     }
 }

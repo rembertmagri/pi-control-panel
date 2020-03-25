@@ -106,8 +106,8 @@
 
             var averageLoad = await ((OnDemand.ICpuService)this.onDemandService).GetAverageLoadAsync(cpu.Cores);
 
-            ((OnDemand.ICpuService)this.onDemandService).PublishAverageLoad(averageLoad);
             await this.persistenceAverageLoadService.AddAsync(averageLoad);
+            ((OnDemand.ICpuService)this.onDemandService).PublishAverageLoad(averageLoad);
         }
 
         public async Task SaveRealTimeLoadAsync()
@@ -115,8 +115,8 @@
             logger.Info("Application layer -> CpuService -> SaveRealTimeLoadAsync");
             var realTimeLoad = await ((OnDemand.ICpuService)this.onDemandService).GetRealTimeLoadAsync();
 
-            ((OnDemand.ICpuService)this.onDemandService).PublishRealTimeLoad(realTimeLoad);
             await this.persistenceRealTimeLoadService.AddAsync(realTimeLoad);
+            ((OnDemand.ICpuService)this.onDemandService).PublishRealTimeLoad(realTimeLoad);
         }
 
         public async Task SaveTemperatureAsync()
@@ -124,8 +124,8 @@
             logger.Info("Application layer -> CpuService -> SaveTemperatureAsync");
             var temperature = await ((OnDemand.ICpuService)this.onDemandService).GetTemperatureAsync();
 
-            ((OnDemand.ICpuService)this.onDemandService).PublishTemperature(temperature);
             await this.persistenceTemperatureService.AddAsync(temperature);
+            ((OnDemand.ICpuService)this.onDemandService).PublishTemperature(temperature);
         }
 
         protected async override Task<Cpu> GetPersistedInfoAsync(Cpu onDemandInfo)

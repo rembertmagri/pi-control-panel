@@ -3,7 +3,6 @@
     using global::GraphQL.DataLoader;
     using global::GraphQL.Types;
     using NLog;
-    using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
     using System;
@@ -22,8 +21,6 @@
                 .ResolveAsync(context =>
                 {
                     logger.Info("Total field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var cpuRealTimeLoad = context.Source;
                     var loader = accessor.Context.GetOrAddBatchLoader<DateTime, double>(
