@@ -6,6 +6,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileFile>../../Docker/Dockerfile</DockerfileFile>
     <DockerfileContext>../..</DockerfileContext>
+    <UiPath>../../Ui/PiControlPanel.Ui.Angular/</UiPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,5 +30,24 @@
     <ProjectReference Include="..\..\Domain\PiControlPanel.Domain.Contracts\PiControlPanel.Domain.Contracts.csproj" />
     <ProjectReference Include="..\..\Domain\PiControlPanel.Domain.Models\PiControlPanel.Domain.Models.csproj" />
   </ItemGroup>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish" Condition=" '$(DOTNET_RUNNING_IN_CONTAINER)' == '' ">
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to publish this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(UiPath)" Command="npm install" />
+    <Exec WorkingDirectory="$(UiPath)" Command="npm run build -- --prod" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(UiPath)dist/*" />
+      <ResolvedFileToPublish Include="@(DistFiles)">
+        <RelativePath>PiControlPanel.Ui.Angular/dist/%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
 </Project>
