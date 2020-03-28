@@ -8,10 +8,18 @@
     {
         public MemoryStatusType()
         {
+            Field<DateTimeGraphType>("dateTime");
             Field(x => x.Used);
             Field(x => x.Free);
-            //Field(x => x.DiskCache); TODO add if RAM
-            Field<DateTimeGraphType>("dateTime");
+            Field<IntGraphType>(
+                "DiskCache",
+                resolve: context => {
+                    if(typeof(T) == typeof(RandomAccessMemoryStatus))
+                    {
+                        return (context.Source as RandomAccessMemoryStatus).DiskCache;
+                    }
+                    return 0;
+            });
         }
     }
 }

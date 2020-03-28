@@ -40,11 +40,26 @@
         </div>
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">Gpu</h4>
+            <h4 class="card-header">Disk</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Memory</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
+                <dt class="col-sm-3">Filesystem</dt>
+                <dd class="col-sm-9">{{raspberryPi.disk.fileSystem}}</dd>
+                <dt class="col-sm-3">Type</dt>
+                <dd class="col-sm-9">{{raspberryPi.disk.type}}</dd>
+                <dt class="col-sm-3">Total</dt>
+                <dd class="col-sm-9">{{raspberryPi.disk.total}} KB</dd>
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                  <dl class="row">
+                    <dt class="col-sm-4">Used</dt>
+                    <dd class="col-sm-8">{{raspberryPi.disk.status.used}} KB ({{100 * raspberryPi.disk.status.used / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
+                    <dt class="col-sm-4">Available</dt>
+                    <dd class="col-sm-8">{{raspberryPi.disk.status.available}} KB ({{100 * raspberryPi.disk.status.available / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
+                    <dt class="col-sm-4">Datetime</dt>
+                    <dd class="col-sm-8">{{raspberryPi.disk.status.dateTime | date:'medium'}}</dd>
+                  </dl>
+                </dd>
               </dl>
             </div>
           </div>
@@ -69,7 +84,17 @@
       <div class="row">
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">Cpu</h4>
+            <h4 class="card-header">GPU</h4>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-3">Memory</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
+              </dl>
+            </div>
+          </div>
+          <br />
+          <div class="card">
+            <h4 class="card-header">CPU</h4>
             <div class="card-body">
               <dl class="row">
                 <dt class="col-sm-3">Model</dt>
@@ -118,24 +143,22 @@
 
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">Disk</h4>
+            <h4 class="card-header">RAM</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Filesystem</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.fileSystem}}</dd>
-                <dt class="col-sm-3">Type</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.type}}</dd>
                 <dt class="col-sm-3">Total</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.total}} KB</dd>
+                <dd class="col-sm-9">{{raspberryPi.ram.total}} MB</dd>
                 <dt class="col-sm-3">Status</dt>
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Used</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.used}} KB ({{100 * raspberryPi.disk.status.used / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Available</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.available}} KB ({{100 * raspberryPi.disk.status.available / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
+                    <dd class="col-sm-8">{{raspberryPi.ram.status.used}} MB ({{100 * raspberryPi.ram.status.used / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
+                    <dt class="col-sm-4">Free</dt>
+                    <dd class="col-sm-8">{{raspberryPi.ram.status.free}} MB ({{100 * raspberryPi.ram.status.free / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
+                    <dt class="col-sm-4">Disk Cache</dt>
+                    <dd class="col-sm-8">{{raspberryPi.ram.status.diskCache}} MB ({{100 * raspberryPi.ram.status.diskCache / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.dateTime | date:'medium'}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.ram.status.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
               </dl>
@@ -143,20 +166,20 @@
           </div>
           <br />
           <div class="card">
-            <h4 class="card-header">Memory</h4>
+            <h4 class="card-header">Swap Memory</h4>
             <div class="card-body">
               <dl class="row">
                 <dt class="col-sm-3">Total</dt>
-                <dd class="col-sm-9">{{raspberryPi.memory.total}} MB</dd>
+                <dd class="col-sm-9">{{raspberryPi.swapMemory.total}} MB</dd>
                 <dt class="col-sm-3">Status</dt>
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Used</dt>
-                    <dd class="col-sm-8">{{raspberryPi.memory.status.used}} MB ({{100 * raspberryPi.memory.status.used / raspberryPi.memory.total | number:'1.0-2'}}&#37;)</dd>
+                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.used}} MB ({{100 * raspberryPi.swapMemory.status.used / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Free</dt>
-                    <dd class="col-sm-8">{{raspberryPi.memory.status.free}} MB ({{100 * raspberryPi.memory.status.free / raspberryPi.memory.total | number:'1.0-2'}}&#37;)</dd>
+                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.free}} MB ({{100 * raspberryPi.swapMemory.status.free / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.memory.status.dateTime | date:'medium'}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
               </dl>
@@ -164,7 +187,7 @@
           </div>
         </div>
 
-
+        
       </div>
     </div>
 

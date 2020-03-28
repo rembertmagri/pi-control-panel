@@ -5,12 +5,14 @@ import {
   ICpuTemperature,
   ICpuAverageLoad,
   ICpuRealTimeLoad,
-  IMemoryStatus } from '../../shared/interfaces/raspberry-pi';
+  IMemoryStatus, 
+  IRandomAccessMemoryStatus} from '../../shared/interfaces/raspberry-pi';
 import { BsModalRef } from 'ngx-bootstrap';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
 import { CpuAverageLoadService } from 'src/app/shared/services/cpu-average-load.service';
 import { CpuRealTimeLoadService } from 'src/app/shared/services/cpu-realtime-load.service';
-import { MemoryStatusService } from 'src/app/shared/services/memory-status.service';
+import { RamStatusService } from 'src/app/shared/services/ram-status.service';
+import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
 
 @Component({
   templateUrl: './real-time-modal.component.html',
@@ -23,25 +25,29 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
   temperatureDataReady: boolean;
   averageLoadDataReady: boolean;
   realTimeLoadDataReady: boolean;
-  memoryStatusDataReady: boolean;
+  ramStatusDataReady: boolean;
+  swapMemoryStatusDataReady: boolean;
 
   cpuTemperatureBehaviorSubjectSubscription: Subscription;
   cpuAverageLoadBehaviorSubjectSubscription: Subscription;
   cpuRealTimeLoadBehaviorSubjectSubscription: Subscription;
-  memoryStatusBehaviorSubjectSubscription: Subscription;
+  ramStatusBehaviorSubjectSubscription: Subscription;
+  swapMemoryStatusBehaviorSubjectSubscription: Subscription;
 
   constructor(public bsModalRef: BsModalRef,
     private cpuTemperatureService: CpuTemperatureService,
     private cpuAverageLoadService: CpuAverageLoadService,
     private cpuRealTimeLoadService: CpuRealTimeLoadService,
-    private memoryStatusService: MemoryStatusService) { }
+    private ramStatusService: RamStatusService,
+    private swapMemoryStatusService: SwapMemoryStatusService) { }
 
   ngOnInit() {
     this.chartData = [
       { name: "CPU Temperature", series: [] },
       { name: "CPU Average Load (x100)", series: [] },
       { name: "CPU Real-Time Load (%)", series: [] },
-      { name: "Memory Usage (%)", series: [] }
+      { name: "RAM Usage (%)", series: [] },
+      { name: "Swap Memory Usage (%)", series: [] }
     ];
 
     this.temperatureDataReady = false;
@@ -104,8 +110,28 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
         error => this.errorMessage = <any>error
       );
 
-    this.memoryStatusDataReady = false;
-    this.memoryStatusBehaviorSubjectSubscription = this.memoryStatusService.getLastMemoryStatuses()
+    this.ramStatusDataReady = false;
+    this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
+      .subscribe(
+        result => {
+          var memoryStatusData = map(result.items, (memoryStatus: IRandomAccessMemoryStatus) => {
+            return {
+              value: 100 * memoryStatus.used / (memoryStatus.free + memoryStatus.used + memoryStatus.diskCache),
+              name: new Date(memoryStatus.dateTime)
+            };
+          });
+          this.chartData[3].series = orderBy(memoryStatusData, 'name');
+          this.chartData = [...this.chartData];
+          if(!this.ramStatusDataReady) {
+            this.ramStatusService.subscribeToNewMemoryStatuses();
+          }
+          this.ramStatusDataReady = true;
+        },
+        error => this.errorMessage = <any>error
+      );
+
+    this.swapMemoryStatusDataReady = false;
+    this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
       .subscribe(
         result => {
           var memoryStatusData = map(result.items, (memoryStatus: IMemoryStatus) => {
@@ -114,12 +140,12 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
               name: new Date(memoryStatus.dateTime)
             };
           });
-          this.chartData[3].series = orderBy(memoryStatusData, 'name');
+          this.chartData[4].series = orderBy(memoryStatusData, 'name');
           this.chartData = [...this.chartData];
-          if(!this.memoryStatusDataReady) {
-            this.memoryStatusService.subscribeToNewMemoryStatuses();
+          if(!this.swapMemoryStatusDataReady) {
+            this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
           }
-          this.memoryStatusDataReady = true;
+          this.swapMemoryStatusDataReady = true;
         },
         error => this.errorMessage = <any>error
       );
@@ -135,28 +161,34 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
     if (!isNil(this.cpuRealTimeLoadBehaviorSubjectSubscription)) {
       this.cpuRealTimeLoadBehaviorSubjectSubscription.unsubscribe();
     }
-    if (!isNil(this.memoryStatusBehaviorSubjectSubscription)) {
-      this.memoryStatusBehaviorSubjectSubscription.unsubscribe();
+    if (!isNil(this.ramStatusBehaviorSubjectSubscription)) {
+      this.ramStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.swapMemoryStatusBehaviorSubjectSubscription)) {
+      this.swapMemoryStatusBehaviorSubjectSubscription.unsubscribe();
     }
   }
 
   isChartDataReady() {
     return this.temperatureDataReady && this.averageLoadDataReady &&
-      this.realTimeLoadDataReady && this.memoryStatusDataReady;
+      this.realTimeLoadDataReady && this.ramStatusDataReady &&
+      this.swapMemoryStatusDataReady;
   }
 
   loadNextPage() {
     this.cpuTemperatureService.getNextPage();
     this.cpuAverageLoadService.getNextPage();
     this.cpuRealTimeLoadService.getNextPage();
-    this.memoryStatusService.getNextPage();
+    this.ramStatusService.getNextPage();
+    this.swapMemoryStatusService.getNextPage();
   }
 
   loadPreviousPage() {
     this.cpuTemperatureService.getPreviousPage();
     this.cpuAverageLoadService.getPreviousPage();
     this.cpuRealTimeLoadService.getPreviousPage();
-    this.memoryStatusService.getPreviousPage();
+    this.ramStatusService.getPreviousPage();
+    this.swapMemoryStatusService.getPreviousPage();
   }
 
   closeModal() {

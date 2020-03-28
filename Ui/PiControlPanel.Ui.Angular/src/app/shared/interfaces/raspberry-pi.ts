@@ -2,7 +2,8 @@ export interface IRaspberryPi {
   chipset: IChipset;
   cpu: ICpu;
   disk: IDisk;
-  memory: IMemory;
+  ram: IRandomAccessMemory;
+  swapMemory: IMemory;
   gpu: IGpu;
   os: IOs;
 }
@@ -63,6 +64,14 @@ export interface IMemoryStatus {
   used: number;
   free: number;
   dateTime: string;
+}
+
+export interface IRandomAccessMemory extends IMemory {
+  status: IRandomAccessMemoryStatus;
+}
+
+export interface IRandomAccessMemoryStatus extends IMemoryStatus {
+  diskCache: number;
 }
 
 export interface IGpu {

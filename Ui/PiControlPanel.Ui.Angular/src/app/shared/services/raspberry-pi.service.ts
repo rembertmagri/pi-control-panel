@@ -57,11 +57,20 @@ export class RaspberryPiService {
                 dateTime
               }
             }
-            memory {
+            ram {
               total
               status {
                 used
-              	free
+                free
+                diskCache
+                dateTime
+              }
+            }
+            swapMemory {
+              total
+              status {
+                used
+                free
                 dateTime
               }
             }

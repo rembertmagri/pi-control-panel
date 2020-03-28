@@ -36,10 +36,10 @@
                 });
 
             Field<MemoryType<RandomAccessMemory, RandomAccessMemoryStatus>>()
-                .Name("Memory")
+                .Name("Ram")
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Memory field");
+                    logger.Info("Ram field");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 

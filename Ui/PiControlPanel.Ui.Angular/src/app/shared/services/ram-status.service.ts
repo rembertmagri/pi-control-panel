@@ -4,7 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { unionBy } from 'lodash';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { IMemoryStatus } from '../interfaces/raspberry-pi';
+import { IRandomAccessMemoryStatus } from '../interfaces/raspberry-pi';
 import { Connection } from '../interfaces/connection';
 import { DEFAULT_PAGE_SIZE } from '../constants/consts';
 import { ErrorHandlingService } from './error-handling.service';
@@ -12,9 +12,9 @@ import { ErrorHandlingService } from './error-handling.service';
 @Injectable({
   providedIn: 'root',
 })
-export class MemoryStatusService {
+export class RamStatusService {
 
-  protected memoryStatuses$: BehaviorSubject<Connection<IMemoryStatus>> = new BehaviorSubject({
+  protected memoryStatuses$: BehaviorSubject<Connection<IRandomAccessMemoryStatus>> = new BehaviorSubject({
     items: [],
     totalCount: 0,
     pageInfo: {
@@ -27,27 +27,28 @@ export class MemoryStatusService {
   searchQuery: QueryRef<any>;
   afterCursor: string = null;
   beforeCursor: string = null;
-  searchQueryResult: Observable<Connection<IMemoryStatus>>;
+  searchQueryResult: Observable<Connection<IRandomAccessMemoryStatus>>;
   
   constructor(private apollo: Apollo,
     private errorHandlingService: ErrorHandlingService) {
   }
 
-  getFirstMemoryStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<IMemoryStatus>> {
+  getFirstMemoryStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<IRandomAccessMemoryStatus>> {
     const variables = {
       firstMemoryStatuses: pageSize,
       afterMemoryStatuses: null
     };
     if (!this.searchQuery) {
-      this.searchQuery = this.apollo.watchQuery<{ memoryStatuses: Connection<IMemoryStatus> }>({
+      this.searchQuery = this.apollo.watchQuery<{ memoryStatuses: Connection<IRandomAccessMemoryStatus> }>({
         query: gql`
-          query MemoryStatuses($firstMemoryStatuses: Int, $afterMemoryStatuses: String) {
+          query RamStatuses($firstMemoryStatuses: Int, $afterMemoryStatuses: String) {
             raspberryPi {
-              memory {
+              ram {
                 statuses(first: $firstMemoryStatuses, after: $afterMemoryStatuses) {
                   items {
                     used
                     free
+                    diskCache
                     dateTime
                   }
                   pageInfo {
@@ -67,7 +68,7 @@ export class MemoryStatusService {
       this.searchQueryResult = this.searchQuery.valueChanges
         .pipe(
           map(result => {
-            const connection = result.data.raspberryPi.memory.statuses as Connection<IMemoryStatus>;
+            const connection = result.data.raspberryPi.ram.statuses as Connection<IRandomAccessMemoryStatus>;
             this.beforeCursor = connection.pageInfo.startCursor;
             this.afterCursor = connection.pageInfo.endCursor;
             return connection;
@@ -88,16 +89,16 @@ export class MemoryStatusService {
           afterMemoryStatuses: this.afterCursor
         },
         updateQuery: ((prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult.raspberryPi.memory.statuses.items) {
+          if (!fetchMoreResult.raspberryPi.ram.statuses.items) {
             return prev;
           }
           return Object.assign({}, prev, {
             raspberryPi: {
-              memory: {
+              ram: {
                 statuses: {
-                  items: unionBy(prev.raspberryPi.memory.statuses.items, fetchMoreResult.raspberryPi.memory.statuses.items, 'dateTime'),
-                  pageInfo: fetchMoreResult.raspberryPi.memory.statuses.pageInfo,
-                  totalCount: fetchMoreResult.raspberryPi.memory.statuses.totalCount,
+                  items: unionBy(prev.raspberryPi.ram.statuses.items, fetchMoreResult.raspberryPi.ram.statuses.items, 'dateTime'),
+                  pageInfo: fetchMoreResult.raspberryPi.ram.statuses.pageInfo,
+                  totalCount: fetchMoreResult.raspberryPi.ram.statuses.totalCount,
                   __typename: 'MemoryStatusConnection'
                 },
                 __typename: 'MemoryType'
@@ -110,21 +111,22 @@ export class MemoryStatusService {
     }
   }
 
-  getLastMemoryStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<IMemoryStatus>> {
+  getLastMemoryStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<IRandomAccessMemoryStatus>> {
     const variables = {
       lastMemoryStatuses: pageSize,
       beforeMemoryStatuses: null
     };
     if (!this.searchQuery) {
-      this.searchQuery = this.apollo.watchQuery<{ memoryStatuses: Connection<IMemoryStatus> }>({
+      this.searchQuery = this.apollo.watchQuery<{ memoryStatuses: Connection<IRandomAccessMemoryStatus> }>({
         query: gql`
-          query MemoryStatuses($lastMemoryStatuses: Int, $beforeMemoryStatuses: String) {
+          query RamStatuses($lastMemoryStatuses: Int, $beforeMemoryStatuses: String) {
             raspberryPi {
-              memory {
+              ram {
                 statuses(last: $lastMemoryStatuses, before: $beforeMemoryStatuses) {
                   items {
                     used
                     free
+                    diskCache
                     dateTime
                   }
                   pageInfo {
@@ -144,7 +146,7 @@ export class MemoryStatusService {
       this.searchQueryResult = this.searchQuery.valueChanges
         .pipe(
           map(result => {
-            const connection = result.data.raspberryPi.memory.statuses as Connection<IMemoryStatus>;
+            const connection = result.data.raspberryPi.ram.statuses as Connection<IRandomAccessMemoryStatus>;
             this.beforeCursor = connection.pageInfo.startCursor;
             this.afterCursor = connection.pageInfo.endCursor;
             return connection;
@@ -165,16 +167,16 @@ export class MemoryStatusService {
           beforeMemoryStatuses: this.beforeCursor
         },
         updateQuery: ((prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult.raspberryPi.memory.statuses.items) {
+          if (!fetchMoreResult.raspberryPi.ram.statuses.items) {
             return prev;
           }
           return Object.assign({}, prev, {
             raspberryPi: {
-              memory: {
+              ram: {
                 statuses: {
-                  items: unionBy(prev.raspberryPi.memory.statuses.items, fetchMoreResult.raspberryPi.memory.statuses.items, 'dateTime'),
-                  pageInfo: fetchMoreResult.raspberryPi.memory.statuses.pageInfo,
-                  totalCount: fetchMoreResult.raspberryPi.memory.statuses.totalCount,
+                  items: unionBy(prev.raspberryPi.ram.statuses.items, fetchMoreResult.raspberryPi.ram.statuses.items, 'dateTime'),
+                  pageInfo: fetchMoreResult.raspberryPi.ram.statuses.pageInfo,
+                  totalCount: fetchMoreResult.raspberryPi.ram.statuses.totalCount,
                   __typename: 'MemoryStatusConnection'
                 },
                 __typename: 'MemoryType'
@@ -190,10 +192,11 @@ export class MemoryStatusService {
   subscribeToNewMemoryStatuses() {
     this.searchQuery.subscribeToMore({
       document: gql`
-      subscription MemoryStatus {
-        memoryStatus {
+      subscription RamStatus {
+        ramStatus {
           used
           free
+          diskCache
           dateTime
         }
       }`,
@@ -201,14 +204,14 @@ export class MemoryStatusService {
         if (!subscriptionData.data) {
           return prev;
         }
-        const newMemoryStatus = subscriptionData.data.memoryStatus;
+        const newMemoryStatus = subscriptionData.data.ramStatus;
         return Object.assign({}, prev, {
           raspberryPi: {
-            memory: {
+            ram: {
               statuses: {
-                items: [newMemoryStatus, ...prev.raspberryPi.memory.statuses.items],
-                pageInfo: prev.raspberryPi.memory.statuses.pageInfo,
-                totalCount: prev.raspberryPi.memory.statuses.totalCount + 1,
+                items: [newMemoryStatus, ...prev.raspberryPi.ram.statuses.items],
+                pageInfo: prev.raspberryPi.ram.statuses.pageInfo,
+                totalCount: prev.raspberryPi.ram.statuses.totalCount + 1,
                 __typename: 'MemoryStatusConnection'
               },
               __typename: 'MemoryType'

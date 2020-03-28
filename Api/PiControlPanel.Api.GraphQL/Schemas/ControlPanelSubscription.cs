@@ -66,14 +66,14 @@
                 });
 
             FieldSubscribe<MemoryStatusType<RandomAccessMemoryStatus>>(
-                "MemoryStatus",
+                "RamStatus",
                 resolve: context =>
                 {
                     return context.Source;
                 },
                 subscribe: context =>
                 {
-                    logger.Info("MemoryStatus subscription");
+                    logger.Info("RamStatus subscription");
                     MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
                     GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
                     var businessContext = graphQLUserContext.GetBusinessContext();
