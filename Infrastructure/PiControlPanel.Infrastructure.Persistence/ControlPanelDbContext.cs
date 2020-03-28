@@ -31,9 +31,13 @@
 
         public DbSet<Entities.Disk.DiskStatus> DiskStatus { get; set; }
 
-        public DbSet<Entities.Memory.Memory> Memory { get; set; }
+        public DbSet<Entities.Memory.RandomAccessMemory> RandomAccessMemory { get; set; }
 
-        public DbSet<Entities.Memory.MemoryStatus> MemoryStatus { get; set; }
+        public DbSet<Entities.Memory.RandomAccessMemoryStatus> RandomAccessMemoryStatus { get; set; }
+
+        public DbSet<Entities.Memory.SwapMemory> SwapMemory { get; set; }
+
+        public DbSet<Entities.Memory.SwapMemoryStatus> SwapMemoryStatus { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
