@@ -71,9 +71,13 @@
 
         public IRepositoryBase<Entities.Disk.DiskStatus> DiskStatusRepository => new RepositoryBase<Entities.Disk.DiskStatus>(this.dbContext, this.logger);
 
-        public IRepositoryBase<Entities.Memory.Memory> MemoryRepository => new RepositoryBase<Entities.Memory.Memory>(this.dbContext, this.logger);
+        public IRepositoryBase<Entities.Memory.RandomAccessMemory> RandomAccessMemoryRepository => new RepositoryBase<Entities.Memory.RandomAccessMemory>(this.dbContext, this.logger);
 
-        public IRepositoryBase<Entities.Memory.MemoryStatus> MemoryStatusRepository => new RepositoryBase<Entities.Memory.MemoryStatus>(this.dbContext, this.logger);
+        public IRepositoryBase<Entities.Memory.RandomAccessMemoryStatus> RandomAccessMemoryStatusRepository => new RepositoryBase<Entities.Memory.RandomAccessMemoryStatus>(this.dbContext, this.logger);
+
+        public IRepositoryBase<Entities.Memory.SwapMemory> SwapMemoryRepository => new RepositoryBase<Entities.Memory.SwapMemory>(this.dbContext, this.logger);
+
+        public IRepositoryBase<Entities.Memory.SwapMemoryStatus> SwapMemoryStatusRepository => new RepositoryBase<Entities.Memory.SwapMemoryStatus>(this.dbContext, this.logger);
 
         #endregion
     }

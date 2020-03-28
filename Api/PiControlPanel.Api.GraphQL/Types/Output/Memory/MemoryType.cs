@@ -6,13 +6,15 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public class MemoryType : ObjectGraphType<Memory>
+    public class MemoryType<T, U> : ObjectGraphType<T>
+        where T : Memory
+        where U : MemoryStatus
     {
-        public MemoryType(IMemoryService memoryService, ILogger logger)
+        public MemoryType(IMemoryService<T, U> memoryService, ILogger logger)
         {
             Field(x => x.Total);
 
-            Field<MemoryStatusType>()
+            Field<MemoryStatusType<U>>()
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
@@ -23,7 +25,7 @@
                     return await memoryService.GetLastStatusAsync();
                 });
 
-            Connection<MemoryStatusType>()
+            Connection<MemoryStatusType<U>>()
                 .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>

@@ -4,12 +4,14 @@
     using System.Threading.Tasks;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public interface IMemoryService : IBaseService<Memory>
+    public interface IMemoryService<T, U> : IBaseService<T>
+        where T : Memory
+        where U : MemoryStatus
     {
-        Task<MemoryStatus> GetStatusAsync();
+        Task<U> GetStatusAsync();
 
-        IObservable<MemoryStatus> GetStatusObservable();
+        IObservable<U> GetStatusObservable();
 
-        void PublishStatus(MemoryStatus status);
+        void PublishStatus(U status);
     }
 }

@@ -5,13 +5,15 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
     using System;
 
-    public interface IMemoryService : IBaseService<Memory>
+    public interface IMemoryService<T, U> : IBaseService<T>
+        where T : Memory
+        where U : MemoryStatus
     {
-        Task<MemoryStatus> GetLastStatusAsync();
+        Task<U> GetLastStatusAsync();
 
-        Task<PagingOutput<MemoryStatus>> GetStatusesAsync(PagingInput pagingInput);
+        Task<PagingOutput<U>> GetStatusesAsync(PagingInput pagingInput);
 
-        IObservable<MemoryStatus> GetStatusObservable();
+        IObservable<U> GetStatusObservable();
 
         Task SaveStatusAsync();
     }

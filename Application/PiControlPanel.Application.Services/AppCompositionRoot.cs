@@ -35,13 +35,22 @@
             serviceRegistry.Register<Contracts.Persistence.IOsService, Persistence.OsService>();
             serviceRegistry.Register<Contracts.Persistence.Disk.IDiskService, Persistence.Disk.DiskService>();
             serviceRegistry.Register<Contracts.Persistence.Disk.IDiskStatusService, Persistence.Disk.DiskStatusService>();
-            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryService, Persistence.Memory.MemoryService>();
-            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService, Persistence.Memory.MemoryStatusService>();
+            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryService<RandomAccessMemory>,
+                Persistence.Memory.RandomAccessMemoryService>();
+            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService<RandomAccessMemoryStatus>,
+                Persistence.Memory.RandomAccessMemoryStatusService>();
+            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryService<SwapMemory>,
+                Persistence.Memory.SwapMemoryService>();
+            serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService<SwapMemoryStatus>,
+                Persistence.Memory.SwapMemoryStatusService>();
 
             serviceRegistry.Register<Contracts.OnDemand.IControlPanelService, OnDemand.ControlPanelService>();
             serviceRegistry.Register<Contracts.OnDemand.IChipsetService, OnDemand.ChipsetService>();
             serviceRegistry.Register<Contracts.OnDemand.ICpuService, OnDemand.CpuService>();
-            serviceRegistry.Register<Contracts.OnDemand.IMemoryService, OnDemand.MemoryService>();
+            serviceRegistry.Register<Contracts.OnDemand.IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus>,
+                OnDemand.MemoryService<RandomAccessMemory, RandomAccessMemoryStatus>>();
+            serviceRegistry.Register<Contracts.OnDemand.IMemoryService<SwapMemory, SwapMemoryStatus>,
+                OnDemand.MemoryService<SwapMemory, SwapMemoryStatus>>();
             serviceRegistry.Register<Contracts.OnDemand.IGpuService, OnDemand.GpuService>();
             serviceRegistry.Register<Contracts.OnDemand.IDiskService, OnDemand.DiskService>();
             serviceRegistry.Register<Contracts.OnDemand.IOsService, OnDemand.OsService>();

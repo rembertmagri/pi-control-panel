@@ -2,14 +2,10 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public abstract class MemoryStatus : BaseTimedEntity
+    public class RandomAccessMemoryStatus : MemoryStatus
     {
         [Required]
         [Range(0, int.MaxValue)]
-        public int Used { get; set; }
-
-        [Required]
-        [Range(0, int.MaxValue)]
-        public int Free { get; set; }
+        public int DiskCache { get; set; }
     }
 }

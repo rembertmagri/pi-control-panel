@@ -6,14 +6,14 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     
-    public class MemoryStatusService :
-        BaseTimedService<MemoryStatus, Entities.Memory.MemoryStatus>,
-        IMemoryStatusService
+    public class SwapMemoryStatusService :
+        BaseTimedService<SwapMemoryStatus, Entities.Memory.SwapMemoryStatus>,
+        IMemoryStatusService<SwapMemoryStatus>
     {
-        public MemoryStatusService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
+        public SwapMemoryStatusService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
             : base(unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.MemoryStatusRepository;
+            this.repository = unitOfWork.SwapMemoryStatusRepository;
         }
     }
 }

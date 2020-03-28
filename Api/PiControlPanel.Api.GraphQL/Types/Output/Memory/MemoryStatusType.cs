@@ -3,12 +3,14 @@
     using global::GraphQL.Types;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public class MemoryStatusType : ObjectGraphType<MemoryStatus>
+    public class MemoryStatusType<T> : ObjectGraphType<T>
+        where T : MemoryStatus
     {
         public MemoryStatusType()
         {
             Field(x => x.Used);
-            Field(x => x.Available);
+            Field(x => x.Free);
+            //Field(x => x.DiskCache); TODO add if RAM
             Field<DateTimeGraphType>("dateTime");
         }
     }

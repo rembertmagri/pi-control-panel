@@ -4,12 +4,14 @@
     using NLog;
     using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Domain.Contracts.Application;
+    using PiControlPanel.Domain.Models.Hardware.Memory;
 
     public class RaspberryPiType : ObjectGraphType
     {
         public RaspberryPiType(IChipsetService chipsetService, ICpuService cpuService,
-            IMemoryService memoryService, IGpuService gpuService, IDiskService diskService,
-            IOsService osService, ILogger logger)
+            IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
+            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IGpuService gpuService,
+            IDiskService diskService, IOsService osService, ILogger logger)
         {
             Field<ChipsetType>()
                 .Name("Chipset")
@@ -33,7 +35,7 @@
                     return await cpuService.GetAsync();
                 });
 
-            Field<MemoryType>()
+            Field<MemoryType<RandomAccessMemory, RandomAccessMemoryStatus>>()
                 .Name("Memory")
                 .ResolveAsync(async context =>
                 {
@@ -41,7 +43,18 @@
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return await memoryService.GetAsync();
+                    return await randomAccessMemoryService.GetAsync();
+                });
+
+            Field<MemoryType<SwapMemory, SwapMemoryStatus>>()
+                .Name("swapMemory")
+                .ResolveAsync(async context =>
+                {
+                    logger.Info("Swap Memory field");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    return await swapMemoryService.GetAsync();
                 });
 
             Field<GpuType>()

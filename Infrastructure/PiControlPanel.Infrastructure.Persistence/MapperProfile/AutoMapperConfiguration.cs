@@ -27,9 +27,13 @@
                     cfg.CreateMap<Models.Disk.Disk, Entities.Disk.Disk>().ReverseMap();
                     cfg.CreateMap<Models.Disk.DiskStatus, Entities.Disk.DiskStatus>()
                         .ReverseMap();
-                    cfg.CreateMap<Models.Memory.Memory, Entities.Memory.Memory>()
+                    cfg.CreateMap<Models.Memory.RandomAccessMemory, Entities.Memory.RandomAccessMemory>()
                         .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();
-                    cfg.CreateMap<Models.Memory.MemoryStatus, Entities.Memory.MemoryStatus>()
+                    cfg.CreateMap<Models.Memory.RandomAccessMemoryStatus, Entities.Memory.RandomAccessMemoryStatus>()
+                        .ReverseMap();
+                    cfg.CreateMap<Models.Memory.SwapMemory, Entities.Memory.SwapMemory>()
+                        .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();
+                    cfg.CreateMap<Models.Memory.SwapMemoryStatus, Entities.Memory.SwapMemoryStatus>()
                         .ReverseMap();
                 }
             );

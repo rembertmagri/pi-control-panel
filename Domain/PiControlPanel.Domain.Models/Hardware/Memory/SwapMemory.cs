@@ -1,7 +1,6 @@
 ﻿namespace PiControlPanel.Domain.Models.Hardware.Memory
 {
-    public abstract class Memory
+    public class SwapMemory : Memory
     {
-        public int Total { get; set; }
     }
 }

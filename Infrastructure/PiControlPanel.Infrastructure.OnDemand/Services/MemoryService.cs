@@ -12,70 +12,86 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public class MemoryService : BaseService<Memory>, IMemoryService
+    public class MemoryService<T, U> : BaseService<T>, IMemoryService<T, U>
+        where T : Memory, new()
+        where U : MemoryStatus, new()
     {
-        private readonly ISubject<MemoryStatus> memoryStatusSubject;
+        private readonly ISubject<U> memoryStatusSubject;
 
-        public MemoryService(ISubject<MemoryStatus> memoryStatusSubject, ILogger logger)
+        public MemoryService(ISubject<U> memoryStatusSubject, ILogger logger)
             : base(logger)
         {
             this.memoryStatusSubject = memoryStatusSubject;
         }
 
-        public Task<MemoryStatus> GetStatusAsync()
+        public Task<U> GetStatusAsync()
         {
             logger.Info("Infra layer -> MemoryService -> GetStatusAsync");
             var memoryStatus = this.GetMemoryStatus();
             return Task.FromResult(memoryStatus);
         }
 
-        public IObservable<MemoryStatus> GetStatusObservable()
+        public IObservable<U> GetStatusObservable()
         {
             logger.Info("Infra layer -> MemoryService -> GetStatusObservable");
             return this.memoryStatusSubject.AsObservable();
         }
 
-        public void PublishStatus(MemoryStatus status)
+        public void PublishStatus(U status)
         {
             logger.Info("Infra layer -> MemoryService -> PublishStatus");
             this.memoryStatusSubject.OnNext(status);
         }
 
-        protected override Memory GetModel()
+        protected override T GetModel()
         {
             var result = BashCommands.Free.Bash();
             logger.Debug($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
-            var memoryInfo = lines.First(l => l.StartsWith("Mem:"));
-            var regex = new Regex(@"^Mem:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*.*$");
+
+            var memoryTypeName = typeof(T) == typeof(RandomAccessMemory) ? "Mem:" : "Swap:";
+            var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
+            var regex = new Regex(@"^\w*:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*(?<shared>\d*)\s*(?<buffcache>\d*)\s*.*$");
             var groups = regex.Match(memoryInfo).Groups;
             var total = int.Parse(groups["total"].Value);
             logger.Debug($"Total memory: '{total}'KB");
-            return new Memory()
+
+            return new T()
             {
                 Total = total
             };
         }
 
-        private MemoryStatus GetMemoryStatus()
+        private U GetMemoryStatus()
         {
             var result = BashCommands.Free.Bash();
             logger.Debug($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
-            var memoryInfo = lines.First(l => l.StartsWith("Mem:"));
-            var regex = new Regex(@"^Mem:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*.*$");
+
+            var isRam = typeof(T) == typeof(RandomAccessMemory);
+            var memoryTypeName = isRam ? "Mem:" : "Swap:";
+            var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
+            var regex = isRam ? 
+                new Regex(@"^Mem:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*(?<shared>\d*)\s*(?<buffCache>\d*)\s*.*$") :
+                new Regex(@"^Swap:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*.*$");
             var groups = regex.Match(memoryInfo).Groups;
             var used = int.Parse(groups["used"].Value);
             var free = int.Parse(groups["free"].Value);
             logger.Debug($"Used memory: '{used}'KB, Free memory: '{free}'KB");
-            return new MemoryStatus()
+
+            var memoryStatus = new U()
             {
                 Used = used,
-                Available = free,
+                Free = free,
                 DateTime = DateTime.Now
             };
+            if (isRam)
+            {
+                (memoryStatus as RandomAccessMemoryStatus).DiskCache = int.Parse(groups["buffCache"].Value);
+            }
+            return memoryStatus;
         }
     }
 }

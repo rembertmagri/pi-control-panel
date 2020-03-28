@@ -20,8 +20,12 @@
 
         IRepositoryBase<Entities.Disk.DiskStatus> DiskStatusRepository { get; }
 
-        IRepositoryBase<Entities.Memory.Memory> MemoryRepository { get; }
+        IRepositoryBase<Entities.Memory.RandomAccessMemory> RandomAccessMemoryRepository { get; }
 
-        IRepositoryBase<Entities.Memory.MemoryStatus> MemoryStatusRepository { get; }
+        IRepositoryBase<Entities.Memory.RandomAccessMemoryStatus> RandomAccessMemoryStatusRepository { get; }
+
+        IRepositoryBase<Entities.Memory.SwapMemory> SwapMemoryRepository { get; }
+
+        IRepositoryBase<Entities.Memory.SwapMemoryStatus> SwapMemoryStatusRepository { get; }
     }
 }

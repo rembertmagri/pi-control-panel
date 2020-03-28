@@ -7,10 +7,12 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
     
-    public class MemoryWorker : BaseWorker<Memory>
+    public class MemoryWorker<T, U> : BaseWorker<T>
+        where T : Memory
+        where U : MemoryStatus
     {
         public MemoryWorker(
-            IMemoryService memoryService,
+            IMemoryService<T, U> memoryService,
             IConfiguration configuration,
             ILogger logger)
             : base(memoryService, configuration, logger)
@@ -19,7 +21,7 @@
 
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IMemoryService)this.service).SaveStatusAsync();
+            return ((IMemoryService<T, U>)this.service).SaveStatusAsync();
         }
     }
 }

@@ -6,12 +6,14 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     
-    public class MemoryService : BaseService<Memory, Entities.Memory.Memory>, IMemoryService
+    public class RandomAccessMemoryService :
+        BaseService<RandomAccessMemory, Entities.Memory.RandomAccessMemory>,
+        IMemoryService<RandomAccessMemory>
     {
-        public MemoryService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
+        public RandomAccessMemoryService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
             : base(unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.MemoryRepository;
+            this.repository = unitOfWork.RandomAccessMemoryRepository;
         }
     }
 }

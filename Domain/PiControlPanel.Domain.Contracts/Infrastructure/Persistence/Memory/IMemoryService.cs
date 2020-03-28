@@ -2,7 +2,8 @@
 {
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public interface IMemoryService : IBaseService<Memory>
+    public interface IMemoryService<T> : IBaseService<T>
+        where T : Memory
     {
     }
 }

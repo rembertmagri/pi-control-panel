@@ -24,7 +24,8 @@ namespace PiControlPanel.Api.GraphQL
     using PiControlPanel.Application.Services;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
-    
+    using PiControlPanel.Domain.Models.Hardware.Memory;
+
     /// <summary>
     /// Application startup class.
     /// </summary>
@@ -133,7 +134,8 @@ namespace PiControlPanel.Api.GraphQL
             }
 
             services.AddHostedService<DiskWorker>();
-            services.AddHostedService<MemoryWorker>();
+            services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
+            services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
 
             // Configuring SPA Path
             services.AddSpaStaticFiles(configuration =>
@@ -156,7 +158,8 @@ namespace PiControlPanel.Api.GraphQL
             container.Register<IControlPanelService, ControlPanelService>();
             container.Register<IChipsetService, ChipsetService>();
             container.Register<ICpuService, CpuService>();
-            container.Register<IMemoryService, MemoryService>();
+            container.Register<IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus>, MemoryService<RandomAccessMemory, RandomAccessMemoryStatus>>();
+            container.Register<IMemoryService<SwapMemory, SwapMemoryStatus>, MemoryService<SwapMemory, SwapMemoryStatus>>();
             container.Register<IGpuService, GpuService>();
             container.Register<IDiskService, DiskService>();
             container.Register<IOsService, OsService>();

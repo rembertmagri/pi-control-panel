@@ -2,7 +2,8 @@
 {
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public interface IMemoryStatusService : IBaseTimedObjectService<MemoryStatus>
+    public interface IMemoryStatusService<T> : IBaseTimedObjectService<T>
+        where T : MemoryStatus
     {
     }
 }
