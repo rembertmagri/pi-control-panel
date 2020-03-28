@@ -61,7 +61,7 @@ export interface IMemory {
 
 export interface IMemoryStatus {
   used: number;
-  available: number;
+  free: number;
   dateTime: string;
 }
 

@@ -61,7 +61,7 @@ export class RaspberryPiService {
               total
               status {
                 used
-              	available
+              	free
                 dateTime
               }
             }

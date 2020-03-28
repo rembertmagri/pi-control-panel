@@ -153,8 +153,8 @@
                   <dl class="row">
                     <dt class="col-sm-4">Used</dt>
                     <dd class="col-sm-8">{{raspberryPi.memory.status.used}} MB ({{100 * raspberryPi.memory.status.used / raspberryPi.memory.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Available</dt>
-                    <dd class="col-sm-8">{{raspberryPi.memory.status.available}} MB ({{100 * raspberryPi.memory.status.available / raspberryPi.memory.total | number:'1.0-2'}}&#37;)</dd>
+                    <dt class="col-sm-4">Free</dt>
+                    <dd class="col-sm-8">{{raspberryPi.memory.status.free}} MB ({{100 * raspberryPi.memory.status.free / raspberryPi.memory.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Datetime</dt>
                     <dd class="col-sm-8">{{raspberryPi.memory.status.dateTime | date:'medium'}}</dd>
                   </dl>

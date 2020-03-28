@@ -47,7 +47,7 @@ export class MemoryStatusService {
                 statuses(first: $firstMemoryStatuses, after: $afterMemoryStatuses) {
                   items {
                     used
-                    available
+                    free
                     dateTime
                   }
                   pageInfo {
@@ -124,7 +124,7 @@ export class MemoryStatusService {
                 statuses(last: $lastMemoryStatuses, before: $beforeMemoryStatuses) {
                   items {
                     used
-                    available
+                    free
                     dateTime
                   }
                   pageInfo {
@@ -193,7 +193,7 @@ export class MemoryStatusService {
       subscription MemoryStatus {
         memoryStatus {
           used
-          available
+          free
           dateTime
         }
       }`,

@@ -110,7 +110,7 @@ export class RealTimeModalComponent implements OnInit, OnDestroy {
         result => {
           var memoryStatusData = map(result.items, (memoryStatus: IMemoryStatus) => {
             return {
-              value: 100 * memoryStatus.used / (memoryStatus.available + memoryStatus.used),
+              value: 100 * memoryStatus.used / (memoryStatus.free + memoryStatus.used),
               name: new Date(memoryStatus.dateTime)
             };
           });
