@@ -82,4 +82,10 @@ export interface IOs {
   name: string;
   kernel: string;
   hostname: string;
+  status: IOsStatus;
+}
+
+export interface IOsStatus {
+  uptime: string;
+  dateTime: string;
 }

@@ -79,7 +79,7 @@
                     return await diskService.GetAsync();
                 });
 
-            Field<OsType>()
+            Field<Os.OsType>()
                 .Name("Os")
                 .ResolveAsync(async context =>
                 {

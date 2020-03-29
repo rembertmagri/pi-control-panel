@@ -1,4 +1,4 @@
-﻿namespace PiControlPanel.Domain.Models.Hardware
+﻿namespace PiControlPanel.Domain.Models.Hardware.Os
 {
     public class Os
     {

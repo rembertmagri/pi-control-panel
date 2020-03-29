@@ -81,6 +81,10 @@ export class RaspberryPiService {
               name
               kernel
               hostname
+              status {
+                uptime
+                dateTime
+              }
             }
           }
         }`,

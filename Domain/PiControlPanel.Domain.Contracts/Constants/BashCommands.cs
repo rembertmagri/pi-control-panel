@@ -13,5 +13,6 @@
         public const string Top = "top -bc -n 1";
         public const string Hostnamectl = "hostnamectl";
         public const string Groups = "groups {0}";
+        public const string Uptime = "uptime -p";
     }
 }

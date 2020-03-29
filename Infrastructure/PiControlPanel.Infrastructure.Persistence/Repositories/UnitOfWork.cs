@@ -65,7 +65,9 @@
 
         public IRepositoryBase<Entities.Gpu> GpuRepository => new RepositoryBase<Entities.Gpu>(this.dbContext, this.logger);
 
-        public IRepositoryBase<Entities.Os> OsRepository => new RepositoryBase<Entities.Os>(this.dbContext, this.logger);
+        public IRepositoryBase<Entities.Os.Os> OsRepository => new RepositoryBase<Entities.Os.Os>(this.dbContext, this.logger);
+
+        public IRepositoryBase<Entities.Os.OsStatus> OsStatusRepository => new RepositoryBase<Entities.Os.OsStatus>(this.dbContext, this.logger);
 
         public IRepositoryBase<Entities.Disk.Disk> DiskRepository => new RepositoryBase<Entities.Disk.Disk>(this.dbContext, this.logger);
 

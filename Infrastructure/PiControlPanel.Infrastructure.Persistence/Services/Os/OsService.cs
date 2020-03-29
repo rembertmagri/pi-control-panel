@@ -1,12 +1,12 @@
-﻿namespace PiControlPanel.Infrastructure.Persistence.Services
+﻿namespace PiControlPanel.Infrastructure.Persistence.Services.Os
 {
     using AutoMapper;
     using NLog;
-    using PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
-    using PiControlPanel.Domain.Models.Hardware;
+    using PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Os;
+    using PiControlPanel.Domain.Models.Hardware.Os;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     
-    public class OsService : BaseService<Os, Entities.Os>, IOsService
+    public class OsService : BaseService<Os, Entities.Os.Os>, IOsService
     {
         public OsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
             : base(unitOfWork, mapper, logger)

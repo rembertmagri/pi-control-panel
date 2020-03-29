@@ -12,6 +12,7 @@
     using Contracts = PiControlPanel.Domain.Contracts.Infrastructure;
     using Persistence = PiControlPanel.Infrastructure.Persistence.Services;
     using OnDemand = PiControlPanel.Infrastructure.OnDemand.Services;
+    using PiControlPanel.Domain.Models.Hardware.Os;
 
     /// <summary>
     ///     Implementation of LightInject's ICompositionRoot responsible for
@@ -26,13 +27,15 @@
         public void Compose(IServiceRegistry serviceRegistry)
         {
             serviceRegistry.Register<IUnitOfWork, UnitOfWork>(new PerRequestLifeTime());
+
             serviceRegistry.Register<Contracts.Persistence.IChipsetService, Persistence.ChipsetService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuService, Persistence.Cpu.CpuService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuTemperatureService, Persistence.Cpu.CpuTemperatureService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuAverageLoadService, Persistence.Cpu.CpuAverageLoadService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuRealTimeLoadService, Persistence.Cpu.CpuRealTimeLoadService>();
             serviceRegistry.Register<Contracts.Persistence.IGpuService, Persistence.GpuService>();
-            serviceRegistry.Register<Contracts.Persistence.IOsService, Persistence.OsService>();
+            serviceRegistry.Register<Contracts.Persistence.Os.IOsService, Persistence.Os.OsService>();
+            serviceRegistry.Register<Contracts.Persistence.Os.IOsStatusService, Persistence.Os.OsStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Disk.IDiskService, Persistence.Disk.DiskService>();
             serviceRegistry.Register<Contracts.Persistence.Disk.IDiskStatusService, Persistence.Disk.DiskStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryService<RandomAccessMemory>,
@@ -64,6 +67,7 @@
             serviceRegistry.RegisterSingleton<ISubject<RandomAccessMemoryStatus>>(factory => new ReplaySubject<RandomAccessMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<SwapMemoryStatus>>(factory => new ReplaySubject<SwapMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<DiskStatus>>(factory => new ReplaySubject<DiskStatus>(1));
+            serviceRegistry.RegisterSingleton<ISubject<OsStatus>>(factory => new ReplaySubject<OsStatus>(1));
         }
     }
 }

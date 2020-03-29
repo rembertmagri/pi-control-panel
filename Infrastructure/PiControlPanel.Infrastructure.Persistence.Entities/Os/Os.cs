@@ -1,4 +1,4 @@
-﻿namespace PiControlPanel.Infrastructure.Persistence.Entities
+﻿namespace PiControlPanel.Infrastructure.Persistence.Entities.Os
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;

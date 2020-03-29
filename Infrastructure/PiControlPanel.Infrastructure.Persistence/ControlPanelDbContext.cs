@@ -25,7 +25,9 @@
 
         public DbSet<Entities.Gpu> Gpu { get; set; }
 
-        public DbSet<Entities.Os> Os { get; set; }
+        public DbSet<Entities.Os.Os> Os { get; set; }
+
+        public DbSet<Entities.Os.OsStatus> OsStatus { get; set; }
 
         public DbSet<Entities.Disk.Disk> Disk { get; set; }
 

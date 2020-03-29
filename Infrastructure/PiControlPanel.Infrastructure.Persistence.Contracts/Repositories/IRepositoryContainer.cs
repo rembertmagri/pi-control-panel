@@ -14,7 +14,9 @@
 
         IRepositoryBase<Entities.Gpu> GpuRepository { get; }
 
-        IRepositoryBase<Entities.Os> OsRepository { get; }
+        IRepositoryBase<Entities.Os.Os> OsRepository { get; }
+
+        IRepositoryBase<Entities.Os.OsStatus> OsStatusRepository { get; }
 
         IRepositoryBase<Entities.Disk.Disk> DiskRepository { get; }
 

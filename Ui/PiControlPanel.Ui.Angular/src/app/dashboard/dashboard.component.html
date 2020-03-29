@@ -75,6 +75,15 @@
                 <dd class="col-sm-9">{{raspberryPi.os.kernel}}</dd>
                 <dt class="col-sm-3">Hostname</dt>
                 <dd class="col-sm-9">{{raspberryPi.os.hostname}}</dd>
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                  <dl class="row">
+                    <dt class="col-sm-4">Uptime</dt>
+                    <dd class="col-sm-8">{{raspberryPi.os.status.uptime}}</dd>
+                    <dt class="col-sm-4">Datetime</dt>
+                    <dd class="col-sm-8">{{raspberryPi.os.status.dateTime | date:'medium'}}</dd>
+                  </dl>
+                </dd>
               </dl>
             </div>
           </div>
