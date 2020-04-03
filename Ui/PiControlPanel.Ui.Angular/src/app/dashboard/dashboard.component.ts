@@ -55,4 +55,8 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  kill(pid: number) {
+    console.log('TODO: kill process #'+pid);
+  }
+
 }

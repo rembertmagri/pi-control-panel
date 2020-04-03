@@ -19,9 +19,9 @@
 
         public DbSet<Entities.Cpu.CpuTemperature> CpuTemperature { get; set; }
 
-        public DbSet<Entities.Cpu.CpuAverageLoad> CpuAverageLoad { get; set; }
+        public DbSet<Entities.Cpu.CpuLoadStatus> CpuLoadStatus { get; set; }
 
-        public DbSet<Entities.Cpu.CpuRealTimeLoad> CpuRealTimeLoad { get; set; }
+        public DbSet<Entities.Cpu.CpuProcess> CpuProcess { get; set; }
 
         public DbSet<Entities.Gpu> Gpu { get; set; }
 

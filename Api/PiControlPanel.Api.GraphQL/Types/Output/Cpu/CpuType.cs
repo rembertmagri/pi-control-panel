@@ -13,56 +13,30 @@
             Field(x => x.Cores);
             Field(x => x.Model);
 
-            Field<CpuAverageLoadType>()
-                .Name("AverageLoad")
+            Field<CpuLoadStatusType>()
+                .Name("LoadStatus")
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Average Load field");
+                    logger.Info("LoadStatus field");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return await cpuService.GetLastAverageLoadAsync();
+                    return await cpuService.GetLastLoadStatusAsync();
                 });
 
-            Connection<CpuAverageLoadType>()
-                .Name("AverageLoads")
+            Connection<CpuLoadStatusType>()
+                .Name("LoadStatuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("AverageLoads connection");
+                    logger.Info("LoadStatuses connection");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
-                    var averageLoads = await cpuService.GetAverageLoadsAsync(pagingInput);
+                    var averageLoads = await cpuService.GetLoadStatusesAsync(pagingInput);
 
                     return averageLoads.ToConnection();
-                });
-
-            Field<CpuRealTimeLoadType>()
-                .Name("RealTimeLoad")
-                .ResolveAsync(async context =>
-                {
-                    logger.Info("Real Time Load field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
-
-                    return await cpuService.GetLastRealTimeLoadAsync();
-                });
-
-            Connection<CpuRealTimeLoadType>()
-                .Name("RealTimeLoads")
-                .Bidirectional()
-                .ResolveAsync(async context =>
-                {
-                    logger.Info("RealTimeLoads connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
-
-                    var pagingInput = context.GetPagingInput();
-                    var realTimeLoads = await cpuService.GetRealTimeLoadsAsync(pagingInput);
-
-                    return realTimeLoads.ToConnection();
                 });
 
             Field<CpuTemperatureType>()

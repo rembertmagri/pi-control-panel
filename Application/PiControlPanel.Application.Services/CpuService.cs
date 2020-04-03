@@ -15,65 +15,44 @@
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly Persistence.Cpu.ICpuTemperatureService persistenceTemperatureService;
-        private readonly Persistence.Cpu.ICpuAverageLoadService persistenceAverageLoadService;
-        private readonly Persistence.Cpu.ICpuRealTimeLoadService persistenceRealTimeLoadService;
+        private readonly Persistence.Cpu.ICpuLoadStatusService persistenceLoadStatusService;
 
         public CpuService(
             Persistence.Cpu.ICpuService persistenceService,
             Persistence.Cpu.ICpuTemperatureService persistenceTemperatureService,
-            Persistence.Cpu.ICpuAverageLoadService persistenceAverageLoadService,
-            Persistence.Cpu.ICpuRealTimeLoadService persistenceRealTimeLoadService,
+            Persistence.Cpu.ICpuLoadStatusService persistenceLoadStatusService,
             OnDemand.ICpuService onDemandService,
             ILogger logger)
             : base(persistenceService, onDemandService, logger)
         {
             this.persistenceTemperatureService = persistenceTemperatureService;
-            this.persistenceAverageLoadService = persistenceAverageLoadService;
-            this.persistenceRealTimeLoadService = persistenceRealTimeLoadService;
+            this.persistenceLoadStatusService = persistenceLoadStatusService;
         }
 
-        public Task<CpuAverageLoad> GetLastAverageLoadAsync()
+        public Task<CpuLoadStatus> GetLastLoadStatusAsync()
         {
-            logger.Info("Application layer -> CpuService -> GetLastAverageLoadAsync");
-            return this.persistenceAverageLoadService.GetLastAsync();
+            logger.Info("Application layer -> CpuService -> GetLastLoadStatusAsync");
+            return this.persistenceLoadStatusService.GetLastAsync();
         }
 
-        public async Task<PagingOutput<CpuAverageLoad>> GetAverageLoadsAsync(PagingInput pagingInput)
+        public async Task<PagingOutput<CpuLoadStatus>> GetLoadStatusesAsync(PagingInput pagingInput)
         {
-            logger.Info("Application layer -> CpuService -> GetAverageLoadsAsync");
-            return await this.persistenceAverageLoadService.GetPageAsync(pagingInput);
+            logger.Info("Application layer -> CpuService -> GetLoadStatusesAsync");
+            return await this.persistenceLoadStatusService.GetPageAsync(pagingInput);
         }
 
-        public IObservable<CpuAverageLoad> GetAverageLoadObservable()
+        public IObservable<CpuLoadStatus> GetLoadStatusObservable()
         {
-            logger.Info("Application layer -> CpuService -> GetAverageLoadObservable");
-            return ((OnDemand.ICpuService)this.onDemandService).GetAverageLoadObservable();
-        }
-
-        public Task<CpuRealTimeLoad> GetLastRealTimeLoadAsync()
-        {
-            logger.Info("Application layer -> CpuService -> GetLastRealTimeLoadAsync");
-            return this.persistenceRealTimeLoadService.GetLastAsync();
-        }
-
-        public async Task<PagingOutput<CpuRealTimeLoad>> GetRealTimeLoadsAsync(PagingInput pagingInput)
-        {
-            logger.Info("Application layer -> CpuService -> GetRealTimeLoadsAsync");
-            return await this.persistenceRealTimeLoadService.GetPageAsync(pagingInput);
-        }
-
-        public IObservable<CpuRealTimeLoad> GetRealTimeLoadObservable()
-        {
-            logger.Info("Application layer -> CpuService -> GetRealTimeLoadObservable");
-            return ((OnDemand.ICpuService)this.onDemandService).GetRealTimeLoadObservable();
+            logger.Info("Application layer -> CpuService -> GetLoadStatusObservable");
+            return ((OnDemand.ICpuService)this.onDemandService).GetLoadStatusObservable();
         }
 
         public async Task<IDictionary<DateTime, double>> GetTotalRealTimeLoadsAsync(
             IEnumerable<DateTime> dateTimes, CancellationToken cancellationToken)
         {
             logger.Info("Application layer -> CpuService -> GetTotalRealTimeLoad");
-            var realTimeLoads = await this.persistenceRealTimeLoadService.GetRealTimeLoadsAsync(dateTimes);
-            return realTimeLoads.ToDictionary(i => i.Key, i => i.Value.Kernel + i.Value.User);
+            var realTimeLoads = await this.persistenceLoadStatusService.GetCpuLoadStatusesAsync(dateTimes);
+            return realTimeLoads.ToDictionary(i => i.Key, i => i.Value.KernelRealTime + i.Value.UserRealTime);
         }
 
         public async Task<CpuTemperature> GetLastTemperatureAsync()
@@ -94,9 +73,9 @@
             return ((OnDemand.ICpuService)this.onDemandService).GetTemperatureObservable();
         }
 
-        public async Task SaveAverageLoadAsync()
+        public async Task SaveLoadStatusAsync()
         {
-            logger.Info("Application layer -> CpuService -> SaveAverageLoadAsync");
+            logger.Info("Application layer -> CpuService -> SaveLoadStatusAsync");
             var cpu = await this.persistenceService.GetAsync();
             if (cpu == null)
             {
@@ -104,19 +83,10 @@
                 return;
             }
 
-            var averageLoad = await ((OnDemand.ICpuService)this.onDemandService).GetAverageLoadAsync(cpu.Cores);
+            var averageLoad = await ((OnDemand.ICpuService)this.onDemandService).GetLoadStatusAsync(cpu.Cores);
 
-            await this.persistenceAverageLoadService.AddAsync(averageLoad);
-            ((OnDemand.ICpuService)this.onDemandService).PublishAverageLoad(averageLoad);
-        }
-
-        public async Task SaveRealTimeLoadAsync()
-        {
-            logger.Info("Application layer -> CpuService -> SaveRealTimeLoadAsync");
-            var realTimeLoad = await ((OnDemand.ICpuService)this.onDemandService).GetRealTimeLoadAsync();
-
-            await this.persistenceRealTimeLoadService.AddAsync(realTimeLoad);
-            ((OnDemand.ICpuService)this.onDemandService).PublishRealTimeLoad(realTimeLoad);
+            await this.persistenceLoadStatusService.AddAsync(averageLoad);
+            ((OnDemand.ICpuService)this.onDemandService).PublishLoadStatus(averageLoad);
         }
 
         public async Task SaveTemperatureAsync()

@@ -34,17 +34,28 @@ export class RaspberryPiService {
                 value
                 dateTime
               }
-              averageLoad {
-                lastMinute
-                last5Minutes
-                last15Minutes
+              loadStatus {
                 dateTime
-              }
-              realTimeLoad {
-                kernel
-                user
-                total
-                dateTime
+                lastMinuteAverage
+                last5MinutesAverage
+                last15MinutesAverage
+                kernelRealTime
+                userRealTime
+                totalRealTime
+                processes {
+                  processId
+                  user
+                  priority
+                  niceValue
+                  totalMemory
+                  ram
+                  sharedMemory
+                  state
+                  cpuPercentage
+                  ramPercentage
+                  totalCpuTime
+                  command
+                }
               }
             }
             disk {

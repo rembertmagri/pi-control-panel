@@ -31,21 +31,21 @@
 
         public async Task<T> GetLastAsync()
         {
-            var entity = await repository.GetAll()
+            var entity = await this.GetAll()
                 .OrderByDescending(t => t.DateTime).FirstOrDefaultAsync();
             return mapper.Map<T>(entity);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            var entities = await repository.GetAll()
+            var entities = await this.GetAll()
                 .OrderBy(t => t.DateTime).ToListAsync();
             return mapper.Map<List<T>>(entities);
         }
 
         public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput)
         {
-            IQueryable<U> entities = repository.GetAll();
+            IQueryable<U> entities = this.GetAll();
 
             var totalCount = entities.Count();
             var totalSkipped = 0;
@@ -57,8 +57,8 @@
                 entities = entities.OrderBy(t => t.DateTime);
                 if (!string.IsNullOrEmpty(pagingInput.After))
                 {
-                    var afterEntity = await repository
-                        .GetAsync(e => e.ID == Guid.Parse(pagingInput.After));
+                    var afterEntity = await entities
+                        .FirstAsync(e => e.ID == Guid.Parse(pagingInput.After));
                     if (afterEntity == null)
                     {
                         throw new ArgumentOutOfRangeException("After", $"No entity found with id={pagingInput.After}");
@@ -78,8 +78,8 @@
                 entities = entities.OrderByDescending(t => t.DateTime);
                 if (!string.IsNullOrEmpty(pagingInput.Before))
                 {
-                    var beforeEntity = await repository
-                        .GetAsync(e => e.ID == Guid.Parse(pagingInput.Before));
+                    var beforeEntity = await entities
+                        .FirstAsync(e => e.ID == Guid.Parse(pagingInput.Before));
                     if (beforeEntity == null)
                     {
                         throw new ArgumentOutOfRangeException("Before", $"No entity found with id={pagingInput.Before}");
@@ -111,6 +111,11 @@
             var entity = mapper.Map<U>(model);
             repository.Create(entity);
             await this.unitOfWork.CommitAsync();
+        }
+
+        protected virtual IQueryable<U> GetAll()
+        {
+            return repository.GetAll();
         }
     }
 }

@@ -9,17 +9,11 @@
 
     public interface ICpuService : IBaseService<Cpu>
     {
-        Task<CpuAverageLoad> GetLastAverageLoadAsync();
+        Task<CpuLoadStatus> GetLastLoadStatusAsync();
 
-        Task<PagingOutput<CpuAverageLoad>> GetAverageLoadsAsync(PagingInput pagingInput);
+        Task<PagingOutput<CpuLoadStatus>> GetLoadStatusesAsync(PagingInput pagingInput);
 
-        IObservable<CpuAverageLoad> GetAverageLoadObservable();
-
-        Task<CpuRealTimeLoad> GetLastRealTimeLoadAsync();
-
-        Task<PagingOutput<CpuRealTimeLoad>> GetRealTimeLoadsAsync(PagingInput pagingInput);
-
-        IObservable<CpuRealTimeLoad> GetRealTimeLoadObservable();
+        IObservable<CpuLoadStatus> GetLoadStatusObservable();
 
         Task<IDictionary<DateTime, double>> GetTotalRealTimeLoadsAsync(
             IEnumerable<DateTime> dateTimes, CancellationToken cancellationToken);
@@ -30,9 +24,7 @@
 
         IObservable<CpuTemperature> GetTemperatureObservable();
         
-        Task SaveAverageLoadAsync();
-
-        Task SaveRealTimeLoadAsync();
+        Task SaveLoadStatusAsync();
 
         Task SaveTemperatureAsync();
     }

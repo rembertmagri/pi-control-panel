@@ -19,8 +19,8 @@
             IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IOsService osService, 
             ILogger logger)
         {
-            FieldSubscribe<CpuAverageLoadType>(
-                "CpuAverageLoad",
+            FieldSubscribe<CpuLoadStatusType>(
+                "CpuLoadStatus",
                 resolve: context =>
                 {
                     return context.Source;
@@ -32,23 +32,7 @@
                     GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return cpuService.GetAverageLoadObservable();
-                });
-
-            FieldSubscribe<CpuRealTimeLoadType>(
-                "CpuRealTimeLoad",
-                resolve: context =>
-                {
-                    return context.Source;
-                },
-                subscribe: context =>
-                {
-                    logger.Info("CpuRealTimeLoad subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
-
-                    return cpuService.GetRealTimeLoadObservable();
+                    return cpuService.GetLoadStatusObservable();
                 });
 
             FieldSubscribe<CpuTemperatureType>(

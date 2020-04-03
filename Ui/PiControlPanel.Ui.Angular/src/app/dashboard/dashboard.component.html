@@ -119,33 +119,72 @@
                     <dd class="col-sm-8">{{raspberryPi.cpu.temperature.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
-                <dt class="col-sm-3">Average Load</dt>
+                <dt class="col-sm-3">Load Status</dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Last minute</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.averageLoad.lastMinute}}</dd>
-                    <dt class="col-sm-4">Last 5 minutes</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.averageLoad.last5Minutes}}</dd>
-                    <dt class="col-sm-4">Last 15 minutes</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.averageLoad.last15Minutes}}</dd>
                     <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.averageLoad.dateTime | date:'medium'}}</dd>
-                  </dl>
-                </dd>
-                <dt class="col-sm-3">Real-Time Load</dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Kernel</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.realTimeLoad.kernel}}&#37;</dd>
-                    <dt class="col-sm-4">User</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.realTimeLoad.user}}&#37;</dd>
-                    <dt class="col-sm-4">Total</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.realTimeLoad.total}}&#37;</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.realTimeLoad.dateTime | date:'medium'}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.dateTime | date:'medium'}}</dd>
+                    <dt class="col-sm-4">Last minute average</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.lastMinuteAverage}}</dd>
+                    <dt class="col-sm-4">Last 5 minutes average</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last5MinutesAverage}}</dd>
+                    <dt class="col-sm-4">Last 15 minutes average</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last15MinutesAverage}}</dd>
+                    <dt class="col-sm-4">Kernel real-time</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.kernelRealTime}}&#37;</dd>
+                    <dt class="col-sm-4">User real-time</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.userRealTime}}&#37;</dd>
+                    <dt class="col-sm-4">Total real-time</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.totalRealTime}}&#37;</dd>
                   </dl>
                 </dd>
               </dl>
+              <ng-template #popTemplate>
+                <table class="table table-striped table-top-processes">
+                  <thead>
+                  <tr>
+                    <th scope="col">PID</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Nice Value</th>
+                    <th scope="col">Total Memory</th>
+                    <th scope="col">RAM</th>
+                    <th scope="col">Shared Memory</th>
+                    <th scope="col">State</th>
+                    <th scope="col">CPU %</th>
+                    <th scope="col">RAM %</th>
+                    <th scope="col">Total CPU Time</th>
+                    <th scope="col">Command</th>
+                    <th scope="col">Kill</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let process of raspberryPi.cpu.loadStatus.processes">
+                    <td>{{ process.processId }}</td>
+                    <td>{{ process.user }}</td>
+                    <td>{{ process.priority }}</td>
+                    <td>{{ process.niceValue }}</td>
+                    <td>{{ process.totalMemory }}</td>
+                    <td>{{ process.ram }}</td>
+                    <td>{{ process.sharedMemory }}</td>
+                    <td>{{ process.state }}</td>
+                    <td>{{ process.cpuPercentage }}</td>
+                    <td>{{ process.ramPercentage }}</td>
+                    <td>{{ process.totalCpuTime }}</td>
+                    <td>{{ process.command }}</td>
+                    <td>
+                      <button type="button" class="btn btn-danger" (click)="kill(process.processId)">
+                        X
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+              <button type="button" class="btn btn-info btn-top-processes" [popover]="popTemplate"
+                [outsideClick]="true">
+                Top processes
+              </button>
             </div>
           </div>
         </div>

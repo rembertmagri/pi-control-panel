@@ -7,20 +7,32 @@
     using PiControlPanel.Domain.Models.Hardware.Cpu;
     using System;
 
-    public class CpuRealTimeLoadType : ObjectGraphType<CpuRealTimeLoad>
+    public class CpuLoadStatusType : ObjectGraphType<CpuLoadStatus>
     {
-        public CpuRealTimeLoadType(IDataLoaderContextAccessor accessor,
+        public CpuLoadStatusType(
+            IDataLoaderContextAccessor accessor,
             ICpuService cpuService,
             ILogger logger)
         {
             Field<DateTimeGraphType>("dateTime");
-            Field(x => x.Kernel);
-            Field(x => x.User);
+
+            Field(x => x.Processes, false, typeof(ListGraphType<CpuProcessType>)).Resolve(context => context.Source.Processes);
+
+            Field(x => x.LastMinuteAverage);
+
+            Field(x => x.Last5MinutesAverage);
+
+            Field(x => x.Last15MinutesAverage);
+
+            Field(x => x.KernelRealTime);
+
+            Field(x => x.UserRealTime);
+
             Field<FloatGraphType, double>()
-                .Name("Total")
+                .Name("TotalRealTime")
                 .ResolveAsync(context =>
                 {
-                    logger.Info("Total field");
+                    logger.Info("TotalRealTime field");
 
                     var cpuRealTimeLoad = context.Source;
                     var loader = accessor.Context.GetOrAddBatchLoader<DateTime, double>(

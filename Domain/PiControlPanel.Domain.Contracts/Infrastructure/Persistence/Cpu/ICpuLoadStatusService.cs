@@ -5,9 +5,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface ICpuRealTimeLoadService : IBaseTimedObjectService<CpuRealTimeLoad>
+    public interface ICpuLoadStatusService : IBaseTimedObjectService<CpuLoadStatus>
     {
-        Task<IDictionary<DateTime, CpuRealTimeLoad>> GetRealTimeLoadsAsync(
+        Task<IDictionary<DateTime, CpuLoadStatus>> GetCpuLoadStatusesAsync(
             IEnumerable<DateTime> dateTimes);
     }
 }

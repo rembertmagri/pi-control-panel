@@ -19,8 +19,7 @@ export interface ICpu {
   cores: string;
   model: string;
   temperature: ICpuTemperature;
-  averageLoad: ICpuAverageLoad;
-  realTimeLoad: ICpuRealTimeLoad;
+  loadStatus: ICpuLoadStatus;
 }
 
 export interface ICpuTemperature {
@@ -28,18 +27,30 @@ export interface ICpuTemperature {
   dateTime: string;
 }
 
-export interface ICpuAverageLoad {
-  lastMinute: number;
-  last5Minutes: number;
-  last15Minutes: number;
+export interface ICpuLoadStatus {
   dateTime: string;
+  lastMinuteAverage: number;
+  last5MinutesAverage: number;
+  last15MinutesAverage: number;
+  kernelRealTime: number;
+  userRealTime: number;
+  totalRealTime: number;
+  processes: ICpuProcess[];
 }
 
-export interface ICpuRealTimeLoad {
-  kernel: number;
-  user: number;
-  total: number;
-  dateTime: string;
+export interface ICpuProcess {
+  processId: number;
+  user: string;
+  priority: string;
+  niceValue: number;
+  totalMemory: number;
+  ram: number;
+  sharedMemory: number;
+  state: string;
+  cpuPercentage: number;
+  ramPercentage: number;
+  totalCpuTime: string;
+  command: string;
 }
 
 export interface IDisk {

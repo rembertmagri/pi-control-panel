@@ -6,17 +6,11 @@
 
     public interface ICpuService : IBaseService<Cpu>
     {
-        Task<CpuAverageLoad> GetAverageLoadAsync(int cores);
+        Task<CpuLoadStatus> GetLoadStatusAsync(int cores);
 
-        IObservable<CpuAverageLoad> GetAverageLoadObservable();
+        IObservable<CpuLoadStatus> GetLoadStatusObservable();
 
-        void PublishAverageLoad(CpuAverageLoad averageLoad);
-
-        Task<CpuRealTimeLoad> GetRealTimeLoadAsync();
-
-        IObservable<CpuRealTimeLoad> GetRealTimeLoadObservable();
-
-        void PublishRealTimeLoad(CpuRealTimeLoad realTimeLoad);
+        void PublishLoadStatus(CpuLoadStatus loadStatus);
 
         Task<CpuTemperature> GetTemperatureAsync();
 

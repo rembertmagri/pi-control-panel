@@ -31,8 +31,7 @@
             serviceRegistry.Register<Contracts.Persistence.IChipsetService, Persistence.ChipsetService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuService, Persistence.Cpu.CpuService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuTemperatureService, Persistence.Cpu.CpuTemperatureService>();
-            serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuAverageLoadService, Persistence.Cpu.CpuAverageLoadService>();
-            serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuRealTimeLoadService, Persistence.Cpu.CpuRealTimeLoadService>();
+            serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuLoadStatusService, Persistence.Cpu.CpuLoadStatusService>();
             serviceRegistry.Register<Contracts.Persistence.IGpuService, Persistence.GpuService>();
             serviceRegistry.Register<Contracts.Persistence.Os.IOsService, Persistence.Os.OsService>();
             serviceRegistry.Register<Contracts.Persistence.Os.IOsStatusService, Persistence.Os.OsStatusService>();
@@ -62,8 +61,7 @@
             serviceRegistry.RegisterSingleton<IMapper>(factory => new AutoMapperConfiguration().GetIMapper());
 
             serviceRegistry.RegisterSingleton<ISubject<CpuTemperature>>(factory => new ReplaySubject<CpuTemperature>(1));
-            serviceRegistry.RegisterSingleton<ISubject<CpuAverageLoad>>(factory => new ReplaySubject<CpuAverageLoad>(1));
-            serviceRegistry.RegisterSingleton<ISubject<CpuRealTimeLoad>>(factory => new ReplaySubject<CpuRealTimeLoad>(1));
+            serviceRegistry.RegisterSingleton<ISubject<CpuLoadStatus>>(factory => new ReplaySubject<CpuLoadStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<RandomAccessMemoryStatus>>(factory => new ReplaySubject<RandomAccessMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<SwapMemoryStatus>>(factory => new ReplaySubject<SwapMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<DiskStatus>>(factory => new ReplaySubject<DiskStatus>(1));

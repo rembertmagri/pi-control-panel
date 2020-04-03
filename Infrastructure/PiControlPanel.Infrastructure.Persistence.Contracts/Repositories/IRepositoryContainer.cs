@@ -8,9 +8,7 @@
 
         IRepositoryBase<Entities.Cpu.CpuTemperature> CpuTemperatureRepository { get; }
 
-        IRepositoryBase<Entities.Cpu.CpuAverageLoad> CpuAverageLoadRepository { get; }
-
-        IRepositoryBase<Entities.Cpu.CpuRealTimeLoad> CpuRealTimeLoadRepository { get; }
+        IRepositoryBase<Entities.Cpu.CpuLoadStatus> CpuLoadStatusRepository { get; }
 
         IRepositoryBase<Entities.Gpu> GpuRepository { get; }
 

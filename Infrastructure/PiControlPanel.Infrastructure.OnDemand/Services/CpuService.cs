@@ -1,6 +1,7 @@
 ﻿namespace PiControlPanel.Infrastructure.OnDemand.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
@@ -15,56 +16,34 @@
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly ISubject<CpuTemperature> cpuTemperatureSubject;
-        private readonly ISubject<CpuAverageLoad> cpuAverageLoadSubject;
-        private readonly ISubject<CpuRealTimeLoad> cpuRealTimeLoadSubject;
+        private readonly ISubject<CpuLoadStatus> cpuLoadStatusSubject;
 
         public CpuService(ISubject<CpuTemperature> cpuTemperatureSubject,
-            ISubject<CpuAverageLoad> cpuAverageLoadSubject,
-            ISubject<CpuRealTimeLoad> cpuRealTimeLoadSubject,
+            ISubject<CpuLoadStatus> cpuLoadStatusSubject,
             ILogger logger)
             : base(logger)
         {
             this.cpuTemperatureSubject = cpuTemperatureSubject;
-            this.cpuAverageLoadSubject = cpuAverageLoadSubject;
-            this.cpuRealTimeLoadSubject = cpuRealTimeLoadSubject;
+            this.cpuLoadStatusSubject = cpuLoadStatusSubject;
         }
 
-        public Task<CpuAverageLoad> GetAverageLoadAsync(int cores)
+        public Task<CpuLoadStatus> GetLoadStatusAsync(int cores)
         {
-            logger.Info("Infra layer -> CpuService -> GetAverageLoadAsync");
-            var averageLoad = this.GetAverageLoad(cores);
+            logger.Info("Infra layer -> CpuService -> GetLoadStatusAsync");
+            var averageLoad = this.GetLoadStatus(cores);
             return Task.FromResult(averageLoad);
         }
 
-        public IObservable<CpuAverageLoad> GetAverageLoadObservable()
+        public IObservable<CpuLoadStatus> GetLoadStatusObservable()
         {
-            logger.Info("Infra layer -> CpuService -> GetAverageLoadObservable");
-            return this.cpuAverageLoadSubject.AsObservable();
+            logger.Info("Infra layer -> CpuService -> GetLoadStatusObservable");
+            return this.cpuLoadStatusSubject.AsObservable();
         }
 
-        public void PublishAverageLoad(CpuAverageLoad averageLoad)
+        public void PublishLoadStatus(CpuLoadStatus loadStatus)
         {
-            logger.Info("Infra layer -> CpuService -> PublishAverageLoad");
-            this.cpuAverageLoadSubject.OnNext(averageLoad);
-        }
-
-        public Task<CpuRealTimeLoad> GetRealTimeLoadAsync()
-        {
-            logger.Info("Infra layer -> CpuService -> GetRealTimeLoadAsync");
-            var realTimeLoad = this.GetRealTimeLoad();
-            return Task.FromResult(realTimeLoad);
-        }
-
-        public IObservable<CpuRealTimeLoad> GetRealTimeLoadObservable()
-        {
-            logger.Info("Infra layer -> CpuService -> GetRealTimeLoadObservable");
-            return this.cpuRealTimeLoadSubject.AsObservable();
-        }
-
-        public void PublishRealTimeLoad(CpuRealTimeLoad realTimeLoad)
-        {
-            logger.Info("Infra layer -> CpuService -> PublishRealTimeLoad");
-            this.cpuRealTimeLoadSubject.OnNext(realTimeLoad);
+            logger.Info("Infra layer -> CpuService -> PublishLoadStatus");
+            this.cpuLoadStatusSubject.OnNext(loadStatus);
         }
 
         public Task<CpuTemperature> GetTemperatureAsync()
@@ -127,7 +106,7 @@
             return null;
         }
 
-        private CpuAverageLoad GetAverageLoad(int cores)
+        private CpuLoadStatus GetLoadStatus(int cores)
         {
             var result = BashCommands.Top.Bash();
             logger.Debug($"Result of '{BashCommands.Top}' command: '{result}'");
@@ -135,35 +114,56 @@
                 StringSplitOptions.RemoveEmptyEntries);
 
             var averageLoadInfo = lines.First(l => l.Contains("load average:"));
-            var regex = new Regex(@"load average: (?<lastMinute>\d+.\d{2}), (?<last5Minutes>\d+.\d{2}), (?<last15Minutes>\d+.\d{2})$");
-            var groups = regex.Match(averageLoadInfo).Groups;
+            var averageLoadRegex = new Regex(@"load average: (?<lastMinute>\d+\.\d{2}), (?<last5Minutes>\d+\.\d{2}), (?<last15Minutes>\d+\.\d{2})$");
+            var averageLoadGroups = averageLoadRegex.Match(averageLoadInfo).Groups;
 
-            return new CpuAverageLoad()
+            var realTimeLoadInfo = lines.First(l => l.StartsWith("%Cpu(s):"));
+            var realTimeLoadRegex = new Regex(@"^%Cpu\(s\):\s*(?<user>\d{1,3}\.\d{1}) us,\s*(?<kernel>\d{1,3}\.\d{1}) sy, .*$");
+            var realTimeLoadGroups = realTimeLoadRegex.Match(realTimeLoadInfo).Groups;
+
+            var processLines = lines.SkipWhile(l => !l.Contains("PID")).ToList();
+            processLines.RemoveAt(0);
+            processLines = processLines.Take(10).ToList();
+            var dateTime = DateTime.Now;
+
+            return new CpuLoadStatus()
             {
-                LastMinute = (100 * double.Parse(groups["lastMinute"].Value)) / cores,
-                Last5Minutes = (100 * double.Parse(groups["last5Minutes"].Value)) / cores,
-                Last15Minutes = (100 * double.Parse(groups["last15Minutes"].Value)) / cores,
-                DateTime = DateTime.Now
+                LastMinuteAverage = (100 * double.Parse(averageLoadGroups["lastMinute"].Value)) / cores,
+                Last5MinutesAverage = (100 * double.Parse(averageLoadGroups["last5Minutes"].Value)) / cores,
+                Last15MinutesAverage = (100 * double.Parse(averageLoadGroups["last15Minutes"].Value)) / cores,
+                UserRealTime = double.Parse(realTimeLoadGroups["user"].Value),
+                KernelRealTime = double.Parse(realTimeLoadGroups["kernel"].Value),
+                Processes = this.GetProcesses(processLines, dateTime),
+                DateTime = dateTime
             };
         }
 
-        private CpuRealTimeLoad GetRealTimeLoad()
+        private IList<CpuProcess> GetProcesses(IList<string> processLines, DateTime dateTime)
         {
-            var result = BashCommands.Top.Bash();
-            logger.Debug($"Result of '{BashCommands.Top}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            var realTimeLoadInfo = lines.First(l => l.StartsWith("%Cpu(s):"));
-            var regex = new Regex(@"^%Cpu\(s\):\s*(?<user>\d{1,3}.\d{1}) us,\s*(?<kernel>\d{1,3}.\d{1}) sy, .*$");
-            var groups = regex.Match(realTimeLoadInfo).Groups;
-
-            return new CpuRealTimeLoad()
+            var processes = new List<CpuProcess>();
+            var regex = new Regex(@"^\s*(?<pid>\S*)\s*(?<user>\S*)\s*(?<pr>\S*)\s*(?<ni>\S*)\s*(?<virt>\d*)\s*(?<res>\d*)\s*(?<shr>\d*)\s*(?<s>\w)\s*(?<cpu>\d+\.\d)\s*(?<mem>\d+\.\d)\s*(?<time>\S*)\s*(?<command>.*)$");
+            
+            foreach (var line in processLines)
             {
-                User = double.Parse(groups["user"].Value),
-                Kernel = double.Parse(groups["kernel"].Value),
-                DateTime = DateTime.Now
-            };
+                var groups = regex.Match(line).Groups;
+                processes.Add(new CpuProcess()
+                {
+                    ProcessId = int.Parse(groups["pid"].Value),
+                    User = groups["user"].Value,
+                    Priority = groups["pr"].Value,
+                    NiceValue = int.Parse(groups["ni"].Value),
+                    TotalMemory = int.Parse(groups["virt"].Value),
+                    Ram = int.Parse(groups["res"].Value),
+                    SharedMemory = int.Parse(groups["shr"].Value),
+                    State = groups["s"].Value,
+                    CpuPercentage = double.Parse(groups["cpu"].Value),
+                    RamPercentage = double.Parse(groups["mem"].Value),
+                    TotalCpuTime = groups["time"].Value,
+                    Command = groups["command"].Value,
+                    DateTime = dateTime
+                });
+            }
+            return processes;
         }
     }
 }
