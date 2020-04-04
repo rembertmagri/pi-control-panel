@@ -21,8 +21,24 @@
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    await controlPanelService.ShutdownAsync(businessContext);
-                    return true;
+                    return await controlPanelService.ShutdownAsync(businessContext);
+                })
+                .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
+
+            FieldAsync<BooleanGraphType>(
+                "Kill",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "ProcessId" }
+                ),
+                resolve: async context =>
+                {
+                    logger.Info("Kill mutation");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var processId = context.GetArgument<int>("processId");
+
+                    return await controlPanelService.KillAsync(businessContext, processId);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
         }

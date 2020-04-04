@@ -118,4 +118,19 @@ export class RaspberryPiService {
     );
   }
 
+  killProcess(processId: number): Observable<boolean> {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation kill($processId: Int!) {
+          kill(processId: $processId)
+        }`,
+      variables: {
+        processId: processId
+      }
+    }).pipe(
+      map(result => get(result.data, 'kill')),
+      catchError(this.errorHandlingService.handleError)
+    );
+  }
+
 }

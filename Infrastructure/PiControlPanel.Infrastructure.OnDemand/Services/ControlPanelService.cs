@@ -23,5 +23,22 @@
             logger.Debug($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
             return Task.FromResult(true);
         }
+
+        public Task<bool> KillAsync(BusinessContext context, int processId)
+        {
+            logger.Info("Infra layer -> ControlPanelService -> KillAsync");
+
+            var sudoKillCommand = string.Format(BashCommands.SudoKill, processId);
+            var result = sudoKillCommand.Bash();
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                logger.Warn($"Result of '{sudoKillCommand}' command: '{result}'");
+                return Task.FromResult(false);
+            }
+
+            logger.Debug($"Result of '{sudoKillCommand}' command is empty, success");
+            return Task.FromResult(true);
+        }
     }
 }

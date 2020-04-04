@@ -55,8 +55,20 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  kill(pid: number) {
-    console.log('TODO: kill process #'+pid);
+  killProcess(processId: number) {
+    this.raspberryPiService.killProcess(processId)
+      .pipe(take(1))
+      .subscribe(
+      result => {
+        if (result) {
+          alert(`Process #${processId} killed`);
+        }
+        else {
+          alert('Error');
+        }
+      },
+      error => this.errorMessage = <any>error
+    );
   }
 
 }
