@@ -5,6 +5,7 @@ import { BsModalService } from 'ngx-bootstrap';
 import { IRaspberryPi} from '../shared/interfaces/raspberry-pi';
 import { AuthService } from '../shared/services/auth.service';
 import { take } from 'rxjs/operators';
+import { remove } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 
 @Component({
@@ -62,6 +63,10 @@ export class DashboardComponent implements OnInit {
       result => {
         if (result) {
           alert(`Process #${processId} killed`);
+          this.raspberryPi.cpu.loadStatus.processes =
+            remove(this.raspberryPi.cpu.loadStatus.processes, (process) => {
+              return process.processId !== processId;
+            });
         }
         else {
           alert('Error');
