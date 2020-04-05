@@ -60,6 +60,7 @@ export interface IDisk {
   type: string;
   total: number;
   status: IDiskStatus;
+  statuses: IDiskStatus[];
 }
 
 export interface IDiskStatus {
@@ -98,6 +99,7 @@ export interface IOs {
   kernel: string;
   hostname: string;
   status: IOsStatus;
+  statuses: IOsStatus[];
 }
 
 export interface IOsStatus {

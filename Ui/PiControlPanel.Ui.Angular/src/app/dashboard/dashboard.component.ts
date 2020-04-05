@@ -11,12 +11,14 @@ import {
 import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { remove, orderBy, map, isNil } from 'lodash';
+import { remove, orderBy, map, isNil, first } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
 import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
 import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
+import { DiskStatusService } from '../shared/services/disk-status.service';
+import { OsStatusService } from '../shared/services/os-status.service';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -31,11 +33,15 @@ export class DashboardComponent implements OnInit {
   subscribedToNewCpuLoadStatuses: boolean;
   subscribedToNewRamStatuses: boolean;
   subscribedToNewSwapMemoryStatuses: boolean;
+  subscribedToNewDiskStatuses: boolean;
+  subscribedToNewOsStatuses: boolean;
 
   cpuTemperatureBehaviorSubjectSubscription: Subscription;
   cpuLoadStatusBehaviorSubjectSubscription: Subscription;
   ramStatusBehaviorSubjectSubscription: Subscription;
   swapMemoryStatusBehaviorSubjectSubscription: Subscription;
+  diskStatusBehaviorSubjectSubscription: Subscription;
+  osStatusBehaviorSubjectSubscription: Subscription;
 
   constructor(private _route: ActivatedRoute,
     private router: Router,
@@ -45,7 +51,9 @@ export class DashboardComponent implements OnInit {
     private cpuTemperatureService: CpuTemperatureService,
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
-    private swapMemoryStatusService: SwapMemoryStatusService) { }
+    private swapMemoryStatusService: SwapMemoryStatusService,
+    private diskStatusService: DiskStatusService,
+    private osStatusService: OsStatusService) { }
 
   ngOnInit() {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
@@ -54,6 +62,7 @@ export class DashboardComponent implements OnInit {
     this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
       .subscribe(
       result => {
+        this.raspberryPi.cpu.temperature = first(result.items);
         this.raspberryPi.cpu.temperatures = result.items;
         if(!isNil(this.modalRef)) {
           this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuTemperatures();
@@ -71,6 +80,7 @@ export class DashboardComponent implements OnInit {
     this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
       .subscribe(
         result => {
+          this.raspberryPi.cpu.loadStatus = first(result.items);
           this.raspberryPi.cpu.loadStatuses = result.items;
           if(!isNil(this.modalRef)) {
             this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuLoadStatuses();
@@ -88,6 +98,7 @@ export class DashboardComponent implements OnInit {
     this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
       .subscribe(
         result => {
+          this.raspberryPi.ram.status = first(result.items);
           this.raspberryPi.ram.statuses = result.items;
           if(!isNil(this.modalRef)) {
             this.modalRef.content.chartData[2].series = this.getOrderedAndMappedRamStatuses();
@@ -105,6 +116,7 @@ export class DashboardComponent implements OnInit {
     this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
       .subscribe(
         result => {
+          this.raspberryPi.swapMemory.status = first(result.items);
           this.raspberryPi.swapMemory.statuses = result.items;
           if(!isNil(this.modalRef)) {
             this.modalRef.content.chartData[3].series = this.getOrderedAndMappedSwapMemoryStatuses();
@@ -113,6 +125,34 @@ export class DashboardComponent implements OnInit {
           if(!this.subscribedToNewSwapMemoryStatuses) {
             this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
             this.subscribedToNewSwapMemoryStatuses = true;
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
+    
+    this.subscribedToNewDiskStatuses = false;
+    this.diskStatusBehaviorSubjectSubscription = this.diskStatusService.getLastDiskStatuses()
+      .subscribe(
+        result => {
+          this.raspberryPi.disk.status = first(result.items);
+          this.raspberryPi.disk.statuses = result.items;
+          if(!this.subscribedToNewDiskStatuses) {
+            this.diskStatusService.subscribeToNewDiskStatuses();
+            this.subscribedToNewDiskStatuses = true;
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
+    
+    this.subscribedToNewOsStatuses = false;
+    this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
+      .subscribe(
+        result => {
+          this.raspberryPi.os.status = first(result.items);
+          this.raspberryPi.os.statuses = result.items;
+          if(!this.subscribedToNewOsStatuses) {
+            this.osStatusService.subscribeToNewOsStatuses();
+            this.subscribedToNewOsStatuses = true;
           }
         },
         error => this.errorMessage = <any>error
@@ -131,6 +171,12 @@ export class DashboardComponent implements OnInit {
     }
     if (!isNil(this.swapMemoryStatusBehaviorSubjectSubscription)) {
       this.swapMemoryStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.diskStatusBehaviorSubjectSubscription)) {
+      this.diskStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.osStatusBehaviorSubjectSubscription)) {
+      this.osStatusBehaviorSubjectSubscription.unsubscribe();
     }
   }
 
