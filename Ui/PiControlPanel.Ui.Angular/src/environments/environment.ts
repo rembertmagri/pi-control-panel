@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  graphqlEndpoint: '192.168.100.2:8080'
+  graphqlEndpoint: '192.168.2.251:8080'
 };
 
 /*
