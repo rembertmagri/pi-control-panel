@@ -125,17 +125,17 @@
                     <dt class="col-sm-4">Datetime</dt>
                     <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.dateTime | date:'medium'}}</dd>
                     <dt class="col-sm-4">Last minute average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.lastMinuteAverage}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}}</dd>
                     <dt class="col-sm-4">Last 5 minutes average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last5MinutesAverage}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}}</dd>
                     <dt class="col-sm-4">Last 15 minutes average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last15MinutesAverage}}</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}</dd>
                     <dt class="col-sm-4">Kernel real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.kernelRealTime}}&#37;</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.kernelRealTime | number:'1.0-2'}}&#37;</dd>
                     <dt class="col-sm-4">User real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.userRealTime}}&#37;</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.userRealTime | number:'1.0-2'}}&#37;</dd>
                     <dt class="col-sm-4">Total real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.totalRealTime}}&#37;</dd>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.totalRealTime | number:'1.0-2'}}&#37;</dd>
                   </dl>
                 </dd>
               </dl>

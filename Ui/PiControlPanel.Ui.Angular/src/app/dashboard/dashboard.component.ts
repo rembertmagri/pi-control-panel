@@ -250,7 +250,11 @@ export class DashboardComponent implements OnInit {
     var loadStatusData = map(this.raspberryPi.cpu.loadStatuses, (loadStatus: ICpuLoadStatus) => {
       return {
         value: loadStatus.totalRealTime,
-        name: new Date(loadStatus.dateTime)
+        name: new Date(loadStatus.dateTime),
+        processes: orderBy(
+          loadStatus.processes,
+          ['cpuPercentage', 'ramPercentage'],
+          ['desc', 'desc'])
       };
     });
     return orderBy(loadStatusData, 'name');

@@ -7,8 +7,50 @@
   </div>
   <div class="modal-body">
     <ngx-charts-line-chart [legend]="true" [autoScale]="true" [xAxis]="true" [yAxis]="true"
-                           [showXAxisLabel]="true" [xAxisLabel]="'Datetime'" [timeline]="true"
-                           [results]="chartData" *ngIf="isChartDataReady()">
+      [showXAxisLabel]="true" [xAxisLabel]="'Datetime'" [timeline]="true" [results]="chartData"
+      *ngIf="isChartDataReady()">
+      <ng-template #tooltipTemplate let-model="model">
+        {{ model.series }}: {{ model.value | number:'1.0-2' }}
+        <br/>
+        {{ model.name | date:'medium' }}
+        <div *ngIf="model.processes">
+          <br/>
+          <table>
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>User</th>
+                <th>PR</th>
+                <th>NI</th>
+                <th>Virt</th>
+                <th>Res</th>
+                <th>Shr</th>
+                <th>S</th>
+                <th>%CPU</th>
+                <th>%Mem</th>
+                <th>Time+</th>
+                <th>Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let process of model.processes">
+                <td>{{ process.processId }}</td>
+                <td>{{ process.user }}</td>
+                <td>{{ process.priority }}</td>
+                <td>{{ process.niceValue }}</td>
+                <td>{{ process.totalMemory }}</td>
+                <td>{{ process.ram }}</td>
+                <td>{{ process.sharedMemory }}</td>
+                <td>{{ process.state }}</td>
+                <td>{{ process.cpuPercentage }}</td>
+                <td>{{ process.ramPercentage }}</td>
+                <td>{{ process.totalCpuTime }}</td>
+                <td>{{ process.command }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
     </ngx-charts-line-chart>
   </div>
   <div class="modal-footer">
