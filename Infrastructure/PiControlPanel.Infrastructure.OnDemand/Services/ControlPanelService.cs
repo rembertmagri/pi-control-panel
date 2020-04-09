@@ -50,7 +50,7 @@
 
             if (string.IsNullOrEmpty(result))
             {
-                logger.Warn($"Result of '{psUserCommand}' command is empty, success");
+                logger.Warn($"Result of '{psUserCommand}' command is empty, process '{processId}' doesn't exist");
                 return Task.FromResult(string.Empty);
             }
 
