@@ -5,8 +5,10 @@
 
     public interface IControlPanelService
     {
-        Task<bool> ShutdownAsync(BusinessContext context);
+        Task<bool> ShutdownAsync();
 
         Task<bool> KillAsync(BusinessContext context, int processId);
+
+        Task<string> GetProcessOwnerUsernameAsync(int processId);
     }
 }

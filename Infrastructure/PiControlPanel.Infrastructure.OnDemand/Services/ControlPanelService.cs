@@ -16,7 +16,7 @@
             this.logger = logger;
         }
 
-        public Task<bool> ShutdownAsync(BusinessContext context)
+        public Task<bool> ShutdownAsync()
         {
             logger.Info("Infra layer -> ControlPanelService -> ShutdownAsync");
             var result = BashCommands.SudoShutdown.Bash();
@@ -39,6 +39,23 @@
 
             logger.Debug($"Result of '{sudoKillCommand}' command is empty, success");
             return Task.FromResult(true);
+        }
+
+        public Task<string> GetProcessOwnerUsernameAsync(int processId)
+        {
+            logger.Info("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
+
+            var psUserCommand = string.Format(BashCommands.PsUser, processId);
+            var result = psUserCommand.Bash();
+
+            if (string.IsNullOrEmpty(result))
+            {
+                logger.Warn($"Result of '{psUserCommand}' command is empty, success");
+                return Task.FromResult(string.Empty);
+            }
+
+            logger.Debug($"Result of '{psUserCommand}' command: '{result}'");
+            return Task.FromResult(result);
         }
     }
 }

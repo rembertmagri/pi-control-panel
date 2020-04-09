@@ -15,5 +15,6 @@
         public const string Groups = "groups {0}";
         public const string Uptime = "uptime -p";
         public const string SudoKill = "sudo kill {0}";
+        public const string PsUser = "ps -o user= -p {0}";
     }
 }

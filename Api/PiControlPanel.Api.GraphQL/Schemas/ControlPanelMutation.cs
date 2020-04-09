@@ -21,7 +21,7 @@
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return await controlPanelService.ShutdownAsync(businessContext);
+                    return await controlPanelService.ShutdownAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
@@ -40,7 +40,7 @@
 
                     return await controlPanelService.KillAsync(businessContext, processId);
                 })
-                .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
+                .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
         }
     }
 }

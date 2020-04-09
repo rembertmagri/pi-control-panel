@@ -17,16 +17,35 @@
             this.logger = logger;
         }
         
-        public Task<bool> ShutdownAsync(BusinessContext context)
+        public Task<bool> ShutdownAsync()
         {
             logger.Info("Application layer -> ControlPanelService -> ShutdownAsync");
-            return onDemandService.ShutdownAsync(context);
+            return onDemandService.ShutdownAsync();
         }
 
-        public Task<bool> KillAsync(BusinessContext context, int processId)
+        public async Task<bool> KillAsync(BusinessContext context, int processId)
         {
             logger.Info("Application layer -> ControlPanelService -> KillAsync");
-            return onDemandService.KillAsync(context, processId);
+
+            var isAuthorizedToKill = await this.IsAuthorizedToKillAsync(context, processId);
+            if (!isAuthorizedToKill)
+            {
+                logger.Warn($"User '{context.Username}' is not authorized to kill process '{processId}'");
+                return false;
+            }
+
+            return await onDemandService.KillAsync(context, processId);
+        }
+
+        public async Task<bool> IsAuthorizedToKillAsync(BusinessContext context, int processId)
+        {
+            if (context.IsSuperUser)
+            {
+                return true;
+            }
+
+            var processOwnerUsername = await onDemandService.GetProcessOwnerUsernameAsync(processId);
+            return context.Username.Equals(processOwnerUsername);
         }
     }
 }

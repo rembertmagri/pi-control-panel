@@ -239,7 +239,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  canKillProcess(processOwnerUsername: string) {
+  isAuthorizedToKill(processOwnerUsername: string) {
     if (this.isSuperUser) {
       return true;
     }

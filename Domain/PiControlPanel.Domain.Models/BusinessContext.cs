@@ -14,5 +14,10 @@
         /// Determine whether user is anonymous or not
         /// </summary>
         public bool IsAnonymous { get; set; }
+
+        /// <summary>
+        /// Determine whether user is sudoer or not
+        /// </summary>
+        public bool IsSuperUser { get; set; }
     }
 }
