@@ -91,7 +91,7 @@ graphqlUri: () => new URL('/graphql', window.location.href);
               options: {
                 reconnect: true,
                 connectionParams: () => {
-                  const token = localStorage.getItem('jwt_token');
+                  const token = localStorage.getItem('jwt');
                   return token ? { 'Authorization': `Bearer ${token}` } : {};
                 }
               }

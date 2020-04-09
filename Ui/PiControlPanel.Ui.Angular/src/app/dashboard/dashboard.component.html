@@ -10,7 +10,7 @@
           <button type="button" class="btn btn-warning" (click)="logout()">
             Logout
           </button>
-          <button type="button" class="btn btn-danger" (click)="shutdown()">
+          <button type="button" class="btn btn-danger" (click)="shutdown()" [disabled]="!isSuperUser">
             Shutdown
           </button>
         </div>
@@ -173,7 +173,8 @@
                     <td>{{ process.totalCpuTime }}</td>
                     <td>{{ process.command }}</td>
                     <td>
-                      <button type="button" class="btn btn-danger" (click)="killProcess(process.processId)">
+                      <button type="button" class="btn btn-danger" (click)="killProcess(process.processId)"
+                        [disabled]="!canKillProcess(process.user)">
                         X
                       </button>
                     </td>

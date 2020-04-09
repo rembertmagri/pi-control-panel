@@ -1,6 +1,5 @@
 export interface ILoginResponse {
-    username: string;
-    jwt: string;
-    roles: string[];
-  }
-  
+  username: string;
+  jwt: string;
+  roles: string[];
+}

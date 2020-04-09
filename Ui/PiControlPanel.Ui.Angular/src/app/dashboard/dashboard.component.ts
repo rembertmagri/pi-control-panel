@@ -11,7 +11,7 @@ import {
 import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { remove, orderBy, map, isNil, first } from 'lodash';
+import { remove, orderBy, map, isNil, first, startsWith, endsWith, trimEnd } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
 import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
@@ -43,6 +43,8 @@ export class DashboardComponent implements OnInit {
   diskStatusBehaviorSubjectSubscription: Subscription;
   osStatusBehaviorSubjectSubscription: Subscription;
 
+  isSuperUser: boolean;
+
   constructor(private _route: ActivatedRoute,
     private router: Router,
     private modalService: BsModalService,
@@ -57,6 +59,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
+    this.isSuperUser = this.authService.isSuperUser();
 
     this.subscribedToNewCpuTemperatures = false;
     this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
@@ -234,6 +237,17 @@ export class DashboardComponent implements OnInit {
       },
       error => this.errorMessage = <any>error
     );
+  }
+
+  canKillProcess(processOwnerUsername: string) {
+    if (this.isSuperUser) {
+      return true;
+    }
+    var username = this.authService.getLoggedInUsername();
+    if (endsWith(processOwnerUsername, '+')){
+      return startsWith(username, trimEnd(processOwnerUsername, '+'));
+    }
+    return username === processOwnerUsername;
   }
 
   getOrderedAndMappedCpuTemperatures() {

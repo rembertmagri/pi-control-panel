@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (get(request.body, 'operationName') === 'login') {
       return next.handle(request);
     }
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('jwt');
     return this.handleRequest(request, next, token);
   }
 
