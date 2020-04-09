@@ -16,7 +16,7 @@ export class AuthService {
     return this.loginService.login(userAccount)
       .pipe(
         tap((result) => {
-          localStorage.setItem('jwt_token', result);
+          localStorage.setItem('jwt_token', result.jwt);
         }),
         map(result => !isNil(result))
       );

@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { IUserAccount } from '../interfaces/userAccount';
+import { ILoginResponse } from '../interfaces/loginResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,15 @@ export class LoginService {
 
   constructor(protected apollo: Apollo) { }
 
-  login(userAccount: IUserAccount): Observable<string> {
-    return this.apollo.query<{ login: string }>({
+  login(userAccount: IUserAccount): Observable<ILoginResponse> {
+    return this.apollo.query<{ login: ILoginResponse }>({
       query: gql`
         query login($userAccount: UserAccountInputType) {
-          login(userAccount: $userAccount)
+          login(userAccount: $userAccount) {
+            username
+            jwt
+            roles
+          }
         }`,
       variables: {
         userAccount: {

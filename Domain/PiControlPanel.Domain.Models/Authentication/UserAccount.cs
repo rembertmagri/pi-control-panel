@@ -1,4 +1,4 @@
-﻿namespace PiControlPanel.Domain.Models
+﻿namespace PiControlPanel.Domain.Models.Authentication
 {
     public class UserAccount
     {

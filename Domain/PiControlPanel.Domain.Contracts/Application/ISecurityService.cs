@@ -1,10 +1,10 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Application
 {
-    using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Authentication;
     using System.Threading.Tasks;
 
     public interface ISecurityService
     {
-        Task<string> GenerateJsonWebTokenAsync(UserAccount userAccount);
+        Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount);
     }
 }

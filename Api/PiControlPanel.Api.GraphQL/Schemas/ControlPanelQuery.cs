@@ -8,13 +8,14 @@
     using PiControlPanel.Api.GraphQL.Types.Input;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
-    using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Authentication;
+    using PiControlPanel.Api.GraphQL.Types.Output.Authentication;
 
     public class ControlPanelQuery : ObjectGraphType
     {
         public ControlPanelQuery(ISecurityService securityService, ILogger logger)
         {
-            FieldAsync<StringGraphType>(
+            FieldAsync<LoginResponseType>(
                 "Login",
                 arguments: new QueryArguments(
                     new QueryArgument<UserAccountInputType> { Name = "UserAccount" }
@@ -24,7 +25,7 @@
                     logger.Info("Login query");
                     var userAccount = context.GetArgument<UserAccount>("userAccount");
 
-                    return await securityService.GenerateJsonWebTokenAsync(userAccount);
+                    return await securityService.GetLoginResponseAsync(userAccount);
                 });
 
             Field<RaspberryPiType>(

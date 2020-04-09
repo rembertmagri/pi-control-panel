@@ -1,7 +1,7 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Types.Input
 {
     using global::GraphQL.Types;
-    using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Authentication;
 
     public class UserAccountInputType : InputObjectGraphType<UserAccount>
     {

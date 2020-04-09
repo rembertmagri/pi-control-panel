@@ -6,7 +6,7 @@
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using PiControlPanel.Domain.Contracts.Util;
-    using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Authentication;
 
     public class UserAccountService : IUserAccountService
     {

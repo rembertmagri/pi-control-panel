@@ -2,6 +2,7 @@
 {
     using System;
     using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Authentication;
 
     public class SecurityService : ISecurityService
     {
@@ -27,7 +29,22 @@
             this.logger = logger;
         }
 
-        public async Task<string> GenerateJsonWebTokenAsync(UserAccount userAccount)
+        public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
+        {
+            logger.Info("Application layer -> SecurityService -> GetLoginResponseAsync");
+
+            var jsonWebToken = await this.GenerateJsonWebTokenAsync(userAccount);
+            var roleClaims = jsonWebToken.Claims.Where(c => c.Type == ClaimTypes.Role);
+
+            return new LoginResponse()
+            {
+                Username = userAccount.Username,
+                JsonWebToken = new JwtSecurityTokenHandler().WriteToken(jsonWebToken),
+                Roles = roleClaims.Select(c => c.Value).ToList()
+            };
+        }
+
+        private async Task<JwtSecurityToken> GenerateJsonWebTokenAsync(UserAccount userAccount)
         {
             logger.Info("Application layer -> SecurityService -> GenerateJsonWebTokenAsync");
             if (userAccount == null ||
@@ -47,13 +64,11 @@
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsIdentity = await this.CreateClaimsIdentityAsync(userAccount);
 
-            var token = new JwtSecurityToken(configuration["Jwt:Issuer"],
+            return new JwtSecurityToken(configuration["Jwt:Issuer"],
                 configuration["Jwt:Audience"],
                 claimsIdentity.Claims,
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private async Task<ClaimsIdentity> CreateClaimsIdentityAsync(UserAccount userAccount)
