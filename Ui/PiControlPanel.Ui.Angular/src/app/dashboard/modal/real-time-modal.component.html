@@ -8,9 +8,9 @@
   <div class="modal-body">
     <ngx-charts-line-chart [legend]="true" [autoScale]="true" [xAxis]="true" [yAxis]="true"
       [showXAxisLabel]="true" [xAxisLabel]="'Datetime'" [timeline]="true" [results]="chartData"
-      *ngIf="isChartDataReady()">
+      [scheme]="colorScheme" *ngIf="isChartDataReady()">
       <ng-template #tooltipTemplate let-model="model">
-        {{ model.series }}: {{ model.value | number:'1.0-2' }}
+        {{ model.series }}: {{ getValue(model) | number:'1.0-2' }}
         <br/>
         {{ model.name | date:'medium' }}
         <div *ngIf="model.processes">
@@ -49,6 +49,12 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </ng-template>
+      <ng-template #seriesTooltipTemplate let-model="model">
+        <div *ngFor="let m of model">
+          <span [style.color]="m.color">&#9632;</span>
+          {{ m.series }}: {{ getValue(m) | number:'1.0-2' }}
         </div>
       </ng-template>
     </ngx-charts-line-chart>

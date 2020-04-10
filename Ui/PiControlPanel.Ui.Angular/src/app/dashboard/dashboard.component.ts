@@ -12,7 +12,7 @@ import {
 import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { remove, orderBy, map, isNil, first, startsWith, endsWith, trimEnd, max } from 'lodash';
+import { remove, orderBy, map, isNil, first, startsWith, endsWith, trimEnd, max, min } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
@@ -216,7 +216,7 @@ export class DashboardComponent implements OnInit {
         class: 'modal-xl'
       });
     this.modalRef.content.chartData = [
-      { name: "CPU Frequency (%)", series: this.getOrderedAndMappedCpuNormalizedFrequencies() },
+      { name: "CPU Frequency (MHz)", series: this.getOrderedAndMappedCpuNormalizedFrequencies() },
       { name: "CPU Temperature (°C)", series: this.getOrderedAndMappedCpuTemperatures() },
       { name: "CPU Real-Time Load (%)", series: this.getOrderedAndMappedCpuLoadStatuses() },
       { name: "RAM Usage (%)", series: this.getOrderedAndMappedRamStatuses() },
@@ -278,10 +278,13 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuNormalizedFrequencies() {
+    var maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
+    var minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'))
     var frequencyData = map(this.raspberryPi.cpu.frequencies, (frequency: ICpuFrequency) => {
       return {
-        value: 100 * (frequency.value / max(map(this.raspberryPi.cpu.frequencies, 'value'))),
-        name: new Date(frequency.dateTime)
+        value: 100 * ((frequency.value - minFrequency) / (maxFrequency - minFrequency)),
+        name: new Date(frequency.dateTime),
+        absoluteValue: frequency.value
       };
     });
     return orderBy(frequencyData, 'name');

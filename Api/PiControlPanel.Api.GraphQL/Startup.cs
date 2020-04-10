@@ -21,6 +21,7 @@ namespace PiControlPanel.Api.GraphQL
     using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Api.GraphQL.Schemas;
     using PiControlPanel.Application.BackgroundServices;
+    using PiControlPanel.Application.BackgroundServices.Cpu;
     using PiControlPanel.Application.Services;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
@@ -125,6 +126,7 @@ namespace PiControlPanel.Api.GraphQL
             {
                 services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<CpuWorker>();
+                services.AddHostedService<CpuFrequencyWorker>();
                 services.AddHostedService<GpuWorker>();
                 services.AddHostedService<OsWorker>();
             }

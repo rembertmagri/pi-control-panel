@@ -34,6 +34,6 @@
 
         Task SaveTemperatureAsync();
 
-        Task SaveFrequencyAsync();
+        Task SaveFrequencyAsync(int samplingInterval);
     }
 }

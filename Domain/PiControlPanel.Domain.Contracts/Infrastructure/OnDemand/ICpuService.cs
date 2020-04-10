@@ -18,7 +18,7 @@
 
         void PublishTemperature(CpuTemperature temperature);
 
-        Task<CpuFrequency> GetFrequencyAsync();
+        Task<CpuFrequency> GetFrequencyAsync(int samplingInterval);
 
         IObservable<CpuFrequency> GetFrequencyObservable();
 

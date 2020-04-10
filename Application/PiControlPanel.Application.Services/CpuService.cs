@@ -119,10 +119,10 @@
             ((OnDemand.ICpuService)this.onDemandService).PublishTemperature(temperature);
         }
 
-        public async Task SaveFrequencyAsync()
+        public async Task SaveFrequencyAsync(int samplingInterval)
         {
             logger.Info("Application layer -> CpuService -> SaveFrequencyAsync");
-            var frequency = await ((OnDemand.ICpuService)this.onDemandService).GetFrequencyAsync();
+            var frequency = await ((OnDemand.ICpuService)this.onDemandService).GetFrequencyAsync(samplingInterval);
 
             await this.persistenceFrequencyService.AddAsync(frequency);
             ((OnDemand.ICpuService)this.onDemandService).PublishFrequency(frequency);
