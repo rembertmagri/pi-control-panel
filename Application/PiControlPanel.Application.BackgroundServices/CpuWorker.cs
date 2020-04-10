@@ -21,6 +21,7 @@
         {
             await ((ICpuService)this.service).SaveLoadStatusAsync();
             await ((ICpuService)this.service).SaveTemperatureAsync();
+            await ((ICpuService)this.service).SaveFrequencyAsync();
         }
     }
 }

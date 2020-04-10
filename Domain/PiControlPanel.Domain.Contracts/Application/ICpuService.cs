@@ -23,9 +23,17 @@
         Task<PagingOutput<CpuTemperature>> GetTemperaturesAsync(PagingInput pagingInput);
 
         IObservable<CpuTemperature> GetTemperatureObservable();
-        
+
+        Task<CpuFrequency> GetLastFrequencyAsync();
+
+        Task<PagingOutput<CpuFrequency>> GetFrequenciesAsync(PagingInput pagingInput);
+
+        IObservable<CpuFrequency> GetFrequencyObservable();
+
         Task SaveLoadStatusAsync();
 
         Task SaveTemperatureAsync();
+
+        Task SaveFrequencyAsync();
     }
 }

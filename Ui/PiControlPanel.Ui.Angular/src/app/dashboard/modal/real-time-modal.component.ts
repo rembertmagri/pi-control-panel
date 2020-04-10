@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
 import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
 import { RamStatusService } from 'src/app/shared/services/ram-status.service';
@@ -15,6 +16,7 @@ export class RealTimeModalComponent implements OnInit {
   public chartData: any[];
 
   constructor(public bsModalRef: BsModalRef,
+    private cpuFrequencyService: CpuFrequencyService,
     private cpuTemperatureService: CpuTemperatureService,
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
@@ -29,6 +31,7 @@ export class RealTimeModalComponent implements OnInit {
   }
 
   loadNextPage() {
+    this.cpuFrequencyService.getNextPage();
     this.cpuTemperatureService.getNextPage();
     this.cpuLoadStatusService.getNextPage();
     this.ramStatusService.getNextPage();
@@ -36,6 +39,7 @@ export class RealTimeModalComponent implements OnInit {
   }
 
   loadPreviousPage() {
+    this.cpuFrequencyService.getPreviousPage();
     this.cpuTemperatureService.getPreviousPage();
     this.cpuLoadStatusService.getPreviousPage();
     this.ramStatusService.getPreviousPage();

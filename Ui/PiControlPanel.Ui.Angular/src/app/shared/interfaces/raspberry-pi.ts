@@ -18,10 +18,17 @@ export interface IChipset {
 export interface ICpu {
   cores: string;
   model: string;
+  frequency: ICpuFrequency;
+  frequencies: ICpuFrequency[];
   temperature: ICpuTemperature;
   temperatures: ICpuTemperature[];
   loadStatus: ICpuLoadStatus;
   loadStatuses: ICpuLoadStatus[];
+}
+
+export interface ICpuFrequency {
+  value: number;
+  dateTime: string;
 }
 
 export interface ICpuTemperature {

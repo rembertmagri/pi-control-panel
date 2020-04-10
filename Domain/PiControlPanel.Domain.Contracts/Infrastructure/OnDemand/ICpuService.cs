@@ -17,5 +17,11 @@
         IObservable<CpuTemperature> GetTemperatureObservable();
 
         void PublishTemperature(CpuTemperature temperature);
+
+        Task<CpuFrequency> GetFrequencyAsync();
+
+        IObservable<CpuFrequency> GetFrequencyObservable();
+
+        void PublishFrequency(CpuFrequency frequency);
     }
 }

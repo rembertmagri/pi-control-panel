@@ -15,14 +15,17 @@
 
     public class CpuService : BaseService<Cpu>, ICpuService
     {
+        private readonly ISubject<CpuFrequency> cpuFrequencySubject;
         private readonly ISubject<CpuTemperature> cpuTemperatureSubject;
         private readonly ISubject<CpuLoadStatus> cpuLoadStatusSubject;
 
-        public CpuService(ISubject<CpuTemperature> cpuTemperatureSubject,
+        public CpuService(ISubject<CpuFrequency> cpuFrequencySubject,
+            ISubject<CpuTemperature> cpuTemperatureSubject,
             ISubject<CpuLoadStatus> cpuLoadStatusSubject,
             ILogger logger)
             : base(logger)
         {
+            this.cpuFrequencySubject = cpuFrequencySubject;
             this.cpuTemperatureSubject = cpuTemperatureSubject;
             this.cpuLoadStatusSubject = cpuLoadStatusSubject;
         }
@@ -65,6 +68,25 @@
             this.cpuTemperatureSubject.OnNext(temperature);
         }
 
+        public Task<CpuFrequency> GetFrequencyAsync()
+        {
+            logger.Info("Infra layer -> CpuService -> GetFrequencyAsync");
+            var frequency = this.GetFrequency();
+            return Task.FromResult(frequency);
+        }
+
+        public IObservable<CpuFrequency> GetFrequencyObservable()
+        {
+            logger.Info("Infra layer -> CpuService -> GetFrequencyObservable");
+            return this.cpuFrequencySubject.AsObservable();
+        }
+
+        public void PublishFrequency(CpuFrequency frequency)
+        {
+            logger.Info("Infra layer -> CpuService -> PublishFrequency");
+            this.cpuFrequencySubject.OnNext(frequency);
+        }
+
         protected override Cpu GetModel()
         {
             var result = BashCommands.CatProcCpuInfo.Bash();
@@ -85,6 +107,26 @@
             };
         }
 
+        private CpuFrequency GetFrequency()
+        {
+            var result = BashCommands.MeasureClock.Bash();
+            logger.Debug($"Result of '{BashCommands.MeasureClock}' command: '{result}'");
+
+            var frequencyResult = result.Substring(result.IndexOf('=') + 1);
+            logger.Debug($"Frequency substring: '{frequencyResult}'");
+
+            if (double.TryParse(frequencyResult, out var frequency))
+            {
+                return new CpuFrequency()
+                {
+                    Frequency = Convert.ToInt32(frequency / 1000000),
+                    DateTime = DateTime.Now
+                };
+            }
+            logger.Warn($"Could not parse frequency: '{frequencyResult}'");
+            return null;
+        }
+
         private CpuTemperature GetTemperature()
         {
             var result = BashCommands.MeasureTemp.Bash();
@@ -93,8 +135,7 @@
             var temperatureResult = result.Substring(result.IndexOf('=') + 1, result.IndexOf("'") - (result.IndexOf('=') + 1));
             logger.Debug($"Temperature substring: '{temperatureResult}'");
 
-            double temperature;
-            if (double.TryParse(temperatureResult, out temperature))
+            if (double.TryParse(temperatureResult, out var temperature))
             {
                 return new CpuTemperature()
                 {

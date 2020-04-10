@@ -3,6 +3,7 @@
     public class BashCommands
     {
         public const string MeasureTemp = "vcgencmd measure_temp";
+        public const string MeasureClock = "vcgencmd measure_clock arm";
         public const string SudoShutdown = "sudo shutdown -h now";
         public const string SudoCatEtcShadow = "sudo cat /etc/shadow | grep {0}";
         public const string OpenSslPasswd = "openssl passwd -{0} -salt {1} {2}";

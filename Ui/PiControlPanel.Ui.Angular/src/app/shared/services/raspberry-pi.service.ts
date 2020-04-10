@@ -30,6 +30,10 @@ export class RaspberryPiService {
             cpu {
               cores
               model
+              frequency {
+                value
+                dateTime
+              }
               temperature {
                 value
                 dateTime

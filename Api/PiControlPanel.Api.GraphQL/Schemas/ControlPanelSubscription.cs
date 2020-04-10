@@ -51,6 +51,22 @@
                     return cpuService.GetTemperatureObservable();
                 });
 
+            FieldSubscribe<CpuFrequencyType>(
+                "CpuFrequency",
+                resolve: context =>
+                {
+                    return context.Source;
+                },
+                subscribe: context =>
+                {
+                    logger.Info("CpuFrequency subscription");
+                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    return cpuService.GetFrequencyObservable();
+                });
+
             FieldSubscribe<MemoryStatusType<RandomAccessMemoryStatus>>(
                 "RamStatus",
                 resolve: context =>

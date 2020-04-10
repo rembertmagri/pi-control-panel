@@ -64,6 +64,32 @@
 
                     return temperatures.ToConnection();
                 });
+
+            Field<CpuFrequencyType>()
+                .Name("Frequency")
+                .ResolveAsync(async context =>
+                {
+                    logger.Info("Frequency field");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    return await cpuService.GetLastFrequencyAsync();
+                });
+
+            Connection<CpuFrequencyType>()
+                .Name("Frequencies")
+                .Bidirectional()
+                .ResolveAsync(async context =>
+                {
+                    logger.Info("Frequencies connection");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var pagingInput = context.GetPagingInput();
+                    var frequencies = await cpuService.GetFrequenciesAsync(pagingInput);
+
+                    return frequencies.ToConnection();
+                });
         }
     }
 }

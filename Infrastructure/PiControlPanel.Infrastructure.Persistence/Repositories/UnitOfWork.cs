@@ -57,6 +57,8 @@
 
         public IRepositoryBase<Entities.Cpu.Cpu> CpuRepository => new RepositoryBase<Entities.Cpu.Cpu>(this.dbContext, this.logger);
 
+        public IRepositoryBase<Entities.Cpu.CpuFrequency> CpuFrequencyRepository => new RepositoryBase<Entities.Cpu.CpuFrequency>(this.dbContext, this.logger);
+
         public IRepositoryBase<Entities.Cpu.CpuTemperature> CpuTemperatureRepository => new RepositoryBase<Entities.Cpu.CpuTemperature>(this.dbContext, this.logger);
 
         public IRepositoryBase<Entities.Cpu.CpuLoadStatus> CpuLoadStatusRepository => new RepositoryBase<Entities.Cpu.CpuLoadStatus>(this.dbContext, this.logger);

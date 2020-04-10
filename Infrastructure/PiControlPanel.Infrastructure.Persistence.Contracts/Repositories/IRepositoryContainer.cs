@@ -6,6 +6,8 @@
 
         IRepositoryBase<Entities.Cpu.Cpu> CpuRepository { get; }
 
+        IRepositoryBase<Entities.Cpu.CpuFrequency> CpuFrequencyRepository { get; }
+
         IRepositoryBase<Entities.Cpu.CpuTemperature> CpuTemperatureRepository { get; }
 
         IRepositoryBase<Entities.Cpu.CpuLoadStatus> CpuLoadStatusRepository { get; }

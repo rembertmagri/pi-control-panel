@@ -110,6 +110,15 @@
                 <dd class="col-sm-9">{{raspberryPi.cpu.model}}</dd>
                 <dt class="col-sm-3">Number of Cores</dt>
                 <dd class="col-sm-9">{{raspberryPi.cpu.cores}}</dd>
+                <dt class="col-sm-3">Frequency</dt>
+                <dd class="col-sm-9">
+                  <dl class="row">
+                    <dt class="col-sm-4">Value</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.frequency.value}} MHz</dd>
+                    <dt class="col-sm-4">Datetime</dt>
+                    <dd class="col-sm-8">{{raspberryPi.cpu.frequency.dateTime | date:'medium'}}</dd>
+                  </dl>
+                </dd>
                 <dt class="col-sm-3">Temperature</dt>
                 <dd class="col-sm-9">
                   <dl class="row">

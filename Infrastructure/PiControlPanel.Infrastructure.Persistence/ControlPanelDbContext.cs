@@ -17,6 +17,8 @@
 
         public DbSet<Entities.Cpu.Cpu> Cpu { get; set; }
 
+        public DbSet<Entities.Cpu.CpuFrequency> CpuFrequency { get; set; }
+
         public DbSet<Entities.Cpu.CpuTemperature> CpuTemperature { get; set; }
 
         public DbSet<Entities.Cpu.CpuLoadStatus> CpuLoadStatus { get; set; }
