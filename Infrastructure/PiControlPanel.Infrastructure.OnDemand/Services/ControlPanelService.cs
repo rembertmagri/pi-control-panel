@@ -1,5 +1,7 @@
 ﻿namespace PiControlPanel.Infrastructure.OnDemand.Services
 {
+    using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
@@ -16,12 +18,47 @@
             this.logger = logger;
         }
 
+        public Task<bool> RebootAsync()
+        {
+            logger.Info("Infra layer -> ControlPanelService -> RebootAsync");
+            var result = BashCommands.SudoReboot.Bash();
+            logger.Debug($"Result of '{BashCommands.SudoReboot}' command: '{result}'");
+            return Task.FromResult(true);
+        }
+
         public Task<bool> ShutdownAsync()
         {
             logger.Info("Infra layer -> ControlPanelService -> ShutdownAsync");
             var result = BashCommands.SudoShutdown.Bash();
             logger.Debug($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
             return Task.FromResult(true);
+        }
+
+        public Task<bool> UpdateAsync()
+        {
+            logger.Info("Infra layer -> ControlPanelService -> UpdateAsync");
+            var result = BashCommands.SudoAptgetUpdade.Bash();
+            logger.Debug($"Result of '{BashCommands.SudoAptgetUpdade}' command: '{result}'");
+            result = BashCommands.SudoAptgetUpgrade.Bash();
+            logger.Debug($"Result of '{BashCommands.SudoAptgetUpgrade}' command: '{result}'");
+
+            string lastLine = result
+                .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .LastOrDefault();
+            logger.Info($"Firmware update summary: '{lastLine}'");
+            if ("0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded."
+                .Equals(lastLine))
+            {
+                logger.Info("Firmware already up-to-date, no need to update.");
+                return Task.FromResult(false);
+            }
+            
+            result = BashCommands.SudoAptgetAutoremove.Bash();
+            logger.Debug($"Result of '{BashCommands.SudoAptgetAutoremove}' command: '{result}'");
+            result = BashCommands.SudoAptgetAutoclean.Bash();
+            logger.Debug($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
+
+            return this.RebootAsync();
         }
 
         public Task<bool> KillAsync(BusinessContext context, int processId)

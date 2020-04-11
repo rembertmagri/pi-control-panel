@@ -120,6 +120,18 @@ export class RaspberryPiService {
     );
   }
 
+  rebootRaspberryPi(): Observable<boolean> {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation reboot {
+          reboot
+        }`
+    }).pipe(
+      map(result => get(result.data, 'reboot')),
+      catchError(this.errorHandlingService.handleError)
+    );
+  }
+
   shutdownRaspberryPi(): Observable<boolean> {
     return this.apollo.mutate({
       mutation: gql`
@@ -128,6 +140,18 @@ export class RaspberryPiService {
         }`
     }).pipe(
       map(result => get(result.data, 'shutdown')),
+      catchError(this.errorHandlingService.handleError)
+    );
+  }
+
+  updateRaspberryPi(): Observable<boolean> {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation update {
+          update
+        }`
+    }).pipe(
+      map(result => get(result.data, 'update')),
       catchError(this.errorHandlingService.handleError)
     );
   }

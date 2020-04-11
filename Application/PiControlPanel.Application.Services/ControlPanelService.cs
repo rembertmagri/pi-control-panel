@@ -16,11 +16,23 @@
             this.onDemandService = onDemandService;
             this.logger = logger;
         }
-        
+
+        public Task<bool> RebootAsync()
+        {
+            logger.Info("Application layer -> ControlPanelService -> RebootAsync");
+            return onDemandService.RebootAsync();
+        }
+
         public Task<bool> ShutdownAsync()
         {
             logger.Info("Application layer -> ControlPanelService -> ShutdownAsync");
             return onDemandService.ShutdownAsync();
+        }
+
+        public Task<bool> UpdateAsync()
+        {
+            logger.Info("Application layer -> ControlPanelService -> UpdateAsync");
+            return onDemandService.UpdateAsync();
         }
 
         public async Task<bool> KillAsync(BusinessContext context, int processId)

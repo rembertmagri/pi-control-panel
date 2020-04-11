@@ -223,6 +223,23 @@ export class DashboardComponent implements OnInit {
       { name: "Swap Memory Usage (%)", series: this.getOrderedAndMappedSwapMemoryStatuses() }
     ];
   }
+
+  reboot() {
+    this.raspberryPiService.rebootRaspberryPi()
+      .pipe(take(1))
+      .subscribe(
+      result => {
+        if (result) {
+          alert('Rebooting...');
+          this.logout();
+        }
+        else {
+          alert('Error');
+        }
+      },
+      error => this.errorMessage = <any>error
+    );
+  }
   
   shutdown() {
     this.raspberryPiService.shutdownRaspberryPi()
@@ -235,6 +252,23 @@ export class DashboardComponent implements OnInit {
         }
         else {
           alert('Error');
+        }
+      },
+      error => this.errorMessage = <any>error
+    );
+  }
+
+  update() {
+    this.raspberryPiService.updateRaspberryPi()
+      .pipe(take(1))
+      .subscribe(
+      result => {
+        if (result) {
+          alert('Raspberry Pi firmware updated, rebooting...');
+          this.logout();
+        }
+        else {
+          alert('Raspberry Pi firmware already up-to-date');
         }
       },
       error => this.errorMessage = <any>error

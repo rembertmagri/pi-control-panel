@@ -5,7 +5,11 @@
 
     public interface IControlPanelService
     {
+        Task<bool> RebootAsync();
+
         Task<bool> ShutdownAsync();
+
+        Task<bool> UpdateAsync();
 
         Task<bool> KillAsync(BusinessContext context, int processId);
 

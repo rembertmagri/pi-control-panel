@@ -7,11 +7,21 @@
           <button type="button" class="btn btn-primary" (click)="openModal()">
             Real-Time Data
           </button>
-          <button type="button" class="btn btn-warning" (click)="logout()">
-            Logout
+        </div>
+        <div class="btn-group" role="group" aria-label="Actions">
+          <button type="button" class="btn btn-danger" (click)="reboot()" [disabled]="!isSuperUser">
+            Reboot
           </button>
           <button type="button" class="btn btn-danger" (click)="shutdown()" [disabled]="!isSuperUser">
             Shutdown
+          </button>
+          <button type="button" class="btn btn-danger" (click)="update()" [disabled]="!isSuperUser">
+            Update
+          </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Actions">
+          <button type="button" class="btn btn-warning" (click)="logout()">
+            Logout
           </button>
         </div>
       </div>
