@@ -16,8 +16,9 @@ export interface IChipset {
 }
 
 export interface ICpu {
-  cores: string;
+  cores: number;
   model: string;
+  maxFrequency: number;
   frequency: ICpuFrequency;
   frequencies: ICpuFrequency[];
   temperature: ICpuTemperature;
@@ -99,6 +100,7 @@ export interface IRandomAccessMemoryStatus extends IMemoryStatus {
 
 export interface IGpu {
   memory: number;
+  frequency: number;
 }
 
 export interface IOs {

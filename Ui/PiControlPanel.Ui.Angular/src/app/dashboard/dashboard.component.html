@@ -103,16 +103,6 @@
       <div class="row">
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">GPU</h4>
-            <div class="card-body">
-              <dl class="row">
-                <dt class="col-sm-3">Memory</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
-              </dl>
-            </div>
-          </div>
-          <br />
-          <div class="card">
             <h4 class="card-header">CPU</h4>
             <div class="card-body">
               <dl class="row">
@@ -120,6 +110,8 @@
                 <dd class="col-sm-9">{{raspberryPi.cpu.model}}</dd>
                 <dt class="col-sm-3">Number of Cores</dt>
                 <dd class="col-sm-9">{{raspberryPi.cpu.cores}}</dd>
+                <dt class="col-sm-3">Maximum Frequency</dt>
+                <dd class="col-sm-9">{{raspberryPi.cpu.maxFrequency}} MHz</dd>
                 <dt class="col-sm-3">Frequency</dt>
                 <dd class="col-sm-9">
                   <dl class="row">
@@ -210,6 +202,18 @@
         </div>
 
         <div class="col-sm">
+          <div class="card">
+            <h4 class="card-header">GPU</h4>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-3">Memory</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
+                <dt class="col-sm-3">Frequency</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
+              </dl>
+            </div>
+          </div>
+          <br />
           <div class="card">
             <h4 class="card-header">RAM</h4>
             <div class="card-body">

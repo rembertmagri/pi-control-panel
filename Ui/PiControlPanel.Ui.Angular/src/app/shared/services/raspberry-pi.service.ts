@@ -30,6 +30,7 @@ export class RaspberryPiService {
             cpu {
               cores
               model
+              maxFrequency
               frequency {
                 value
                 dateTime
@@ -91,6 +92,7 @@ export class RaspberryPiService {
             }
             gpu {
               memory
+              frequency
             }
             os {
               name

@@ -3,5 +3,7 @@
     public class Gpu
     {
         public int Memory { get; set; }
+
+        public int Frequency { get; set; }
     }
 }

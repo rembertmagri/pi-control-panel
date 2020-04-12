@@ -13,5 +13,8 @@
 
         [Required]
         public int Memory { get; set; }
+
+        [Required]
+        public int Frequency { get; set; }
     }
 }

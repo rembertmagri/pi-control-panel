@@ -12,6 +12,7 @@
         {
             Field(x => x.Cores);
             Field(x => x.Model);
+            Field("maxFrequency", x => x.MaximumFrequency);
 
             Field<CpuLoadStatusType>()
                 .Name("LoadStatus")

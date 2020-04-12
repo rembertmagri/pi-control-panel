@@ -10,5 +10,8 @@
 
         [Required]
         public int Cores { get; set; }
+
+        [Required]
+        public int MaximumFrequency { get; set; }
     }
 }

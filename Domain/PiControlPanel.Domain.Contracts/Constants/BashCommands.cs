@@ -13,6 +13,7 @@
         public const string SudoCatEtcShadow = "sudo cat /etc/shadow | grep {0}";
         public const string OpenSslPasswd = "openssl passwd -{0} -salt {1} {2}";
         public const string CatProcCpuInfo = "cat /proc/cpuinfo";
+        public const string CatBootConfig = "cat /boot/config.txt";
         public const string Df = "df -T";
         public const string Free = "free --mega";
         public const string GetMemGpu = "vcgencmd get_mem gpu";

@@ -8,6 +8,7 @@
         public GpuType()
         {
             Field(x => x.Memory);
+            Field(x => x.Frequency);
         }
     }
 }
