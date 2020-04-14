@@ -49,8 +49,7 @@ export class DashboardComponent implements OnInit {
   osStatusBehaviorSubjectSubscription: Subscription;
 
   isSuperUser: boolean;
-  public CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
-  //cpuMaxFrequencyLevels = [CpuMaxFrequencyLevel.DEFAULT, CpuMaxFrequencyLevel.HIGH, CpuMaxFrequencyLevel.MAXIMUM];
+  CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
 
   constructor(private _route: ActivatedRoute,
     private router: Router,
