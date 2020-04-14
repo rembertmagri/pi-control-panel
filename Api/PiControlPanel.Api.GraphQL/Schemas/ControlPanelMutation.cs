@@ -4,8 +4,10 @@
     using global::GraphQL.Types;
     using NLog;
     using PiControlPanel.Api.GraphQL.Extensions;
+    using PiControlPanel.Api.GraphQL.Types.Input;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
+    using PiControlPanel.Domain.Models.Enums;
 
     public class ControlPanelMutation : ObjectGraphType
     {
@@ -65,6 +67,23 @@
                     return await controlPanelService.KillAsync(businessContext, processId);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
+
+            FieldAsync<BooleanGraphType>(
+                "Overclock",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<CpuMaxFrequencyLevelType>> { Name = "CpuMaxFrequencyLevel" }
+                ),
+                resolve: async context =>
+                {
+                    logger.Info("Overclock mutation");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var cpuMaxFrequencyLevel = context.GetArgument<CpuMaxFrequencyLevel>("cpuMaxFrequencyLevel");
+
+                    return await controlPanelService.OverclockAsync(cpuMaxFrequencyLevel);
+                })
+                .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
         }
     }
 }

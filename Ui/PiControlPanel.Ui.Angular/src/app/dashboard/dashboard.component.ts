@@ -21,6 +21,7 @@ import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
 import { DiskStatusService } from '../shared/services/disk-status.service';
 import { OsStatusService } from '../shared/services/os-status.service';
+import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -48,6 +49,8 @@ export class DashboardComponent implements OnInit {
   osStatusBehaviorSubjectSubscription: Subscription;
 
   isSuperUser: boolean;
+  public CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
+  //cpuMaxFrequencyLevels = [CpuMaxFrequencyLevel.DEFAULT, CpuMaxFrequencyLevel.HIGH, CpuMaxFrequencyLevel.MAXIMUM];
 
   constructor(private _route: ActivatedRoute,
     private router: Router,
@@ -311,6 +314,23 @@ export class DashboardComponent implements OnInit {
     return username === processOwnerUsername;
   }
 
+  overclock(cpuMaxFrequencyLevel: CpuMaxFrequencyLevel) {
+    this.raspberryPiService.overclockRaspberryPi(cpuMaxFrequencyLevel)
+      .pipe(take(1))
+      .subscribe(
+      result => {
+        if (result) {
+          alert(`Raspberry Pi overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level, rebooting...`);
+          this.logout();
+        }
+        else {
+          alert(`Raspberry Pi already overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level`);
+        }
+      },
+      error => this.errorMessage = <any>error
+    );
+  }
+
   getOrderedAndMappedCpuNormalizedFrequencies() {
     var maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
     var minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'))
@@ -350,8 +370,9 @@ export class DashboardComponent implements OnInit {
 
   getOrderedAndMappedRamStatuses() {
     var ramStatusData = map(this.raspberryPi.ram.statuses, (memoryStatus: IRandomAccessMemoryStatus) => {
+      const total = memoryStatus.free + memoryStatus.used + memoryStatus.diskCache;
       return {
-        value: 100 * memoryStatus.used / (memoryStatus.free + memoryStatus.used + memoryStatus.diskCache),
+        value: total === 0 ? 0 : 100 * memoryStatus.used / total,
         name: new Date(memoryStatus.dateTime)
       };
     });
@@ -360,8 +381,9 @@ export class DashboardComponent implements OnInit {
 
   getOrderedAndMappedSwapMemoryStatuses() {
     var swapMemoryStatusData = map(this.raspberryPi.swapMemory.statuses, (memoryStatus: IMemoryStatus) => {
+      const total = memoryStatus.free + memoryStatus.used;
       return {
-        value: 100 * memoryStatus.used / (memoryStatus.free + memoryStatus.used),
+        value: total === 0 ? 0 : 100 * memoryStatus.used / total,
         name: new Date(memoryStatus.dateTime)
       };
     });

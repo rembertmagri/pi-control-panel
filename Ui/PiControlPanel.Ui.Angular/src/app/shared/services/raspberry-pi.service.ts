@@ -6,6 +6,7 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { IRaspberryPi } from '../interfaces/raspberry-pi';
 import { ErrorHandlingService } from './error-handling.service';
+import { CpuMaxFrequencyLevel } from '../constants/cpu-max-frequency-level';
 
 @Injectable({
   providedIn: 'root',
@@ -169,6 +170,21 @@ export class RaspberryPiService {
       }
     }).pipe(
       map(result => get(result.data, 'kill')),
+      catchError(this.errorHandlingService.handleError)
+    );
+  }
+
+  overclockRaspberryPi(cpuMaxFrequencyLevel: CpuMaxFrequencyLevel): Observable<boolean> {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation overclock($cpuMaxFrequencyLevel: CpuMaxFrequencyLevel!) {
+          overclock(cpuMaxFrequencyLevel: $cpuMaxFrequencyLevel)
+        }`,
+      variables: {
+        cpuMaxFrequencyLevel: cpuMaxFrequencyLevel
+      }
+    }).pipe(
+      map(result => get(result.data, 'overclock')),
       catchError(this.errorHandlingService.handleError)
     );
   }

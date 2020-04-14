@@ -4,6 +4,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models;
+    using PiControlPanel.Domain.Models.Enums;
     using Infra = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
 
     public class ControlPanelService : IControlPanelService
@@ -58,6 +59,12 @@
 
             var processOwnerUsername = await onDemandService.GetProcessOwnerUsernameAsync(processId);
             return context.Username.Equals(processOwnerUsername);
+        }
+
+        public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
+        {
+            logger.Info("Application layer -> ControlPanelService -> OverclockAsync");
+            return onDemandService.OverclockAsync(cpuMaxFrequencyLevel);
         }
     }
 }

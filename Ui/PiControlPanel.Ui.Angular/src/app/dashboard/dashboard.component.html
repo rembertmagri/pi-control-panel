@@ -103,7 +103,25 @@
       <div class="row">
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">CPU</h4>
+            <div class="card-header">
+              <div class="container">
+                <div class="row d-flex justify-content-between">
+                  <h4>CPU</h4>
+                  <div class="btn-group" dropdown [isDisabled]="!isSuperUser">
+                    <button id="button-disabled-menu" dropdownToggle type="button" class="btn btn-danger dropdown-toggle"
+                            aria-controls="dropdown-disabled-menu">
+                      Overclock <span class="caret"></span>
+                    </button>
+                    <ul id="dropdown-disabled-menu" *dropdownMenu class="dropdown-menu"
+                        role="menu" aria-labelledby="button-disabled-menu">
+                      <li role="menuitem" *ngFor="let level of CpuMaxFrequencyLevel | keyvalue">
+                        <a class="dropdown-item" (click)="overclock(level.key)">{{ level.value }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="card-body">
               <dl class="row">
                 <dt class="col-sm-3">Model</dt>

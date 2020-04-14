@@ -4,7 +4,7 @@ import { tap, map } from 'rxjs/operators';
 import { isNil, isEmpty } from 'lodash';
 import { LoginService } from './login.service';
 import { IUserAccount } from '../interfaces/userAccount';
-import { ROLE } from '../constants/role';
+import { Role } from '../constants/role';
 
 @Injectable({
   providedIn: 'root',
@@ -27,15 +27,15 @@ export class AuthService {
 
   isLoggedIn() {
     const roles = this.getRoles();
-    return !isNil(roles) && roles.includes(ROLE.USER);
+    return !isNil(roles) && roles.includes(Role.USER);
   }
 
   isSuperUser() {
     var roles = this.getRoles();
-    if (isNil(roles) || !roles.includes(ROLE.USER)) {
+    if (isNil(roles) || !roles.includes(Role.USER)) {
       return false;
     }
-    return roles.includes(ROLE.SUPER_USER);
+    return roles.includes(Role.SUPER_USER);
   }
 
   getLoggedInUsername() {
@@ -53,7 +53,7 @@ export class AuthService {
     if (isEmpty(rolesFromStorage)) {
       return null;
     }
-    return JSON.parse(rolesFromStorage) as ROLE[];
+    return JSON.parse(rolesFromStorage) as Role[];
   }
 
 }

@@ -23,5 +23,6 @@
         public const string Uptime = "uptime -p";
         public const string SudoKill = "sudo kill {0}";
         public const string PsUser = "ps -o user= -p {0}";
+        public const string SudoSedBootConfig = "sudo sed -i 's/{0}/{1}/' /boot/config.txt";
     }
 }
