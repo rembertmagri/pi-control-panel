@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit {
   osStatusBehaviorSubjectSubscription: Subscription;
 
   isSuperUser: boolean;
+  refreshTokenPeriodicallySubscription: Subscription;
   CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
 
   constructor(private _route: ActivatedRoute,
@@ -67,6 +68,12 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
     this.isSuperUser = this.authService.isSuperUser();
+    this.refreshTokenPeriodicallySubscription = this.authService.refreshTokenPeriodically()
+      .subscribe(result => {
+        console.log(`token refreshed: ${result}`);
+      },
+      error => this.errorMessage = <any>error
+    );
 
     this.subscribedToNewCpuFrequencies = false;
     this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
@@ -188,6 +195,9 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    if (!isNil(this.refreshTokenPeriodicallySubscription)) {
+      this.refreshTokenPeriodicallySubscription.unsubscribe();
+    }
     if (!isNil(this.cpuFrequencyBehaviorSubjectSubscription)) {
       this.cpuFrequencyBehaviorSubjectSubscription.unsubscribe();
     }

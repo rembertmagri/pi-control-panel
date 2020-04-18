@@ -29,24 +29,10 @@
             this.logger = logger;
         }
 
-        public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
+        public async Task<LoginResponse> LoginAsync(UserAccount userAccount)
         {
-            logger.Info("Application layer -> SecurityService -> GetLoginResponseAsync");
+            logger.Info("Application layer -> SecurityService -> LoginAsync");
 
-            var jsonWebToken = await this.GenerateJsonWebTokenAsync(userAccount);
-            var roleClaims = jsonWebToken.Claims.Where(c => c.Type == ClaimTypes.Role);
-
-            return new LoginResponse()
-            {
-                Username = userAccount.Username,
-                JsonWebToken = new JwtSecurityTokenHandler().WriteToken(jsonWebToken),
-                Roles = roleClaims.Select(c => c.Value).ToList()
-            };
-        }
-
-        private async Task<JwtSecurityToken> GenerateJsonWebTokenAsync(UserAccount userAccount)
-        {
-            logger.Info("Application layer -> SecurityService -> GenerateJsonWebTokenAsync");
             if (userAccount == null ||
                 string.IsNullOrWhiteSpace(userAccount.Username) ||
                 string.IsNullOrWhiteSpace(userAccount.Password))
@@ -60,6 +46,28 @@
                 throw new BusinessException("Invalid user account");
             }
 
+            return await this.GetLoginResponseAsync(userAccount);
+        }
+
+        public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
+        {
+            logger.Info("Application layer -> SecurityService -> GetLoginResponseAsync");
+
+            var jsonWebToken = await this.GenerateJwtSecurityTokenAsync(userAccount);
+            var roleClaims = jsonWebToken.Claims.Where(c => c.Type == ClaimTypes.Role);
+
+            return new LoginResponse()
+            {
+                Username = userAccount.Username,
+                JsonWebToken = new JwtSecurityTokenHandler().WriteToken(jsonWebToken),
+                Roles = roleClaims.Select(c => c.Value).ToList()
+            };
+        }
+
+        private async Task<JwtSecurityToken> GenerateJwtSecurityTokenAsync(UserAccount userAccount)
+        {
+            logger.Info("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
+            
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsIdentity = await this.CreateClaimsIdentityAsync(userAccount);

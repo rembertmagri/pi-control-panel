@@ -25,8 +25,25 @@
                     logger.Info("Login query");
                     var userAccount = context.GetArgument<UserAccount>("userAccount");
 
-                    return await securityService.GetLoginResponseAsync(userAccount);
+                    return await securityService.LoginAsync(userAccount);
                 });
+
+            FieldAsync<LoginResponseType>(
+                "RefreshToken",
+                resolve: async context =>
+                {
+                    logger.Info("RefreshToken query");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var userAccount = new UserAccount()
+                    {
+                        Username = businessContext.Username
+                    };
+
+                    return await securityService.GetLoginResponseAsync(userAccount);
+                })
+                .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
             Field<RaspberryPiType>(
                 "RaspberryPi",

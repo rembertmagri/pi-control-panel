@@ -37,6 +37,23 @@ export class LoginService {
     );
   }
 
+  refreshToken(): Observable<ILoginResponse> {
+    return this.apollo.query<{ refreshToken: ILoginResponse }>({
+      query: gql`
+        query RefreshToken {
+          refreshToken {
+            username
+            jwt
+            roles
+          }
+        }`,
+      fetchPolicy: 'network-only'
+    }).pipe(
+      map(result => get(result.data, 'refreshToken')),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error) {
     return throwError('You could not be signed in to your account. Please check your username and password and try again.');
   };

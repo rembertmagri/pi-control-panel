@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { Observable, interval } from 'rxjs';
+import { tap, map, switchMap } from 'rxjs/operators';
 import { isNil, isEmpty } from 'lodash';
 import { LoginService } from './login.service';
 import { IUserAccount } from '../interfaces/userAccount';
 import { Role } from '../constants/role';
+import { TOKEN_REFRESH_PERIOD } from '../constants/consts';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,19 @@ export class AuthService {
   login(userAccount: IUserAccount): Observable<boolean> {
     return this.loginService.login(userAccount)
       .pipe(
+        tap((result) => {
+          localStorage.setItem('jwt', result.jwt);
+          localStorage.setItem('roles', JSON.stringify(result.roles));
+          localStorage.setItem('username', result.username);
+        }),
+        map(result => !isNil(result))
+      );
+  }
+
+  refreshTokenPeriodically(): Observable<boolean> {
+    return interval(TOKEN_REFRESH_PERIOD)
+      .pipe(
+        switchMap(() => this.loginService.refreshToken()),
         tap((result) => {
           localStorage.setItem('jwt', result.jwt);
           localStorage.setItem('roles', JSON.stringify(result.roles));

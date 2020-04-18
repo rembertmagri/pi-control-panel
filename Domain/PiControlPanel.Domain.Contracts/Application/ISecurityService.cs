@@ -5,6 +5,8 @@
 
     public interface ISecurityService
     {
+        Task<LoginResponse> LoginAsync(UserAccount userAccount);
+
         Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount);
     }
 }

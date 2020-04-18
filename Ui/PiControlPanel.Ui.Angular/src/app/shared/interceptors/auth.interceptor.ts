@@ -5,7 +5,7 @@ import {
   HttpHandler,
   HttpEvent
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { checkGraphQLErrors } from '../operators/check-graphql-errors.operator';
 import { get } from 'lodash';
