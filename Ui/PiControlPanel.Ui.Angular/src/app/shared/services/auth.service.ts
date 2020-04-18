@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, interval } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { tap, map, switchMap } from 'rxjs/operators';
 import { isNil, isEmpty } from 'lodash';
 import { LoginService } from './login.service';
 import { IUserAccount } from '../interfaces/userAccount';
 import { Role } from '../constants/role';
-import { TOKEN_REFRESH_PERIOD } from '../constants/consts';
+import { TOKEN_REFRESH_DUE_TIME, TOKEN_REFRESH_PERIOD } from '../constants/consts';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   refreshTokenPeriodically(): Observable<boolean> {
-    return interval(TOKEN_REFRESH_PERIOD)
+    return timer(TOKEN_REFRESH_DUE_TIME, TOKEN_REFRESH_PERIOD)
       .pipe(
         switchMap(() => this.loginService.refreshToken()),
         tap((result) => {

@@ -69,47 +69,48 @@ export class DashboardComponent implements OnInit {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
     this.isSuperUser = this.authService.isSuperUser();
     this.refreshTokenPeriodicallySubscription = this.authService.refreshTokenPeriodically()
-      .subscribe(result => {
-        console.log(`token refreshed: ${result}`);
-      },
-      error => this.errorMessage = <any>error
-    );
+      .subscribe(
+        result => {
+          console.log(result ? `Token refreshed @ ${new Date()}` : "Failed to refresh token");
+        },
+        error => this.errorMessage = <any>error
+      );
 
     this.subscribedToNewCpuFrequencies = false;
     this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
       .subscribe(
-      result => {
-        this.raspberryPi.cpu.frequency = first(result.items);
-        this.raspberryPi.cpu.frequencies = result.items;
-        if(!isNil(this.modalRef)) {
-          this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
-          this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-        }
-        if(!this.subscribedToNewCpuFrequencies) {
-          this.cpuFrequencyService.subscribeToNewCpuFrequencies();
-          this.subscribedToNewCpuFrequencies = true;
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          this.raspberryPi.cpu.frequency = first(result.items);
+          this.raspberryPi.cpu.frequencies = result.items;
+          if(!isNil(this.modalRef)) {
+            this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
+            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+          }
+          if(!this.subscribedToNewCpuFrequencies) {
+            this.cpuFrequencyService.subscribeToNewCpuFrequencies();
+            this.subscribedToNewCpuFrequencies = true;
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
 
     this.subscribedToNewCpuTemperatures = false;
     this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
       .subscribe(
-      result => {
-        this.raspberryPi.cpu.temperature = first(result.items);
-        this.raspberryPi.cpu.temperatures = result.items;
-        if(!isNil(this.modalRef)) {
-          this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
-          this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-        }
-        if(!this.subscribedToNewCpuTemperatures) {
-          this.cpuTemperatureService.subscribeToNewCpuTemperatures();
-          this.subscribedToNewCpuTemperatures = true;
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          this.raspberryPi.cpu.temperature = first(result.items);
+          this.raspberryPi.cpu.temperatures = result.items;
+          if(!isNil(this.modalRef)) {
+            this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
+            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+          }
+          if(!this.subscribedToNewCpuTemperatures) {
+            this.cpuTemperatureService.subscribeToNewCpuTemperatures();
+            this.subscribedToNewCpuTemperatures = true;
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
 
     this.subscribedToNewCpuLoadStatuses = false;
     this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
