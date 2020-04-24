@@ -175,36 +175,42 @@ export class DiskStatusService {
   }
 
   subscribeToNewDiskStatuses() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription DiskStatus {
-        diskStatus {
-          used
-          available
-          dateTime
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newDiskStatus = subscriptionData.data.diskStatus;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            disk: {
-              statuses: {
-                items: [newDiskStatus, ...prev.raspberryPi.disk.statuses.items],
-                pageInfo: prev.raspberryPi.disk.statuses.pageInfo,
-                totalCount: prev.raspberryPi.disk.statuses.totalCount + 1,
-                __typename: 'DiskStatusConnection'
-              },
-              __typename: 'DiskType'
-            },
-            __typename: 'RaspberryPiType'
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription DiskStatus {
+          diskStatus {
+            used
+            available
+            dateTime
           }
-        });
-      }
-    });
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newDiskStatus = subscriptionData.data.diskStatus;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              disk: {
+                statuses: {
+                  items: [newDiskStatus, ...prev.raspberryPi.disk.statuses.items],
+                  pageInfo: prev.raspberryPi.disk.statuses.pageInfo,
+                  totalCount: prev.raspberryPi.disk.statuses.totalCount + 1,
+                  __typename: 'DiskStatusConnection'
+                },
+                __typename: 'DiskType'
+              },
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
+  }
+
+  refetch() {
+    this.searchQuery.refetch()
   }
 
 }

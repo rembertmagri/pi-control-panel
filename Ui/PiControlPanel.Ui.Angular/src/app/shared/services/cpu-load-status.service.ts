@@ -211,54 +211,60 @@ export class CpuLoadStatusService {
   }
 
   subscribeToNewCpuLoadStatuses() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription CpuLoadStatus {
-        cpuLoadStatus {
-          dateTime
-          lastMinuteAverage
-          last5MinutesAverage
-          last15MinutesAverage
-          kernelRealTime
-          userRealTime
-          totalRealTime
-          processes {
-            processId
-            user
-            priority
-            niceValue
-            totalMemory
-            ram
-            sharedMemory
-            state
-            cpuPercentage
-            ramPercentage
-            totalCpuTime
-            command
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription CpuLoadStatus {
+          cpuLoadStatus {
+            dateTime
+            lastMinuteAverage
+            last5MinutesAverage
+            last15MinutesAverage
+            kernelRealTime
+            userRealTime
+            totalRealTime
+            processes {
+              processId
+              user
+              priority
+              niceValue
+              totalMemory
+              ram
+              sharedMemory
+              state
+              cpuPercentage
+              ramPercentage
+              totalCpuTime
+              command
+            }
           }
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newCpuLoadStatus = subscriptionData.data.cpuLoadStatus;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            cpu: {
-              loadStatuses: {
-                items: [newCpuLoadStatus, ...prev.raspberryPi.cpu.loadStatuses.items],
-                pageInfo: prev.raspberryPi.cpu.loadStatuses.pageInfo,
-                totalCount: prev.raspberryPi.cpu.loadStatuses.totalCount + 1,
-                __typename: 'CpuLoadStatusConnection'
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newCpuLoadStatus = subscriptionData.data.cpuLoadStatus;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              cpu: {
+                loadStatuses: {
+                  items: [newCpuLoadStatus, ...prev.raspberryPi.cpu.loadStatuses.items],
+                  pageInfo: prev.raspberryPi.cpu.loadStatuses.pageInfo,
+                  totalCount: prev.raspberryPi.cpu.loadStatuses.totalCount + 1,
+                  __typename: 'CpuLoadStatusConnection'
+                },
+                __typename: 'CpuType'
               },
-              __typename: 'CpuType'
-            },
-            __typename: 'RaspberryPiType'
-          }
-        });
-      }
-    });
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
+  }
+
+  refetch() {
+    this.searchQuery.refetch()
   }
 
 }

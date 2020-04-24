@@ -177,37 +177,43 @@ export class RamStatusService {
   }
 
   subscribeToNewMemoryStatuses() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription RamStatus {
-        ramStatus {
-          used
-          free
-          diskCache
-          dateTime
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newMemoryStatus = subscriptionData.data.ramStatus;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            ram: {
-              statuses: {
-                items: [newMemoryStatus, ...prev.raspberryPi.ram.statuses.items],
-                pageInfo: prev.raspberryPi.ram.statuses.pageInfo,
-                totalCount: prev.raspberryPi.ram.statuses.totalCount + 1,
-                __typename: 'MemoryStatusConnection'
-              },
-              __typename: 'MemoryType'
-            },
-            __typename: 'RaspberryPiType'
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription RamStatus {
+          ramStatus {
+            used
+            free
+            diskCache
+            dateTime
           }
-        });
-      }
-    });
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newMemoryStatus = subscriptionData.data.ramStatus;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              ram: {
+                statuses: {
+                  items: [newMemoryStatus, ...prev.raspberryPi.ram.statuses.items],
+                  pageInfo: prev.raspberryPi.ram.statuses.pageInfo,
+                  totalCount: prev.raspberryPi.ram.statuses.totalCount + 1,
+                  __typename: 'MemoryStatusConnection'
+                },
+                __typename: 'MemoryType'
+              },
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
+  }
+
+  refetch() {
+    this.searchQuery.refetch()
   }
 
 }

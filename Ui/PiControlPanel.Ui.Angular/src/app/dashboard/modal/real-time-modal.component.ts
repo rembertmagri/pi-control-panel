@@ -26,7 +26,11 @@ export class RealTimeModalComponent implements OnInit {
     private swapMemoryStatusService: SwapMemoryStatusService) { }
 
   ngOnInit() {
-    
+    this.cpuFrequencyService.refetch();
+    this.cpuTemperatureService.refetch();
+    this.cpuLoadStatusService.refetch();
+    this.ramStatusService.refetch();
+    this.swapMemoryStatusService.refetch();
   }
 
   isChartDataReady() {

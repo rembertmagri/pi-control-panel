@@ -173,35 +173,41 @@ export class CpuFrequencyService {
   }
 
   subscribeToNewCpuFrequencies() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription CpuFrequency {
-        cpuFrequency {
-          value
-          dateTime
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newCpuFrequency = subscriptionData.data.cpuFrequency;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            cpu: {
-              frequencies: {
-                items: [newCpuFrequency, ...prev.raspberryPi.cpu.frequencies.items],
-                pageInfo: prev.raspberryPi.cpu.frequencies.pageInfo,
-                totalCount: prev.raspberryPi.cpu.frequencies.totalCount + 1,
-                __typename: 'CpuFrequencyConnection'
-              },
-              __typename: 'CpuType'
-            },
-            __typename: 'RaspberryPiType'
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription CpuFrequency {
+          cpuFrequency {
+            value
+            dateTime
           }
-        });
-      }
-    });
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newCpuFrequency = subscriptionData.data.cpuFrequency;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              cpu: {
+                frequencies: {
+                  items: [newCpuFrequency, ...prev.raspberryPi.cpu.frequencies.items],
+                  pageInfo: prev.raspberryPi.cpu.frequencies.pageInfo,
+                  totalCount: prev.raspberryPi.cpu.frequencies.totalCount + 1,
+                  __typename: 'CpuFrequencyConnection'
+                },
+                __typename: 'CpuType'
+              },
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
+  }
+
+  refetch() {
+    this.searchQuery.refetch()
   }
 
 }

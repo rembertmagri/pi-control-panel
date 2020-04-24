@@ -173,35 +173,41 @@ export class OsStatusService {
   }
 
   subscribeToNewOsStatuses() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription OsStatus {
-        osStatus {
-          uptime
-          dateTime
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newOsStatus = subscriptionData.data.osStatus;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            os: {
-              statuses: {
-                items: [newOsStatus, ...prev.raspberryPi.os.statuses.items],
-                pageInfo: prev.raspberryPi.os.statuses.pageInfo,
-                totalCount: prev.raspberryPi.os.statuses.totalCount + 1,
-                __typename: 'OsStatusConnection'
-              },
-              __typename: 'OsType'
-            },
-            __typename: 'RaspberryPiType'
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription OsStatus {
+          osStatus {
+            uptime
+            dateTime
           }
-        });
-      }
-    });
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newOsStatus = subscriptionData.data.osStatus;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              os: {
+                statuses: {
+                  items: [newOsStatus, ...prev.raspberryPi.os.statuses.items],
+                  pageInfo: prev.raspberryPi.os.statuses.pageInfo,
+                  totalCount: prev.raspberryPi.os.statuses.totalCount + 1,
+                  __typename: 'OsStatusConnection'
+                },
+                __typename: 'OsType'
+              },
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
+  }
+
+  refetch() {
+    this.searchQuery.refetch()
   }
 
 }

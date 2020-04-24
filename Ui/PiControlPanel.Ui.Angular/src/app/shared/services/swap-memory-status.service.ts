@@ -175,36 +175,42 @@ export class SwapMemoryStatusService {
   }
 
   subscribeToNewMemoryStatuses() {
-    this.searchQuery.subscribeToMore({
-      document: gql`
-      subscription SwapMemoryStatus {
-        swapMemoryStatus {
-          used
-          free
-          dateTime
-        }
-      }`,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newMemoryStatus = subscriptionData.data.swapMemoryStatus;
-        return Object.assign({}, prev, {
-          raspberryPi: {
-            swapMemory: {
-              statuses: {
-                items: [newMemoryStatus, ...prev.raspberryPi.swapMemory.statuses.items],
-                pageInfo: prev.raspberryPi.swapMemory.statuses.pageInfo,
-                totalCount: prev.raspberryPi.swapMemory.statuses.totalCount + 1,
-                __typename: 'MemoryStatusConnection'
-              },
-              __typename: 'MemoryType'
-            },
-            __typename: 'RaspberryPiType'
+    if (this.searchQuery) {
+      this.searchQuery.subscribeToMore({
+        document: gql`
+        subscription SwapMemoryStatus {
+          swapMemoryStatus {
+            used
+            free
+            dateTime
           }
-        });
-      }
-    });
+        }`,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newMemoryStatus = subscriptionData.data.swapMemoryStatus;
+          return Object.assign({}, prev, {
+            raspberryPi: {
+              swapMemory: {
+                statuses: {
+                  items: [newMemoryStatus, ...prev.raspberryPi.swapMemory.statuses.items],
+                  pageInfo: prev.raspberryPi.swapMemory.statuses.pageInfo,
+                  totalCount: prev.raspberryPi.swapMemory.statuses.totalCount + 1,
+                  __typename: 'MemoryStatusConnection'
+                },
+                __typename: 'MemoryType'
+              },
+              __typename: 'RaspberryPiType'
+            }
+          });
+        }
+      });
+    }
   }
 
+  refetch() {
+    this.searchQuery.refetch()
+  }
+  
 }
