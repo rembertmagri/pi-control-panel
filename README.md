@@ -15,19 +15,15 @@ sudo chown picontrolpanel /var/log/picontrolpanel
 
 ### Running on Raspberry Pi
 1. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /home/picontrolpanel
-2. .Net Core Installation
+2. Give execution permission to the application
 ````bash
-mkdir dotnet
-wget https://download.visualstudio.microsoft.com/download/pr/da60c9fc-c329-42d6-afaf-b8ef2bbadcf3/14655b5928319349e78da3327874592a/aspnetcore-runtime-3.1.1-linux-arm.tar.gz
-sudo mkdir -p /usr/share/dotnet
-sudo tar -zxf aspnetcore-runtime-3.1.1-linux-arm.tar.gz -C /usr/share/dotnet/
-sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+chmod +x PiControlPanel.Api.GraphQL
 ````
 3. Run as process
 ````bash
 export ASPNETCORE_URLS=http://+:8080
 export ASPNETCORE_ENVIRONMENT=Production
-dotnet PiControlPanel.Api.GraphQL.dll
+./PiControlPanel.Api.GraphQL
 ````
 4. Or run as service
 ````bash
