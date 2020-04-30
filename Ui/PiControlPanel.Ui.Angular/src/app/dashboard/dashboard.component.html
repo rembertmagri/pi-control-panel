@@ -4,11 +4,6 @@
       <div class="row d-flex justify-content-between">
         <h3>Raspberry Pi Control Panel</h3>
         <div class="btn-group" role="group" aria-label="Actions">
-          <button type="button" class="btn btn-primary" (click)="openModal()">
-            Real-Time Data
-          </button>
-        </div>
-        <div class="btn-group" role="group" aria-label="Actions">
           <button type="button" class="btn btn-danger" (click)="reboot()" [disabled]="!isSuperUser">
             Reboot
           </button>
@@ -29,6 +24,36 @@
   </div>
   <div class="card-body">
     <div class="container-fluid">
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card-body">
+            <accordion [isAnimated]="true">
+              <accordion-group heading="Real-Time Data Chart">
+                <h5>Drag up to 5 items to appear in the real-time data chart</h5>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <b>Selected</b>
+                    <bs-sortable [(ngModel)]="selectedChartItems"
+                      placeholderItem="Drag at least one item"></bs-sortable>
+                  </div>
+                  <div class="col-sm-3">
+                    <b>Not Selected</b>
+                    <bs-sortable [(ngModel)]="unselectedChartItems"
+                      placeholderItem="Drag an item here to deselect"></bs-sortable>
+                  </div>
+                  <div class="col-sm-3">
+                    <button type="button" class="btn btn-primary" (click)="openModal()"
+                    [disabled]="selectedChartItems.length === 0 || selectedChartItems.length > 5">
+                    Open
+                  </button>
+                  </div>
+                </div>
+              </accordion-group>
+            </accordion>
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-sm">

@@ -12,7 +12,22 @@ import {
 import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { remove, orderBy, map, isNil, first, startsWith, endsWith, trimEnd, max, min } from 'lodash';
+import {
+  remove,
+  orderBy,
+  map,
+  isNil,
+  first,
+  startsWith,
+  endsWith,
+  trimEnd,
+  max,
+  min,
+  take as _take,
+  difference,
+  forEach,
+  invoke,
+  includes } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
@@ -22,6 +37,8 @@ import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-sta
 import { DiskStatusService } from '../shared/services/disk-status.service';
 import { OsStatusService } from '../shared/services/os-status.service';
 import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
+import { ChartData } from '../shared/constants/chart-data';
+import { MAX_CHART_VISIBLE_ITEMS } from '../shared/constants/consts';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -52,6 +69,9 @@ export class DashboardComponent implements OnInit {
   refreshTokenPeriodicallySubscription: Subscription;
   CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
 
+  selectedChartItems: string [];
+  unselectedChartItems: string [];
+
   constructor(private _route: ActivatedRoute,
     private router: Router,
     private modalService: BsModalService,
@@ -68,6 +88,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
     this.isSuperUser = this.authService.isSuperUser();
+
+    const chartDataNames = map(ChartData, 'name');
+    this.selectedChartItems = _take(chartDataNames, MAX_CHART_VISIBLE_ITEMS);
+    this.unselectedChartItems = difference(chartDataNames, this.selectedChartItems);
+
     this.refreshTokenPeriodicallySubscription = this.authService.refreshTokenPeriodically()
       .subscribe(
         result => {
@@ -82,7 +107,7 @@ export class DashboardComponent implements OnInit {
         result => {
           this.raspberryPi.cpu.frequency = first(result.items);
           this.raspberryPi.cpu.frequencies = result.items;
-          if(!isNil(this.modalRef)) {
+          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
             this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
             this.modalRef.content.chartData = [...this.modalRef.content.chartData];
           }
@@ -100,7 +125,7 @@ export class DashboardComponent implements OnInit {
         result => {
           this.raspberryPi.cpu.temperature = first(result.items);
           this.raspberryPi.cpu.temperatures = result.items;
-          if(!isNil(this.modalRef)) {
+          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
             this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
             this.modalRef.content.chartData = [...this.modalRef.content.chartData];
           }
@@ -118,7 +143,7 @@ export class DashboardComponent implements OnInit {
         result => {
           this.raspberryPi.cpu.loadStatus = first(result.items);
           this.raspberryPi.cpu.loadStatuses = result.items;
-          if(!isNil(this.modalRef)) {
+          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
             this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
             this.modalRef.content.chartData = [...this.modalRef.content.chartData];
           }
@@ -136,7 +161,7 @@ export class DashboardComponent implements OnInit {
         result => {
           this.raspberryPi.ram.status = first(result.items);
           this.raspberryPi.ram.statuses = result.items;
-          if(!isNil(this.modalRef)) {
+          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
             this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
             this.modalRef.content.chartData = [...this.modalRef.content.chartData];
           }
@@ -154,7 +179,7 @@ export class DashboardComponent implements OnInit {
         result => {
           this.raspberryPi.swapMemory.status = first(result.items);
           this.raspberryPi.swapMemory.statuses = result.items;
-          if(!isNil(this.modalRef)) {
+          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
             this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
             this.modalRef.content.chartData = [...this.modalRef.content.chartData];
           }
@@ -228,13 +253,17 @@ export class DashboardComponent implements OnInit {
       {
         class: 'modal-xl'
       });
-    this.modalRef.content.chartData = [
-      { name: "CPU Frequency (MHz)", series: this.getOrderedAndMappedCpuNormalizedFrequencies() },
-      { name: "CPU Temperature (°C)", series: this.getOrderedAndMappedCpuTemperatures() },
-      { name: "CPU Real-Time Load (%)", series: this.getOrderedAndMappedCpuLoadStatuses() },
-      { name: "RAM Usage (%)", series: this.getOrderedAndMappedRamStatuses() },
-      { name: "Swap Memory Usage (%)", series: this.getOrderedAndMappedSwapMemoryStatuses() }
-    ];
+    this.modalRef.content.chartData = [];
+    forEach(ChartData, (chartDataItem) => {
+      this.modalRef.content.chartData.push(
+        {
+          name: chartDataItem.name,
+          series: includes(this.selectedChartItems, chartDataItem.name) ?
+            invoke(this, chartDataItem.seriesMethod) : []
+        }
+      );
+    });
+    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
   }
 
   reboot() {
