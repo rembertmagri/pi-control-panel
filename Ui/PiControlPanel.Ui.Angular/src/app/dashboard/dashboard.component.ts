@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit {
   refreshTokenPeriodicallySubscription: Subscription;
   CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
 
+  readonly MAX_CHART_VISIBLE_ITEMS = MAX_CHART_VISIBLE_ITEMS;
   selectedChartItems: string [];
   unselectedChartItems: string [];
 

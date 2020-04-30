@@ -30,7 +30,7 @@
           <div class="card-body">
             <accordion [isAnimated]="true">
               <accordion-group heading="Real-Time Data Chart">
-                <h5>Drag up to 5 items to appear in the real-time data chart</h5>
+                <h5>Drag up to {{MAX_CHART_VISIBLE_ITEMS}} items to appear in the real-time data chart</h5>
                 <div class="row">
                   <div class="col-sm-3">
                     <b>Selected</b>
@@ -44,7 +44,7 @@
                   </div>
                   <div class="col-sm-3">
                     <button type="button" class="btn btn-primary" (click)="openModal()"
-                    [disabled]="selectedChartItems.length === 0 || selectedChartItems.length > 5">
+                    [disabled]="selectedChartItems.length === 0 || selectedChartItems.length > MAX_CHART_VISIBLE_ITEMS">
                     Open
                   </button>
                   </div>
