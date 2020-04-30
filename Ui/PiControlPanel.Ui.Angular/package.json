@@ -42,7 +42,7 @@
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
     "http-status-codes": "^1.4.0",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "lodash": "^4.17.15",
     "ngx-bootstrap": "^5.5.0",
     "oidc-client": "^1.9.1",
