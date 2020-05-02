@@ -147,6 +147,22 @@ query RaspberryPi {
 	dateTime
       }
     }
+    network {
+      networkInterfaces {
+        name
+        ipAddress
+        subnetMask
+        defaultGateway
+        networkInterfaceStatus {
+          networkInterfaceName
+          totalReceived
+          receiveSpeed
+          totalSent
+          sendSpeed
+          dateTime
+        }
+      }
+    }
   }
 }
 ````
@@ -920,6 +936,130 @@ HTTP Headers:
 }
 ````
 
+##### Network Interface First Statuses Query
+
+Query:
+````graphql
+query NetworkInterfaceStatuses($name: String!, $firstNetworkInterfaceStatuses: Int, $afterNetworkInterfaceStatuses: String) {
+  raspberryPi {
+    network {
+      networkInterface(name: $name) {
+        networkInterfaceStatuses(first: $firstNetworkInterfaceStatuses, after: $afterNetworkInterfaceStatuses) {
+      	  items {
+            networkInterfaceName
+            dateTime
+            receiveSpeed
+            sendSpeed
+            totalReceived
+            totalSent
+          }
+          pageInfo {
+            startCursor
+            hasPreviousPage
+            endCursor
+            hasNextPage
+          }
+          totalCount
+        }
+      }
+    }
+  }
+}
+````
+
+Query variables:
+````graphql
+{
+  "name": "wlan0",
+  "firstNetworkInterfaceStatuses": 10,
+  "afterNetworkInterfaceStatuses": "ca23bf..."
+}
+````
+
+HTTP Headers:
+````graphql
+{
+  "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
+}
+````
+
+##### Network Interface Last Statuses Query
+
+Query:
+````graphql
+query NetworkInterfaceStatuses($name: String!, $lastNetworkInterfaceStatuses: Int, $beforeNetworkInterfaceStatuses: String) {
+  raspberryPi {
+    network {
+      networkInterface(name: $name) {
+        networkInterfaceStatuses(last: $lastNetworkInterfaceStatuses, before: $beforeNetworkInterfaceStatuses) {
+      	  items {
+            networkInterfaceName
+            dateTime
+            receiveSpeed
+            sendSpeed
+            totalReceived
+            totalSent
+          }
+          pageInfo {
+            startCursor
+            hasPreviousPage
+            endCursor
+            hasNextPage
+          }
+          totalCount
+        }
+      }
+    }
+  }
+}
+````
+
+Query variables:
+````graphql
+{
+  "name": "eth0",
+  "lastNetworkInterfaceStatuses": 10,
+  "beforeNetworkInterfaceStatuses": "ca23bf..."
+}
+````
+
+HTTP Headers:
+````graphql
+{
+  "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
+}
+````
+
+##### Network Interface Status Subscription
+
+Query:
+````graphql
+subscription networkInterfaceStatus($networkInterfaceName: String!) {
+  networkInterfaceStatus(networkInterfaceName: $networkInterfaceName) {
+    networkInterfaceName
+    receiveSpeed
+    sendSpeed
+    totalReceived
+    totalSent
+    dateTime
+  }
+}
+````
+
+Query variables:
+````graphql
+{
+  "networkInterfaceName": "wlan0"
+}
+````
+
+HTTP Headers:
+````graphql
+{
+  "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
+}
+````
+
 ##### Refresh Token Query
 
 Query:
@@ -1096,9 +1236,26 @@ docker-compose up -d
         dateTime
       }
     }
+    network {
+      networkInterfaces {
+        name
+        ipAddress
+        subnetMask
+        defaultGateway
+        networkInterfaceStatus {
+          networkInterfaceName
+          totalReceived
+          receiveSpeed
+          totalSent
+          sendSpeed
+          dateTime
+        }
+      }
+    }
   }
 ````
 * All Disk Status queries and subscription
 * All RAM and Swap Memory Status queries and subscription
+* All Network Status queries and subscription
 * Refresh Token Query
 * Shutdown Mutation (Returns true, but doesn't actually shut the container down)
