@@ -4,6 +4,7 @@ import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.s
 import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
 import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
+import { NetworkInterfaceStatusService } from 'src/app/shared/services/network-interface-status.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import { isNil, get } from 'lodash';
 
@@ -15,7 +16,22 @@ export class RealTimeModalComponent implements OnInit {
   errorMessage: string;
   public chartData: any[];
   colorScheme = {
-    domain: ['#C39BD3', '#EC7063', '#E59866', '#5499C7', '#85929E']
+    domain: [
+      '#C39BD3', // CPU Frequency
+      '#EC7063', // CPU Temperature
+      '#E59866', // CPU Real-Time Load
+      '#5499C7', // RAM Usage
+      '#85929E', // Swap Memory Usage
+      // Network Interfaces
+      '#3B874E', // Interface 1 Rx
+      '#83873B', // Interface 1 Tx
+      '#5CB773', // Interface 2 Rx
+      '#B3B75C', // Interface 2 Tx
+      '#95D0A4', // Interface 3 Rx
+      '#CDD095', // Interface 3 Tx
+      '#D1EBD7', // Interface 4 Rx
+      '#E5E6C6'  // Interface 4 Tx
+    ]
   };
 
   constructor(public bsModalRef: BsModalRef,
@@ -23,7 +39,8 @@ export class RealTimeModalComponent implements OnInit {
     private cpuTemperatureService: CpuTemperatureService,
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
-    private swapMemoryStatusService: SwapMemoryStatusService) { }
+    private swapMemoryStatusService: SwapMemoryStatusService,
+    private networkInterfaceStatusService: NetworkInterfaceStatusService) { }
 
   ngOnInit() {
     this.cpuFrequencyService.refetch();
@@ -31,6 +48,7 @@ export class RealTimeModalComponent implements OnInit {
     this.cpuLoadStatusService.refetch();
     this.ramStatusService.refetch();
     this.swapMemoryStatusService.refetch();
+    this.networkInterfaceStatusService.refetch();
   }
 
   isChartDataReady() {
@@ -43,6 +61,7 @@ export class RealTimeModalComponent implements OnInit {
     this.cpuLoadStatusService.getNextPage();
     this.ramStatusService.getNextPage();
     this.swapMemoryStatusService.getNextPage();
+    this.networkInterfaceStatusService.getNextPage();
   }
 
   loadPreviousPage() {
@@ -51,6 +70,7 @@ export class RealTimeModalComponent implements OnInit {
     this.cpuLoadStatusService.getPreviousPage();
     this.ramStatusService.getPreviousPage();
     this.swapMemoryStatusService.getPreviousPage();
+    this.networkInterfaceStatusService.getPreviousPage();
   }
 
   closeModal() {

@@ -242,21 +242,7 @@
               </button>
             </div>
           </div>
-        </div>
-
-        <div class="col-sm">
-          <div class="card">
-            <h4 class="card-header">GPU</h4>
-            <div class="card-body">
-              <dl class="row">
-                <dt class="col-sm-3">Memory</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
-                <dt class="col-sm-3">Frequency</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
-              </dl>
-            </div>
-          </div>
-          <br />
+          <br/>
           <div class="card">
             <h4 class="card-header">RAM</h4>
             <div class="card-body">
@@ -302,7 +288,57 @@
           </div>
         </div>
 
-        
+        <div class="col-sm">
+          <div class="card">
+            <h4 class="card-header">GPU</h4>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-3">Memory</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
+                <dt class="col-sm-3">Frequency</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
+              </dl>
+            </div>
+          </div>
+          <br />
+          <div class="card">
+            <h4 class="card-header">Network</h4>
+            <div class="card-body">
+              <div *ngFor="let networkInterface of raspberryPi.network.networkInterfaces">
+                <div class="card">
+                  <h4 class="card-header">{{networkInterface.name}}</h4>
+                  <div class="card-body">
+                    <dl class="row">
+                      <dt class="col-sm-3">IP</dt>
+                      <dd class="col-sm-9">{{networkInterface.ipAddress}}</dd>
+                      <dt class="col-sm-3">Subnet Mask</dt>
+                      <dd class="col-sm-9">{{networkInterface.subnetMask}}</dd>
+                      <dt class="col-sm-3">Default Gateway</dt>
+                      <dd class="col-sm-9">{{networkInterface.defaultGateway}}</dd>
+                      <dt class="col-sm-3">Status</dt>
+                      <dd class="col-sm-9">
+                        <dl class="row">
+                          <dt class="col-sm-4">Total Received</dt>
+                          <dd class="col-sm-8">{{networkInterface.status.totalReceived | bytes}}</dd>
+                          <dt class="col-sm-4">Receive Speed</dt>
+                          <dd class="col-sm-8">{{networkInterface.status.receiveSpeed | bytes}}/s</dd>
+                          <dt class="col-sm-4">Total Sent</dt>
+                          <dd class="col-sm-8">{{networkInterface.status.totalSent | bytes}}</dd>
+                          <dt class="col-sm-4">Send Speed</dt>
+                          <dd class="col-sm-8">{{networkInterface.status.sendSpeed | bytes}}/s</dd>
+                          <dt class="col-sm-4">Datetime</dt>
+                          <dd class="col-sm-8">{{networkInterface.status.dateTime | date:'medium'}}</dd>
+                        </dl>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+                <br />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 

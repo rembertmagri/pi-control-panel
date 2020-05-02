@@ -16,10 +16,10 @@
             Field(x => x.DefaultGateway);
 
             Field<NetworkInterfaceStatusType>()
-                .Name("NetworkInterfaceStatus")
+                .Name("Status")
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("NetworkInterfaceStatus field");
+                    logger.Info("Network interface status field");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
@@ -27,11 +27,11 @@
                 });
 
             Connection<NetworkInterfaceStatusType>()
-                .Name("NetworkInterfaceStatuses")
+                .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("NetworkInterfaceStatuses connection");
+                    logger.Info("Network Interface statuses connection");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 

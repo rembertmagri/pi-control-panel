@@ -153,7 +153,7 @@ query RaspberryPi {
         ipAddress
         subnetMask
         defaultGateway
-        networkInterfaceStatus {
+        status {
           networkInterfaceName
           totalReceived
           receiveSpeed
@@ -944,7 +944,7 @@ query NetworkInterfaceStatuses($name: String!, $firstNetworkInterfaceStatuses: I
   raspberryPi {
     network {
       networkInterface(name: $name) {
-        networkInterfaceStatuses(first: $firstNetworkInterfaceStatuses, after: $afterNetworkInterfaceStatuses) {
+        statuses(first: $firstNetworkInterfaceStatuses, after: $afterNetworkInterfaceStatuses) {
       	  items {
             networkInterfaceName
             dateTime
@@ -991,7 +991,7 @@ query NetworkInterfaceStatuses($name: String!, $lastNetworkInterfaceStatuses: In
   raspberryPi {
     network {
       networkInterface(name: $name) {
-        networkInterfaceStatuses(last: $lastNetworkInterfaceStatuses, before: $beforeNetworkInterfaceStatuses) {
+        statuses(last: $lastNetworkInterfaceStatuses, before: $beforeNetworkInterfaceStatuses) {
       	  items {
             networkInterfaceName
             dateTime
@@ -1034,7 +1034,7 @@ HTTP Headers:
 
 Query:
 ````graphql
-subscription networkInterfaceStatus($networkInterfaceName: String!) {
+subscription NetworkInterfaceStatus($networkInterfaceName: String!) {
   networkInterfaceStatus(networkInterfaceName: $networkInterfaceName) {
     networkInterfaceName
     receiveSpeed

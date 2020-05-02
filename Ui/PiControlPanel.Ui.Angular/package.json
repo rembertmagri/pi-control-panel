@@ -29,6 +29,7 @@
     "@ngrx/store-devtools": "^8.6.0",
     "@nguniversal/module-map-ngfactory-loader": "8.1.1",
     "@swimlane/ngx-charts": "^13.0.2",
+    "angular-pipes": "10.0.0",
     "apollo-angular": "^1.8.0",
     "apollo-angular-link-http": "^1.9.0",
     "apollo-cache-inmemory": "^1.6.5",

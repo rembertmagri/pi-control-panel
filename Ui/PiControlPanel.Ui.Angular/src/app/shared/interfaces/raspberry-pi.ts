@@ -6,6 +6,7 @@ export interface IRaspberryPi {
   swapMemory: IMemory;
   gpu: IGpu;
   os: IOs;
+  network: INetwork;
 }
 
 export interface IChipset {
@@ -113,5 +114,27 @@ export interface IOs {
 
 export interface IOsStatus {
   uptime: string;
+  dateTime: string;
+}
+
+export interface INetwork {
+  networkInterfaces: INetworkInterface[];
+}
+
+export interface INetworkInterface {
+  name: string;
+  ipAddress: string;
+  subnetMask: string;
+  defaultGateway: string;
+  status: INetworkInterfaceStatus;
+  statuses: INetworkInterfaceStatus[];
+}
+
+export interface INetworkInterfaceStatus {
+  networkInterfaceName: string;
+  receiveSpeed: number;
+  sendSpeed: number;
+  totalReceived: number;
+  totalSent: number;
   dateTime: string;
 }

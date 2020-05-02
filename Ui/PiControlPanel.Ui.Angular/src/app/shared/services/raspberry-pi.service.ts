@@ -112,6 +112,22 @@ export class RaspberryPiService {
                 dateTime
               }
             }
+            network {
+              networkInterfaces {
+                name
+                ipAddress
+                subnetMask
+                defaultGateway
+                status {
+                  networkInterfaceName
+                  totalReceived
+                  receiveSpeed
+                  totalSent
+                  sendSpeed
+                  dateTime
+                }
+              }
+            }
           }
         }`,
       fetchPolicy: 'network-only'

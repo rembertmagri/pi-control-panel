@@ -14,6 +14,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OverlayModule } from '@angular/cdk/overlay'
 import { MatSpinner } from '@angular/material';
 
+import { NgBytesPipeModule } from 'angular-pipes';
+
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
@@ -70,7 +72,8 @@ const routes: Routes = [
       logOnly: environment.production
     }),
     ApolloModule,
-    HttpLinkModule
+    HttpLinkModule,
+    NgBytesPipeModule
   ],
   entryComponents: [
     RealTimeModalComponent,

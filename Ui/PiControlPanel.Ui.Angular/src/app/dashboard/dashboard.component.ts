@@ -8,7 +8,8 @@ import {
   ICpuTemperature,
   ICpuLoadStatus,
   IMemoryStatus, 
-  IRandomAccessMemoryStatus } from '../shared/interfaces/raspberry-pi';
+  IRandomAccessMemoryStatus, 
+  INetworkInterfaceStatus} from '../shared/interfaces/raspberry-pi';
 import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -27,7 +28,10 @@ import {
   difference,
   forEach,
   invoke,
-  includes } from 'lodash';
+  includes,
+  fill,
+  isEmpty,
+  find } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
 import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
@@ -36,6 +40,7 @@ import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
 import { DiskStatusService } from '../shared/services/disk-status.service';
 import { OsStatusService } from '../shared/services/os-status.service';
+import { NetworkInterfaceStatusService } from '../shared/services/network-interface-status.service';
 import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
 import { ChartData } from '../shared/constants/chart-data';
 import { MAX_CHART_VISIBLE_ITEMS } from '../shared/constants/consts';
@@ -56,6 +61,7 @@ export class DashboardComponent implements OnInit {
   subscribedToNewSwapMemoryStatuses: boolean;
   subscribedToNewDiskStatuses: boolean;
   subscribedToNewOsStatuses: boolean;
+  subscribedToNewNetworkInterfaceStatuses: boolean[];
 
   cpuFrequencyBehaviorSubjectSubscription: Subscription;
   cpuTemperatureBehaviorSubjectSubscription: Subscription;
@@ -64,6 +70,7 @@ export class DashboardComponent implements OnInit {
   swapMemoryStatusBehaviorSubjectSubscription: Subscription;
   diskStatusBehaviorSubjectSubscription: Subscription;
   osStatusBehaviorSubjectSubscription: Subscription;
+  networkInterfaceStatusBehaviorSubjectSubscriptions: Subscription[];
 
   isSuperUser: boolean;
   refreshTokenPeriodicallySubscription: Subscription;
@@ -84,7 +91,8 @@ export class DashboardComponent implements OnInit {
     private ramStatusService: RamStatusService,
     private swapMemoryStatusService: SwapMemoryStatusService,
     private diskStatusService: DiskStatusService,
-    private osStatusService: OsStatusService) { }
+    private osStatusService: OsStatusService,
+    private networkInterfaceStatusService: NetworkInterfaceStatusService) { }
 
   ngOnInit() {
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
@@ -219,6 +227,41 @@ export class DashboardComponent implements OnInit {
         },
         error => this.errorMessage = <any>error
       );
+    
+    const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
+    this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
+    this.networkInterfaceStatusBehaviorSubjectSubscriptions = fill(Array(numberOfNetworkInterfaces), null);
+    for(const networkInterface of this.raspberryPi.network.networkInterfaces) {
+      const interfaceName = networkInterface.name;
+
+      this.unselectedChartItems.push(`Network ${interfaceName} Rx (B/s)`);
+      this.unselectedChartItems.push(`Network ${interfaceName} Tx (B/s)`);
+
+      this.networkInterfaceStatusBehaviorSubjectSubscriptions[interfaceName] =
+        this.networkInterfaceStatusService.getLastNetworkInterfaceStatuses(interfaceName)
+          .subscribe(
+            result => {
+              networkInterface.status = first(result.items);
+              networkInterface.statuses = result.items;
+              const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
+              if(!isNil(this.modalRef)) {
+                if(includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
+                  this.modalRef.content.chartData[5+2*index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
+                  this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                }
+                if(includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
+                  this.modalRef.content.chartData[5+2*index+1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
+                  this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                }
+              }
+              if(!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
+                this.networkInterfaceStatusService.subscribeToNewNetworkInterfaceStatuses(interfaceName);
+                this.subscribedToNewNetworkInterfaceStatuses[interfaceName] = true;
+              }
+            },
+            error => this.errorMessage = <any>error
+          );
+    }
   }
 
   ngOnDestroy(): void {
@@ -246,6 +289,11 @@ export class DashboardComponent implements OnInit {
     if (!isNil(this.osStatusBehaviorSubjectSubscription)) {
       this.osStatusBehaviorSubjectSubscription.unsubscribe();
     }
+    if (!isEmpty(this.networkInterfaceStatusBehaviorSubjectSubscriptions)) {
+      for(const networkInterfaceStatusBehaviorSubjectSubscription of this.networkInterfaceStatusBehaviorSubjectSubscriptions) {
+        networkInterfaceStatusBehaviorSubjectSubscription.unsubscribe();
+      }
+    }
   }
 
   openModal() {
@@ -261,6 +309,23 @@ export class DashboardComponent implements OnInit {
           name: chartDataItem.name,
           series: includes(this.selectedChartItems, chartDataItem.name) ?
             invoke(this, chartDataItem.seriesMethod) : []
+        }
+      );
+    });
+    forEach(this.raspberryPi.network.networkInterfaces, (networkInterface) => {
+      const interfaceName = networkInterface.name;
+      this.modalRef.content.chartData.push(
+        {
+          name: `Network ${interfaceName} Rx (B/s)`,
+          series: includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`) ?
+            this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName) : []
+        }
+      );
+      this.modalRef.content.chartData.push(
+        {
+          name: `Network ${interfaceName} Tx (B/s)`,
+          series: includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`) ?
+            this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName) : []
         }
       );
     });
@@ -347,7 +412,7 @@ export class DashboardComponent implements OnInit {
     if (this.isSuperUser) {
       return true;
     }
-    var username = this.authService.getLoggedInUsername();
+    const username = this.authService.getLoggedInUsername();
     if (endsWith(processOwnerUsername, '+')){
       return startsWith(username, trimEnd(processOwnerUsername, '+'));
     }
@@ -372,9 +437,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuNormalizedFrequencies() {
-    var maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
-    var minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'))
-    var frequencyData = map(this.raspberryPi.cpu.frequencies, (frequency: ICpuFrequency) => {
+    const maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
+    const minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'));
+    const frequencyData = map(this.raspberryPi.cpu.frequencies, (frequency: ICpuFrequency) => {
       return {
         value: 100 * ((frequency.value - minFrequency) / (maxFrequency - minFrequency)),
         name: new Date(frequency.dateTime),
@@ -385,7 +450,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuTemperatures() {
-    var temperatureData = map(this.raspberryPi.cpu.temperatures, (temperature: ICpuTemperature) => {
+    const temperatureData = map(this.raspberryPi.cpu.temperatures, (temperature: ICpuTemperature) => {
       return {
         value: temperature.value,
         name: new Date(temperature.dateTime)
@@ -395,7 +460,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuLoadStatuses() {
-    var loadStatusData = map(this.raspberryPi.cpu.loadStatuses, (loadStatus: ICpuLoadStatus) => {
+    const loadStatusData = map(this.raspberryPi.cpu.loadStatuses, (loadStatus: ICpuLoadStatus) => {
       return {
         value: loadStatus.totalRealTime,
         name: new Date(loadStatus.dateTime),
@@ -409,7 +474,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedRamStatuses() {
-    var ramStatusData = map(this.raspberryPi.ram.statuses, (memoryStatus: IRandomAccessMemoryStatus) => {
+    const ramStatusData = map(this.raspberryPi.ram.statuses, (memoryStatus: IRandomAccessMemoryStatus) => {
       const total = memoryStatus.free + memoryStatus.used + memoryStatus.diskCache;
       return {
         value: total === 0 ? 0 : 100 * memoryStatus.used / total,
@@ -420,7 +485,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedSwapMemoryStatuses() {
-    var swapMemoryStatusData = map(this.raspberryPi.swapMemory.statuses, (memoryStatus: IMemoryStatus) => {
+    const swapMemoryStatusData = map(this.raspberryPi.swapMemory.statuses, (memoryStatus: IMemoryStatus) => {
       const total = memoryStatus.free + memoryStatus.used;
       return {
         value: total === 0 ? 0 : 100 * memoryStatus.used / total,
@@ -428,6 +493,34 @@ export class DashboardComponent implements OnInit {
       };
     });
     return orderBy(swapMemoryStatusData, 'name');
+  }
+
+  getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
+    const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
+    const maxReceiveSpeed = max(map(networkInterface.statuses, 'receiveSpeed'));
+    const minReceiveSpeed = min(map(networkInterface.statuses, 'receiveSpeed'));
+    const receiveSpeedData = map(networkInterface.statuses, (status: INetworkInterfaceStatus) => {
+      return {
+        value: 100 * ((status.receiveSpeed - minReceiveSpeed) / (maxReceiveSpeed - minReceiveSpeed)),
+        name: new Date(status.dateTime),
+        absoluteValue: status.receiveSpeed
+      };
+    });
+    return orderBy(receiveSpeedData, 'name');
+  }
+
+  getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
+    const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
+    const maxSendSpeed = max(map(networkInterface.statuses, 'sendSpeed'));
+    const minSendSpeed = min(map(networkInterface.statuses, 'sendSpeed'));
+    const sendSpeedData = map(networkInterface.statuses, (status: INetworkInterfaceStatus) => {
+      return {
+        value: 100 * ((status.sendSpeed - minSendSpeed) / (maxSendSpeed - minSendSpeed)),
+        name: new Date(status.dateTime),
+        absoluteValue: status.sendSpeed
+      };
+    });
+    return orderBy(sendSpeedData, 'name');
   }
 
 }
