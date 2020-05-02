@@ -83,6 +83,8 @@
 
         public IRepositoryBase<Entities.Network.Network> NetworkRepository => new RepositoryBase<Entities.Network.Network>(this.dbContext, this.logger);
 
+        public IRepositoryBase<Entities.Network.NetworkInterfaceStatus> NetworkInterfaceStatusRepository => new RepositoryBase<Entities.Network.NetworkInterfaceStatus>(this.dbContext, this.logger);
+
         #endregion
     }
 }

@@ -13,6 +13,8 @@
     using Persistence = PiControlPanel.Infrastructure.Persistence.Services;
     using OnDemand = PiControlPanel.Infrastructure.OnDemand.Services;
     using PiControlPanel.Domain.Models.Hardware.Os;
+    using PiControlPanel.Domain.Models.Hardware.Network;
+    using System.Collections.Generic;
 
     /// <summary>
     ///     Implementation of LightInject's ICompositionRoot responsible for
@@ -47,6 +49,7 @@
             serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService<SwapMemoryStatus>,
                 Persistence.Memory.SwapMemoryStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Network.INetworkService, Persistence.Network.NetworkService>();
+            serviceRegistry.Register<Contracts.Persistence.Network.INetworkInterfaceStatusService, Persistence.Network.NetworkInterfaceStatusService>();
 
             serviceRegistry.Register<Contracts.OnDemand.IControlPanelService, OnDemand.ControlPanelService>();
             serviceRegistry.Register<Contracts.OnDemand.IUserAccountService, OnDemand.UserAccountService>();
@@ -70,6 +73,7 @@
             serviceRegistry.RegisterSingleton<ISubject<SwapMemoryStatus>>(factory => new ReplaySubject<SwapMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<DiskStatus>>(factory => new ReplaySubject<DiskStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<OsStatus>>(factory => new ReplaySubject<OsStatus>(1));
+            serviceRegistry.RegisterSingleton<ISubject<IList<NetworkInterfaceStatus>>>(factory => new ReplaySubject<IList<NetworkInterfaceStatus>>(1));
         }
     }
 }

@@ -4,6 +4,6 @@
 
     public class Network
     {
-        public IList<Interface> Interfaces { get; set; }
+        public IList<NetworkInterface> NetworkInterfaces { get; set; }
     }
 }

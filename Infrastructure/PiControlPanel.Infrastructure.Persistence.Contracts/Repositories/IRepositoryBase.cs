@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Interface defining base data repository functionality. Any entity-specific features have to be added to derived interface.
+    /// NetworkInterface defining base data repository functionality. Any entity-specific features have to be added to derived interface.
     /// </summary>
     ///
     public interface IRepositoryBase<T> where T : BaseEntity

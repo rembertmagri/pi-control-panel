@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
@@ -29,23 +30,23 @@
             this.logger = logger;
         }
 
-        public async Task<T> GetLastAsync()
+        public async Task<T> GetLastAsync(LambdaExpression where = null)
         {
-            var entity = await this.GetAll()
+            var entity = await this.GetAll(where)
                 .OrderByDescending(t => t.DateTime).FirstOrDefaultAsync();
             return mapper.Map<T>(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(LambdaExpression where = null)
         {
-            var entities = await this.GetAll()
+            var entities = await this.GetAll(where)
                 .OrderBy(t => t.DateTime).ToListAsync();
             return mapper.Map<List<T>>(entities);
         }
 
-        public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput)
+        public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput, LambdaExpression where = null)
         {
-            IQueryable<U> entities = this.GetAll();
+            IQueryable<U> entities = this.GetAll(where);
 
             var totalCount = entities.Count();
             var totalSkipped = 0;
@@ -113,9 +114,13 @@
             await this.unitOfWork.CommitAsync();
         }
 
-        protected virtual IQueryable<U> GetAll()
+        protected virtual IQueryable<U> GetAll(LambdaExpression where = null)
         {
-            return repository.GetAll();
+            if (where == null)
+            {
+                return repository.GetAll();
+            }
+            return repository.GetMany(where as Expression<Func<U, bool>>);
         }
     }
 }

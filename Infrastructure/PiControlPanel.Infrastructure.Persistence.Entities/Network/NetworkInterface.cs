@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class Interface : BaseEntity
+    public class NetworkInterface : BaseEntity
     {
         [Key]
         [StringLength(50, MinimumLength = 3)]

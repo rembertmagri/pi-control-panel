@@ -1,6 +1,6 @@
 ﻿namespace PiControlPanel.Domain.Models.Hardware.Network
 {
-    public class Interface
+    public class NetworkInterface
     {
         public string Name { get; set; }
 

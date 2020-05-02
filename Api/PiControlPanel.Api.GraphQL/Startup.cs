@@ -139,6 +139,7 @@ namespace PiControlPanel.Api.GraphQL
             services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
             services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
             services.AddHostedService<NetworkWorker>();
+            services.AddHostedService<NetworkInterfaceStatusWorker>();
 
             // Configuring SPA Path
             services.AddSpaStaticFiles(configuration =>

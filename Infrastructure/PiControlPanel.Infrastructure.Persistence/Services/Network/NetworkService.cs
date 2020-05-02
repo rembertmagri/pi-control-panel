@@ -17,7 +17,7 @@
 
         protected override Task<Entities.Network.Network> GetFromRepository()
         {
-            return this.repository.GetAsync(s => s.Interfaces);
+            return this.repository.GetAsync(s => s.NetworkInterfaces);
         }
     }
 }

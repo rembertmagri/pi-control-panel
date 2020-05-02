@@ -8,6 +8,7 @@
     using PiControlPanel.Api.GraphQL.Types.Output;
     using PiControlPanel.Api.GraphQL.Types.Output.Cpu;
     using PiControlPanel.Api.GraphQL.Types.Output.Disk;
+    using PiControlPanel.Api.GraphQL.Types.Output.Network;
     using PiControlPanel.Api.GraphQL.Types.Output.Os;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
@@ -16,8 +17,8 @@
     {
         public ControlPanelSubscription(ICpuService cpuService, IDiskService diskService,
             IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
-            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IOsService osService, 
-            ILogger logger)
+            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IOsService osService,
+            INetworkService networkService, ILogger logger)
         {
             FieldSubscribe<CpuLoadStatusType>(
                 "CpuLoadStatus",
@@ -129,6 +130,27 @@
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return osService.GetStatusObservable();
+                });
+
+            FieldSubscribe<NetworkInterfaceStatusType>(
+                "NetworkInterfaceStatus",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "NetworkInterfaceName" }
+                ),
+                resolve: context =>
+                {
+                    return context.Source;
+                },
+                subscribe: context =>
+                {
+                    logger.Info("NetworkInterfaceStatus subscription");
+                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var networkInterfaceName = context.GetArgument<string>("networkInterfaceName");
+
+                    return networkService.GetNetworkInterfaceStatusObservable(networkInterfaceName);
                 });
         }
     }

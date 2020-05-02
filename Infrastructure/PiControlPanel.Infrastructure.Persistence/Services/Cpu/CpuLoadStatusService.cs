@@ -10,6 +10,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     public class CpuLoadStatusService :
@@ -51,7 +52,7 @@
             }
         }
 
-        protected override IQueryable<Entities.Cpu.CpuLoadStatus> GetAll()
+        protected override IQueryable<Entities.Cpu.CpuLoadStatus> GetAll(LambdaExpression where = null)
         {
             return base.GetAll().Include(s => s.CpuProcesses);
         }

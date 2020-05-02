@@ -41,9 +41,11 @@
                     cfg.CreateMap<Models.Memory.SwapMemoryStatus, Entities.Memory.SwapMemoryStatus>()
                         .ReverseMap();
                     cfg.CreateMap<Models.Network.Network, Entities.Network.Network>()
-                        .ForMember(e => e.Interfaces, opt => opt.MapFrom(m => m.Interfaces))
+                        .ForMember(e => e.NetworkInterfaces, opt => opt.MapFrom(m => m.NetworkInterfaces))
                         .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();
-                    cfg.CreateMap<Models.Network.Interface, Entities.Network.Interface>()
+                    cfg.CreateMap<Models.Network.NetworkInterface, Entities.Network.NetworkInterface>()
+                        .ReverseMap();
+                    cfg.CreateMap<Models.Network.NetworkInterfaceStatus, Entities.Network.NetworkInterfaceStatus>()
                         .ReverseMap();
                 }
             );

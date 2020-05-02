@@ -12,6 +12,6 @@
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        public ICollection<Interface> Interfaces { get; set; }
+        public ICollection<NetworkInterface> NetworkInterfaces { get; set; }
     }
 }
