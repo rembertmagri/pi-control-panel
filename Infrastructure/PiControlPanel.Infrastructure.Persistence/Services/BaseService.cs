@@ -23,7 +23,7 @@
 
         public async Task<T> GetAsync()
         {
-            var entity = await repository.GetAsync();
+            var entity = await this.GetFromRepository();
             return mapper.Map<T>(entity);
         }
         
@@ -46,6 +46,11 @@
             var entity = mapper.Map<U>(model);
             repository.Remove(entity);
             await this.unitOfWork.CommitAsync();
+        }
+
+        protected virtual Task<U> GetFromRepository()
+        {
+            return repository.GetAsync();
         }
     }
 }

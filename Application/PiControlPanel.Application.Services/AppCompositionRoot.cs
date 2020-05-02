@@ -46,8 +46,10 @@
                 Persistence.Memory.SwapMemoryService>();
             serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService<SwapMemoryStatus>,
                 Persistence.Memory.SwapMemoryStatusService>();
+            serviceRegistry.Register<Contracts.Persistence.Network.INetworkService, Persistence.Network.NetworkService>();
 
             serviceRegistry.Register<Contracts.OnDemand.IControlPanelService, OnDemand.ControlPanelService>();
+            serviceRegistry.Register<Contracts.OnDemand.IUserAccountService, OnDemand.UserAccountService>();
             serviceRegistry.Register<Contracts.OnDemand.IChipsetService, OnDemand.ChipsetService>();
             serviceRegistry.Register<Contracts.OnDemand.ICpuService, OnDemand.CpuService>();
             serviceRegistry.Register<Contracts.OnDemand.IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus>,
@@ -57,7 +59,7 @@
             serviceRegistry.Register<Contracts.OnDemand.IGpuService, OnDemand.GpuService>();
             serviceRegistry.Register<Contracts.OnDemand.IDiskService, OnDemand.DiskService>();
             serviceRegistry.Register<Contracts.OnDemand.IOsService, OnDemand.OsService>();
-            serviceRegistry.Register<Contracts.OnDemand.IUserAccountService, OnDemand.UserAccountService>();
+            serviceRegistry.Register<Contracts.OnDemand.INetworkService, OnDemand.NetworkService>();
             
             serviceRegistry.RegisterSingleton<IMapper>(factory => new AutoMapperConfiguration().GetIMapper());
 

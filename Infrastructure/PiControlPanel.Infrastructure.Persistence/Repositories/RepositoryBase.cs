@@ -61,6 +61,13 @@
         }
 
         /// <inheritdoc/>
+        public async Task<TObject> GetAsync(Expression<Func<TObject, object>> include)
+        {
+            logger.Debug("GetAsync");
+            return await this.dbSet.Include(include).FirstOrDefaultAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<TObject> GetAsync(Expression<Func<TObject, bool>> where, Expression<Func<TObject, object>> include)
         {
             logger.Debug("GetAsync");

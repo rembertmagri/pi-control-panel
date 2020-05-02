@@ -81,6 +81,8 @@
 
         public IRepositoryBase<Entities.Memory.SwapMemoryStatus> SwapMemoryStatusRepository => new RepositoryBase<Entities.Memory.SwapMemoryStatus>(this.dbContext, this.logger);
 
+        public IRepositoryBase<Entities.Network.Network> NetworkRepository => new RepositoryBase<Entities.Network.Network>(this.dbContext, this.logger);
+
         #endregion
     }
 }

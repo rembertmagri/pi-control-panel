@@ -11,7 +11,8 @@
         public RaspberryPiType(IChipsetService chipsetService, ICpuService cpuService,
             IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
             IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IGpuService gpuService,
-            IDiskService diskService, IOsService osService, ILogger logger)
+            IDiskService diskService, IOsService osService, INetworkService networkService,
+            ILogger logger)
         {
             Field<ChipsetType>()
                 .Name("Chipset")
@@ -88,6 +89,17 @@
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await osService.GetAsync();
+                });
+
+            Field<Network.NetworkType>()
+                .Name("Network")
+                .ResolveAsync(async context =>
+                {
+                    logger.Info("Network field");
+                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    return await networkService.GetAsync();
                 });
         }
     }

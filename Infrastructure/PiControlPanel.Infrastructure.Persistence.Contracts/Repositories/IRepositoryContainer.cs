@@ -29,5 +29,7 @@
         IRepositoryBase<Entities.Memory.SwapMemory> SwapMemoryRepository { get; }
 
         IRepositoryBase<Entities.Memory.SwapMemoryStatus> SwapMemoryStatusRepository { get; }
+
+        IRepositoryBase<Entities.Network.Network> NetworkRepository { get; }
     }
 }

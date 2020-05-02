@@ -43,6 +43,8 @@
 
         public DbSet<Entities.Memory.SwapMemoryStatus> SwapMemoryStatus { get; set; }
 
+        public DbSet<Entities.Network.Network> Network { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

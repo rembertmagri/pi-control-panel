@@ -46,6 +46,13 @@
         Task<T> GetAsync(Expression<Func<T, bool>> where);
 
         /// <summary>
+        /// Returns single record and related include expression. if not found then returns null
+        /// </summary>
+        /// <param name="include">expression to include the related tables data</param>
+        /// <returns>returns object or null</returns>
+        Task<T> GetAsync(Expression<Func<T, object>> include);
+
+        /// <summary>
         /// Returns single record based on the where expression and related include expression. if not found then returns null
         /// </summary>
         /// <param name="where">expression to filter the records</param>
