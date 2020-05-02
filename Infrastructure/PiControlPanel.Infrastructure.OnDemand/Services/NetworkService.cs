@@ -74,79 +74,68 @@
 
         private async Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusFromStatsAsync(IList<string> networkInterfaceNames, int samplingInterval)
         {
-            //var result = BashCommands.CatCpuFreqStats.Bash();
-            //logger.Debug($"Result of '{BashCommands.CatCpuFreqStats}' command: '{result}'");
-            //string[] lines = result.Split(new[] { Environment.NewLine },
-            //    StringSplitOptions.RemoveEmptyEntries);
+            var result = BashCommands.CatProcNetDev.Bash();
+            var now = DateTime.Now;
+            logger.Debug($"Result of '{BashCommands.CatProcNetDev}' command: '{result}'");
+            var lines = result
+                .Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.TrimStart());
 
-            //var frequencyStats = new Dictionary<int, long>();
-            //foreach (var line in lines)
-            //{
-            //    var state = line.Split(' ');
-            //    if (int.TryParse(state[0], out var frequency) && long.TryParse(state[1], out var time))
-            //    {
-            //        frequencyStats.Add(frequency, time);
-            //    }
-            //    else
-            //    {
-            //        logger.Warn($"Could not parse frequency stats: '{line}'");
-            //    }
-            //}
+            var networkInterfacesStatuses = new Dictionary<string, NetworkInterfaceStatus>();
+            foreach (var networkInterfaceName in networkInterfaceNames)
+            {
+                var networkInterfaceLine = lines
+                    .SingleOrDefault(l => l.StartsWith($"{networkInterfaceName}:"));
+                var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
+
+                long.TryParse(networkInterfaceInfo[1], out var received);
+                long.TryParse(networkInterfaceInfo[9], out var sent);
+
+                networkInterfacesStatuses.Add(
+                    networkInterfaceName,
+                    new NetworkInterfaceStatus()
+                    {
+                        NetworkInterfaceName = networkInterfaceName,
+                        DateTime = now,
+                        TotalReceived = received,
+                        TotalSent = sent
+                    });
+            }
 
             await Task.Delay(samplingInterval);
 
-            //result = BashCommands.CatCpuFreqStats.Bash();
-            //logger.Debug($"Result of '{BashCommands.CatCpuFreqStats}' command: '{result}'");
-            //lines = result.Split(new[] { Environment.NewLine },
-            //    StringSplitOptions.RemoveEmptyEntries);
-
-            //foreach (var line in lines)
-            //{
-            //    var state = line.Split(' ');
-            //    if (int.TryParse(state[0], out var frequency) && long.TryParse(state[1], out var time))
-            //    {
-            //        var oldTime = frequencyStats.ContainsKey(frequency) ? frequencyStats[frequency] : 0;
-            //        frequencyStats[frequency] = time - oldTime;
-            //    }
-            //    else
-            //    {
-            //        logger.Warn($"Could not parse frequency stats: '{line}'");
-            //        if (frequencyStats.ContainsKey(frequency))
-            //        {
-            //            frequencyStats.Remove(frequency);
-            //        }
-            //    }
-            //}
-
-            //if (frequencyStats.Any())
-            //{
-            //    var totalTime = frequencyStats.Values.Sum();
-            //    var weightedAverage = frequencyStats.Select(f => f.Key * f.Value).Sum() / totalTime;
-            //    return new CpuFrequency()
-            //    {
-            //        Frequency = Convert.ToInt32(weightedAverage / 1000),
-            //        DateTime = DateTime.Now
-            //    };
-            //}
-            //logger.Warn($"Could get cpu frequency stats");
-            //return null;
-
-            IList<NetworkInterfaceStatus> list = new List<NetworkInterfaceStatus>();
+            result = BashCommands.CatProcNetDev.Bash();
+            now = DateTime.Now;
+            logger.Debug($"Result of '{BashCommands.CatProcNetDev}' command: '{result}'");
+            lines = result
+                .Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.TrimStart());
 
             foreach (var networkInterfaceName in networkInterfaceNames)
             {
-                list.Add(new NetworkInterfaceStatus()
-                {
-                    NetworkInterfaceName = networkInterfaceName,
-                    DateTime = DateTime.Now,
-                    TotalReceived = networkInterfaceName.Equals("eth0") ? 888 : 444,
-                    TotalSent = networkInterfaceName.Equals("eth0") ? 222 : 111,
-                    ReceiveSpeed = networkInterfaceName.Equals("eth0") ? 8 : 4,
-                    SendSpeed = networkInterfaceName.Equals("eth0") ? 2 : 1
-                });
+                var networkInterfaceLine = lines
+                    .SingleOrDefault(l => l.StartsWith($"{networkInterfaceName}:"));
+                var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
+                long.TryParse(networkInterfaceInfo[1], out var received);
+                long.TryParse(networkInterfaceInfo[9], out var sent);
+
+                var networkInterfacesStatus = networkInterfacesStatuses[networkInterfaceName];
+                var elapsedSpan = new TimeSpan(now.Ticks - networkInterfacesStatus.DateTime.Ticks);
+
+                networkInterfacesStatus.ReceiveSpeed =
+                    (received - networkInterfacesStatus.TotalReceived) / elapsedSpan.TotalSeconds;
+                networkInterfacesStatus.SendSpeed =
+                    (sent - networkInterfacesStatus.TotalSent) / elapsedSpan.TotalSeconds;
+                networkInterfacesStatus.TotalReceived = received;
+                networkInterfacesStatus.TotalSent = sent;
+                networkInterfacesStatus.DateTime = now;
             }
 
-            return list;
+            return networkInterfacesStatuses.Values.ToList();
         }
     }
 }

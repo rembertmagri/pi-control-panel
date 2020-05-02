@@ -14,9 +14,9 @@
         public long TotalSent { get; set; }
 
         [Required]
-        public long ReceiveSpeed { get; set; }
+        public double ReceiveSpeed { get; set; }
 
         [Required]
-        public long SendSpeed { get; set; }
+        public double SendSpeed { get; set; }
     }
 }

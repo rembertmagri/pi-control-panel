@@ -8,8 +8,8 @@
 
         public long TotalSent { get; set; }
 
-        public long ReceiveSpeed { get; set; }
+        public double ReceiveSpeed { get; set; }
 
-        public long SendSpeed { get; set; }
+        public double SendSpeed { get; set; }
     }
 }
