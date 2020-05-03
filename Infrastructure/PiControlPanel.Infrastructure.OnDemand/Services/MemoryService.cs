@@ -26,20 +26,20 @@
 
         public Task<U> GetStatusAsync()
         {
-            logger.Info("Infra layer -> MemoryService -> GetStatusAsync");
+            logger.Trace("Infra layer -> MemoryService -> GetStatusAsync");
             var memoryStatus = this.GetMemoryStatus();
             return Task.FromResult(memoryStatus);
         }
 
         public IObservable<U> GetStatusObservable()
         {
-            logger.Info("Infra layer -> MemoryService -> GetStatusObservable");
+            logger.Trace("Infra layer -> MemoryService -> GetStatusObservable");
             return this.memoryStatusSubject.AsObservable();
         }
 
         public void PublishStatus(U status)
         {
-            logger.Info("Infra layer -> MemoryService -> PublishStatus");
+            logger.Trace("Infra layer -> MemoryService -> PublishStatus");
             this.memoryStatusSubject.OnNext(status);
         }
 

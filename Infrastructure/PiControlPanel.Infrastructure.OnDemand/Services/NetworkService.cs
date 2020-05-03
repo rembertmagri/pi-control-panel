@@ -26,13 +26,13 @@
 
         public async Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusAsync(IList<string> networkInterfaceNames, int samplingInterval)
         {
-            logger.Info("Infra layer -> NetworkService -> GetNetworkInterfacesStatusAsync");
+            logger.Trace("Infra layer -> NetworkService -> GetNetworkInterfacesStatusAsync");
             return await this.GetNetworkInterfacesStatusFromStatsAsync(networkInterfaceNames, samplingInterval);
         }
 
         public IObservable<NetworkInterfaceStatus> GetNetworkInterfaceStatusObservable(string networkInterfaceName)
         {
-            logger.Info("Infra layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
+            logger.Trace("Infra layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
             return this.networkInterfacesStatusSubject
                 .Select(l => l.FirstOrDefault(i => i.NetworkInterfaceName == networkInterfaceName))
                 .AsObservable();
@@ -40,7 +40,7 @@
 
         public void PublishNetworkInterfacesStatus(IList<NetworkInterfaceStatus> networkInterfacesStatus)
         {
-            logger.Info("Infra layer -> NetworkService -> PublishNetworkInterfacesStatus");
+            logger.Trace("Infra layer -> NetworkService -> PublishNetworkInterfacesStatus");
             this.networkInterfacesStatusSubject.OnNext(networkInterfacesStatus);
         }
 

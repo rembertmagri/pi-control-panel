@@ -18,7 +18,7 @@
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Disk status field");
+                    logger.Trace("Disk status field");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
@@ -30,7 +30,7 @@
                 .Bidirectional()
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Disk statuses connection");
+                    logger.Trace("Disk statuses connection");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 

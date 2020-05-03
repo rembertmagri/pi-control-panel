@@ -31,7 +31,7 @@
 
         public async Task<LoginResponse> LoginAsync(UserAccount userAccount)
         {
-            logger.Info("Application layer -> SecurityService -> LoginAsync");
+            logger.Trace("Application layer -> SecurityService -> LoginAsync");
 
             if (userAccount == null ||
                 string.IsNullOrWhiteSpace(userAccount.Username) ||
@@ -51,7 +51,7 @@
 
         public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
         {
-            logger.Info("Application layer -> SecurityService -> GetLoginResponseAsync");
+            logger.Trace("Application layer -> SecurityService -> GetLoginResponseAsync");
 
             var jsonWebToken = await this.GenerateJwtSecurityTokenAsync(userAccount);
             var roleClaims = jsonWebToken.Claims.Where(c => c.Type == ClaimTypes.Role);
@@ -66,7 +66,7 @@
 
         private async Task<JwtSecurityToken> GenerateJwtSecurityTokenAsync(UserAccount userAccount)
         {
-            logger.Info("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
+            logger.Trace("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
             
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

@@ -58,7 +58,7 @@
 
         protected virtual Task SaveRecurring(CancellationToken stoppingToken)
         {
-            logger.Info($"BaseWorker<{typeof(T).Name}> has no recurring task, returning...");
+            logger.Trace($"BaseWorker<{typeof(T).Name}> has no recurring task, returning...");
             return Task.CompletedTask;
         }
     }

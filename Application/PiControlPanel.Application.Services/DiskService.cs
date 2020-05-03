@@ -25,25 +25,25 @@
 
         public async Task<DiskStatus> GetLastStatusAsync()
         {
-            logger.Info("Application layer -> DiskService -> GetLastStatusAsync");
+            logger.Trace("Application layer -> DiskService -> GetLastStatusAsync");
             return await this.persistenceStatusService.GetLastAsync();
         }
 
         public async Task<PagingOutput<DiskStatus>> GetStatusesAsync(PagingInput pagingInput)
         {
-            logger.Info("Application layer -> DiskService -> GetStatusesAsync");
+            logger.Trace("Application layer -> DiskService -> GetStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(pagingInput);
         }
 
         public IObservable<DiskStatus> GetStatusObservable()
         {
-            logger.Info("Application layer -> DiskService -> GetStatusObservable");
+            logger.Trace("Application layer -> DiskService -> GetStatusObservable");
             return ((OnDemand.IDiskService)this.onDemandService).GetStatusObservable();
         }
 
         public async Task SaveStatusAsync()
         {
-            logger.Info("Application layer -> DiskService -> SaveStatusAsync");
+            logger.Trace("Application layer -> DiskService -> SaveStatusAsync");
             var status = await ((OnDemand.IDiskService)this.onDemandService).GetStatusAsync();
 
             await this.persistenceStatusService.AddAsync(status);

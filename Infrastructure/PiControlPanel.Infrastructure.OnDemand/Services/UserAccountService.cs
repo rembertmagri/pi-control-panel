@@ -19,7 +19,7 @@
 
         public Task<bool> ValidateAsync(UserAccount userAccount)
         {
-            logger.Info("Infra layer -> UserAccountService -> ValidateAsync");
+            logger.Trace("Infra layer -> UserAccountService -> ValidateAsync");
 
             var catEtcShadowCommand = string.Format(
                 BashCommands.SudoCatEtcShadow,
@@ -59,7 +59,7 @@
 
         public Task<bool> IsSuperUserAsync(UserAccount userAccount)
         {
-            logger.Info("Infra layer -> UserAccountService -> IsSuperUserAsync");
+            logger.Trace("Infra layer -> UserAccountService -> IsSuperUserAsync");
 
             var groupsCommand = string.Format(
                 BashCommands.Groups,

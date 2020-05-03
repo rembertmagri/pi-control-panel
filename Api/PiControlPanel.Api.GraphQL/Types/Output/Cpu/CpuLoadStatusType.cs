@@ -32,7 +32,7 @@
                 .Name("TotalRealTime")
                 .ResolveAsync(context =>
                 {
-                    logger.Info("TotalRealTime field");
+                    logger.Trace("TotalRealTime field");
 
                     var cpuRealTimeLoad = context.Source;
                     var loader = accessor.Context.GetOrAddBatchLoader<DateTime, double>(

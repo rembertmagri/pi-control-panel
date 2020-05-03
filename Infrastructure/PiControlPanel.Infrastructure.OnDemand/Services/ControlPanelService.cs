@@ -22,7 +22,7 @@
 
         public Task<bool> RebootAsync()
         {
-            logger.Info("Infra layer -> ControlPanelService -> RebootAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> RebootAsync");
             var result = BashCommands.SudoReboot.Bash();
             logger.Debug($"Result of '{BashCommands.SudoReboot}' command: '{result}'");
             return Task.FromResult(true);
@@ -30,7 +30,7 @@
 
         public Task<bool> ShutdownAsync()
         {
-            logger.Info("Infra layer -> ControlPanelService -> ShutdownAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> ShutdownAsync");
             var result = BashCommands.SudoShutdown.Bash();
             logger.Debug($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
             return Task.FromResult(true);
@@ -38,7 +38,7 @@
 
         public Task<bool> UpdateAsync()
         {
-            logger.Info("Infra layer -> ControlPanelService -> UpdateAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> UpdateAsync");
             var result = BashCommands.SudoAptgetUpdade.Bash();
             logger.Debug($"Result of '{BashCommands.SudoAptgetUpdade}' command: '{result}'");
             result = BashCommands.SudoAptgetUpgrade.Bash();
@@ -65,7 +65,7 @@
 
         public Task<bool> KillAsync(BusinessContext context, int processId)
         {
-            logger.Info("Infra layer -> ControlPanelService -> KillAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> KillAsync");
 
             var sudoKillCommand = string.Format(BashCommands.SudoKill, processId);
             var result = sudoKillCommand.Bash();
@@ -82,7 +82,7 @@
 
         public Task<string> GetProcessOwnerUsernameAsync(int processId)
         {
-            logger.Info("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
 
             var psUserCommand = string.Format(BashCommands.PsUser, processId);
             var result = psUserCommand.Bash();
@@ -99,7 +99,7 @@
 
         public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
-            logger.Info("Infra layer -> ControlPanelService -> OverclockAsync");
+            logger.Trace("Infra layer -> ControlPanelService -> OverclockAsync");
 
             var result = BashCommands.CatBootConfig.Bash();
             logger.Debug($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");

@@ -34,69 +34,69 @@
 
         public Task<CpuLoadStatus> GetLastLoadStatusAsync()
         {
-            logger.Info("Application layer -> CpuService -> GetLastLoadStatusAsync");
+            logger.Trace("Application layer -> CpuService -> GetLastLoadStatusAsync");
             return this.persistenceLoadStatusService.GetLastAsync();
         }
 
         public async Task<PagingOutput<CpuLoadStatus>> GetLoadStatusesAsync(PagingInput pagingInput)
         {
-            logger.Info("Application layer -> CpuService -> GetLoadStatusesAsync");
+            logger.Trace("Application layer -> CpuService -> GetLoadStatusesAsync");
             return await this.persistenceLoadStatusService.GetPageAsync(pagingInput);
         }
 
         public IObservable<CpuLoadStatus> GetLoadStatusObservable()
         {
-            logger.Info("Application layer -> CpuService -> GetLoadStatusObservable");
+            logger.Trace("Application layer -> CpuService -> GetLoadStatusObservable");
             return ((OnDemand.ICpuService)this.onDemandService).GetLoadStatusObservable();
         }
 
         public async Task<IDictionary<DateTime, double>> GetTotalRealTimeLoadsAsync(
             IEnumerable<DateTime> dateTimes, CancellationToken cancellationToken)
         {
-            logger.Info("Application layer -> CpuService -> GetTotalRealTimeLoad");
+            logger.Trace("Application layer -> CpuService -> GetTotalRealTimeLoad");
             var realTimeLoads = await this.persistenceLoadStatusService.GetCpuLoadStatusesAsync(dateTimes);
             return realTimeLoads.ToDictionary(i => i.Key, i => i.Value.KernelRealTime + i.Value.UserRealTime);
         }
 
         public async Task<CpuTemperature> GetLastTemperatureAsync()
         {
-            logger.Info("Application layer -> CpuService -> GetLastTemperatureAsync");
+            logger.Trace("Application layer -> CpuService -> GetLastTemperatureAsync");
             return await this.persistenceTemperatureService.GetLastAsync();
         }
 
         public async Task<PagingOutput<CpuTemperature>> GetTemperaturesAsync(PagingInput pagingInput)
         {
-            logger.Info("Application layer -> CpuService -> GetTemperaturesAsync");
+            logger.Trace("Application layer -> CpuService -> GetTemperaturesAsync");
             return await this.persistenceTemperatureService.GetPageAsync(pagingInput);
         }
 
         public IObservable<CpuTemperature> GetTemperatureObservable()
         {
-            logger.Info("Application layer -> CpuService -> GetTemperatureObservable");
+            logger.Trace("Application layer -> CpuService -> GetTemperatureObservable");
             return ((OnDemand.ICpuService)this.onDemandService).GetTemperatureObservable();
         }
 
         public async Task<CpuFrequency> GetLastFrequencyAsync()
         {
-            logger.Info("Application layer -> CpuService -> GetLastFrequencyAsync");
+            logger.Trace("Application layer -> CpuService -> GetLastFrequencyAsync");
             return await this.persistenceFrequencyService.GetLastAsync();
         }
 
         public async Task<PagingOutput<CpuFrequency>> GetFrequenciesAsync(PagingInput pagingInput)
         {
-            logger.Info("Application layer -> CpuService -> GetFrequenciesAsync");
+            logger.Trace("Application layer -> CpuService -> GetFrequenciesAsync");
             return await this.persistenceFrequencyService.GetPageAsync(pagingInput);
         }
 
         public IObservable<CpuFrequency> GetFrequencyObservable()
         {
-            logger.Info("Application layer -> CpuService -> GetFrequencyObservable");
+            logger.Trace("Application layer -> CpuService -> GetFrequencyObservable");
             return ((OnDemand.ICpuService)this.onDemandService).GetFrequencyObservable();
         }
 
         public async Task SaveLoadStatusAsync()
         {
-            logger.Info("Application layer -> CpuService -> SaveLoadStatusAsync");
+            logger.Trace("Application layer -> CpuService -> SaveLoadStatusAsync");
             var cpu = await this.persistenceService.GetAsync();
             if (cpu == null)
             {
@@ -112,7 +112,7 @@
 
         public async Task SaveTemperatureAsync()
         {
-            logger.Info("Application layer -> CpuService -> SaveTemperatureAsync");
+            logger.Trace("Application layer -> CpuService -> SaveTemperatureAsync");
             var temperature = await ((OnDemand.ICpuService)this.onDemandService).GetTemperatureAsync();
 
             await this.persistenceTemperatureService.AddAsync(temperature);
@@ -121,7 +121,7 @@
 
         public async Task SaveFrequencyAsync(int samplingInterval)
         {
-            logger.Info("Application layer -> CpuService -> SaveFrequencyAsync");
+            logger.Trace("Application layer -> CpuService -> SaveFrequencyAsync");
             var frequency = await ((OnDemand.ICpuService)this.onDemandService).GetFrequencyAsync(samplingInterval);
 
             await this.persistenceFrequencyService.AddAsync(frequency);

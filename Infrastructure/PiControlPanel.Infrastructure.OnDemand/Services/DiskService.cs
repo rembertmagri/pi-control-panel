@@ -24,20 +24,20 @@
 
         public Task<DiskStatus> GetStatusAsync()
         {
-            logger.Info("Infra layer -> DiskService -> GetStatusAsync");
+            logger.Trace("Infra layer -> DiskService -> GetStatusAsync");
             var diskStatus = this.GetDiskStatus();
             return Task.FromResult(diskStatus);
         }
 
         public IObservable<DiskStatus> GetStatusObservable()
         {
-            logger.Info("Infra layer -> DiskService -> GetStatusObservable");
+            logger.Trace("Infra layer -> DiskService -> GetStatusObservable");
             return this.diskStatusSubject.AsObservable();
         }
 
         public void PublishStatus(DiskStatus status)
         {
-            logger.Info("Infra layer -> DiskService -> PublishStatus");
+            logger.Trace("Infra layer -> DiskService -> PublishStatus");
             this.diskStatusSubject.OnNext(status);
         }
 

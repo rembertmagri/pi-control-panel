@@ -18,7 +18,7 @@
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Memory status field");
+                    logger.Trace("Memory status field");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
@@ -30,7 +30,7 @@
                 .Bidirectional()
                 .ResolveAsync(async context =>
                 {
-                    logger.Info("Memory statuses connection");
+                    logger.Trace("Memory statuses connection");
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 

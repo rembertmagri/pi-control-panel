@@ -20,25 +20,25 @@
 
         public Task<bool> RebootAsync()
         {
-            logger.Info("Application layer -> ControlPanelService -> RebootAsync");
+            logger.Trace("Application layer -> ControlPanelService -> RebootAsync");
             return onDemandService.RebootAsync();
         }
 
         public Task<bool> ShutdownAsync()
         {
-            logger.Info("Application layer -> ControlPanelService -> ShutdownAsync");
+            logger.Trace("Application layer -> ControlPanelService -> ShutdownAsync");
             return onDemandService.ShutdownAsync();
         }
 
         public Task<bool> UpdateAsync()
         {
-            logger.Info("Application layer -> ControlPanelService -> UpdateAsync");
+            logger.Trace("Application layer -> ControlPanelService -> UpdateAsync");
             return onDemandService.UpdateAsync();
         }
 
         public async Task<bool> KillAsync(BusinessContext context, int processId)
         {
-            logger.Info("Application layer -> ControlPanelService -> KillAsync");
+            logger.Trace("Application layer -> ControlPanelService -> KillAsync");
 
             var isAuthorizedToKill = await this.IsAuthorizedToKillAsync(context, processId);
             if (!isAuthorizedToKill)
@@ -63,7 +63,7 @@
 
         public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
-            logger.Info("Application layer -> ControlPanelService -> OverclockAsync");
+            logger.Trace("Application layer -> ControlPanelService -> OverclockAsync");
             return onDemandService.OverclockAsync(cpuMaxFrequencyLevel);
         }
     }

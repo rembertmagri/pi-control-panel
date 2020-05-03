@@ -32,57 +32,57 @@
 
         public Task<CpuLoadStatus> GetLoadStatusAsync(int cores)
         {
-            logger.Info("Infra layer -> CpuService -> GetLoadStatusAsync");
+            logger.Trace("Infra layer -> CpuService -> GetLoadStatusAsync");
             var averageLoad = this.GetLoadStatus(cores);
             return Task.FromResult(averageLoad);
         }
 
         public IObservable<CpuLoadStatus> GetLoadStatusObservable()
         {
-            logger.Info("Infra layer -> CpuService -> GetLoadStatusObservable");
+            logger.Trace("Infra layer -> CpuService -> GetLoadStatusObservable");
             return this.cpuLoadStatusSubject.AsObservable();
         }
 
         public void PublishLoadStatus(CpuLoadStatus loadStatus)
         {
-            logger.Info("Infra layer -> CpuService -> PublishLoadStatus");
+            logger.Trace("Infra layer -> CpuService -> PublishLoadStatus");
             this.cpuLoadStatusSubject.OnNext(loadStatus);
         }
 
         public Task<CpuTemperature> GetTemperatureAsync()
         {
-            logger.Info("Infra layer -> CpuService -> GetTemperatureAsync");
+            logger.Trace("Infra layer -> CpuService -> GetTemperatureAsync");
             var temperature = this.GetTemperature();
             return Task.FromResult(temperature);
         }
 
         public IObservable<CpuTemperature> GetTemperatureObservable()
         {
-            logger.Info("Infra layer -> CpuService -> GetTemperatureObservable");
+            logger.Trace("Infra layer -> CpuService -> GetTemperatureObservable");
             return this.cpuTemperatureSubject.AsObservable();
         }
 
         public void PublishTemperature(CpuTemperature temperature)
         {
-            logger.Info("Infra layer -> CpuService -> PublishTemperature");
+            logger.Trace("Infra layer -> CpuService -> PublishTemperature");
             this.cpuTemperatureSubject.OnNext(temperature);
         }
 
         public async Task<CpuFrequency> GetFrequencyAsync(int samplingInterval)
         {
-            logger.Info("Infra layer -> CpuService -> GetFrequencyAsync");
+            logger.Trace("Infra layer -> CpuService -> GetFrequencyAsync");
             return await this.GetFrequencyFromStatsAsync(samplingInterval);
         }
 
         public IObservable<CpuFrequency> GetFrequencyObservable()
         {
-            logger.Info("Infra layer -> CpuService -> GetFrequencyObservable");
+            logger.Trace("Infra layer -> CpuService -> GetFrequencyObservable");
             return this.cpuFrequencySubject.AsObservable();
         }
 
         public void PublishFrequency(CpuFrequency frequency)
         {
-            logger.Info("Infra layer -> CpuService -> PublishFrequency");
+            logger.Trace("Infra layer -> CpuService -> PublishFrequency");
             this.cpuFrequencySubject.OnNext(frequency);
         }
 
@@ -174,7 +174,7 @@
                     DateTime = DateTime.Now
                 };
             }
-            logger.Warn($"Could get cpu frequency stats");
+            logger.Warn($"Could not get cpu frequency stats");
             return null;
         }
 

@@ -15,7 +15,7 @@
 
         public Task<T> GetAsync()
         {
-            logger.Info($"Infra layer -> BaseService<{typeof(T).Name}> -> GetAsync");
+            logger.Trace($"Infra layer -> BaseService<{typeof(T).Name}> -> GetAsync");
             var model = this.GetModel();
             return Task.FromResult(model);
         }
