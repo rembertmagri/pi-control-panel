@@ -7,13 +7,13 @@
 
     public interface IDiskService : IBaseService<Disk>
     {
-        Task<DiskStatus> GetLastStatusAsync();
+        Task<FileSystemStatus> GetLastFileSystemStatusAsync(string fileSystemName);
 
-        Task<PagingOutput<DiskStatus>> GetStatusesAsync(PagingInput pagingInput);
+        Task<PagingOutput<FileSystemStatus>> GetFileSystemStatusesAsync(string fileSystemName, PagingInput pagingInput);
 
-        IObservable<DiskStatus> GetStatusObservable();
+        IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName);
 
-        Task SaveStatusAsync();
+        Task SaveFileSystemStatusAsync();
 
     }
 }

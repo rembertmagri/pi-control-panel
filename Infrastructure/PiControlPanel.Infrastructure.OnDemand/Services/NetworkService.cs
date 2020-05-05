@@ -27,53 +27,7 @@
         public async Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusAsync(IList<string> networkInterfaceNames, int samplingInterval)
         {
             logger.Trace("Infra layer -> NetworkService -> GetNetworkInterfacesStatusAsync");
-            return await this.GetNetworkInterfacesStatusFromStatsAsync(networkInterfaceNames, samplingInterval);
-        }
 
-        public IObservable<NetworkInterfaceStatus> GetNetworkInterfaceStatusObservable(string networkInterfaceName)
-        {
-            logger.Trace("Infra layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
-            return this.networkInterfacesStatusSubject
-                .Select(l => l.FirstOrDefault(i => i.NetworkInterfaceName == networkInterfaceName))
-                .AsObservable();
-        }
-
-        public void PublishNetworkInterfacesStatus(IList<NetworkInterfaceStatus> networkInterfacesStatus)
-        {
-            logger.Trace("Infra layer -> NetworkService -> PublishNetworkInterfacesStatus");
-            this.networkInterfacesStatusSubject.OnNext(networkInterfacesStatus);
-        }
-
-        protected override Network GetModel()
-        {
-            var model = new Network()
-            {
-                NetworkInterfaces = new List<NetworkInterface>()
-            };
-
-            var result = BashCommands.Ifconfig.Bash();
-            logger.Debug($"Result of '{BashCommands.Ifconfig}' command: '{result}'");
-
-            var regex = new Regex(@"(?<name>\S+):\sflags=\d+<\S*RUNNING\S*>\s+mtu\s\d+\r?\n\s+inet\s(?<ip>\S+)\s+netmask\s(?<mask>\S+)\s+broadcast\s(?<gateway>\S+)");
-            var matches = regex.Matches(result);
-            foreach (Match match in matches)
-            {
-                GroupCollection groups = match.Groups;
-                model.NetworkInterfaces.Add(
-                new NetworkInterface()
-                {
-                    Name = groups["name"].Value,
-                    IpAddress = groups["ip"].Value,
-                    SubnetMask = groups["mask"].Value,
-                    DefaultGateway = groups["gateway"].Value
-                });
-            }
-
-            return model;
-        }
-
-        private async Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusFromStatsAsync(IList<string> networkInterfaceNames, int samplingInterval)
-        {
             var result = BashCommands.CatProcNetDev.Bash();
             var now = DateTime.Now;
             logger.Debug($"Result of '{BashCommands.CatProcNetDev}' command: '{result}'");
@@ -136,6 +90,48 @@
             }
 
             return networkInterfacesStatuses.Values.ToList();
+        }
+
+        public IObservable<NetworkInterfaceStatus> GetNetworkInterfaceStatusObservable(string networkInterfaceName)
+        {
+            logger.Trace("Infra layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
+            return this.networkInterfacesStatusSubject
+                .Select(l => l.FirstOrDefault(i => i.NetworkInterfaceName == networkInterfaceName))
+                .AsObservable();
+        }
+
+        public void PublishNetworkInterfacesStatus(IList<NetworkInterfaceStatus> networkInterfacesStatus)
+        {
+            logger.Trace("Infra layer -> NetworkService -> PublishNetworkInterfacesStatus");
+            this.networkInterfacesStatusSubject.OnNext(networkInterfacesStatus);
+        }
+
+        protected override Network GetModel()
+        {
+            var model = new Network()
+            {
+                NetworkInterfaces = new List<NetworkInterface>()
+            };
+
+            var result = BashCommands.Ifconfig.Bash();
+            logger.Debug($"Result of '{BashCommands.Ifconfig}' command: '{result}'");
+
+            var regex = new Regex(@"(?<name>\S+):\sflags=\d+<\S*RUNNING\S*>\s+mtu\s\d+\r?\n\s+inet\s(?<ip>\S+)\s+netmask\s(?<mask>\S+)\s+broadcast\s(?<gateway>\S+)");
+            var matches = regex.Matches(result);
+            foreach (Match match in matches)
+            {
+                GroupCollection groups = match.Groups;
+                model.NetworkInterfaces.Add(
+                new NetworkInterface()
+                {
+                    Name = groups["name"].Value,
+                    IpAddress = groups["ip"].Value,
+                    SubnetMask = groups["mask"].Value,
+                    DefaultGateway = groups["gateway"].Value
+                });
+            }
+
+            return model;
         }
     }
 }

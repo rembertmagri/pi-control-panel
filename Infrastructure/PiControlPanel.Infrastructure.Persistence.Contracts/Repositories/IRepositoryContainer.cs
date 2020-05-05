@@ -20,7 +20,7 @@
 
         IRepositoryBase<Entities.Disk.Disk> DiskRepository { get; }
 
-        IRepositoryBase<Entities.Disk.DiskStatus> DiskStatusRepository { get; }
+        IRepositoryBase<Entities.Disk.FileSystemStatus> FileSystemStatusRepository { get; }
 
         IRepositoryBase<Entities.Memory.RandomAccessMemory> RandomAccessMemoryRepository { get; }
 

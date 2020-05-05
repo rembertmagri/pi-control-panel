@@ -19,7 +19,7 @@
 
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IDiskService)this.service).SaveStatusAsync();
+            return ((IDiskService)this.service).SaveFileSystemStatusAsync();
         }
     }
 }

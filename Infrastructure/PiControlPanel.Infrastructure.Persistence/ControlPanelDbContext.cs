@@ -33,7 +33,7 @@
 
         public DbSet<Entities.Disk.Disk> Disk { get; set; }
 
-        public DbSet<Entities.Disk.DiskStatus> DiskStatus { get; set; }
+        public DbSet<Entities.Disk.FileSystemStatus> FileSystemStatus { get; set; }
 
         public DbSet<Entities.Memory.RandomAccessMemory> RandomAccessMemory { get; set; }
 

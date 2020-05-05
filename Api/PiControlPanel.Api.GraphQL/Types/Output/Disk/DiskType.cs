@@ -2,42 +2,26 @@
 {
     using global::GraphQL.Types;
     using NLog;
-    using PiControlPanel.Api.GraphQL.Extensions;
-    using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Disk;
+    using System.Linq;
 
     public class DiskType : ObjectGraphType<Disk>
     {
-        public DiskType(IDiskService diskService, ILogger logger)
+        public DiskType(ILogger logger)
         {
-            Field(x => x.FileSystem);
-            Field(x => x.Type);
-            Field(x => x.Total);
+            Field(x => x.FileSystems, false, typeof(ListGraphType<FileSystemType>))
+                .Resolve(context => context.Source.FileSystems);
 
-            Field<DiskStatusType>()
-                .Name("Status")
-                .ResolveAsync(async context =>
+            Field<FileSystemType>(
+                "FileSystem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "Name" }
+                ),
+                resolve: context =>
                 {
-                    logger.Trace("Disk status field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
-
-                    return await diskService.GetLastStatusAsync();
-                });
-
-            Connection<DiskStatusType>()
-                .Name("Statuses")
-                .Bidirectional()
-                .ResolveAsync(async context =>
-                {
-                    logger.Trace("Disk statuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
-
-                    var pagingInput = context.GetPagingInput();
-                    var statuses = await diskService.GetStatusesAsync(pagingInput);
-
-                    return statuses.ToConnection();
+                    logger.Trace("FileSystem field");
+                    var name = context.GetArgument<string>("name");
+                    return context.Source.FileSystems.SingleOrDefault(i => i.Name == name);
                 });
         }
     }

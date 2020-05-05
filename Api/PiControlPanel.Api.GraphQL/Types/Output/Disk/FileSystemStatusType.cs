@@ -3,9 +3,9 @@
     using global::GraphQL.Types;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
-    public class DiskStatusType : ObjectGraphType<DiskStatus>
+    public class FileSystemStatusType : ObjectGraphType<FileSystemStatus>
     {
-        public DiskStatusType()
+        public FileSystemStatusType()
         {
             Field(x => x.Used);
             Field(x => x.Available);

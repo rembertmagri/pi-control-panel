@@ -39,7 +39,7 @@
             serviceRegistry.Register<Contracts.Persistence.Os.IOsService, Persistence.Os.OsService>();
             serviceRegistry.Register<Contracts.Persistence.Os.IOsStatusService, Persistence.Os.OsStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Disk.IDiskService, Persistence.Disk.DiskService>();
-            serviceRegistry.Register<Contracts.Persistence.Disk.IDiskStatusService, Persistence.Disk.DiskStatusService>();
+            serviceRegistry.Register<Contracts.Persistence.Disk.IFileSystemStatusService, Persistence.Disk.FileSystemStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryService<RandomAccessMemory>,
                 Persistence.Memory.RandomAccessMemoryService>();
             serviceRegistry.Register<Contracts.Persistence.Memory.IMemoryStatusService<RandomAccessMemoryStatus>,
@@ -71,7 +71,7 @@
             serviceRegistry.RegisterSingleton<ISubject<CpuLoadStatus>>(factory => new ReplaySubject<CpuLoadStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<RandomAccessMemoryStatus>>(factory => new ReplaySubject<RandomAccessMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<SwapMemoryStatus>>(factory => new ReplaySubject<SwapMemoryStatus>(1));
-            serviceRegistry.RegisterSingleton<ISubject<DiskStatus>>(factory => new ReplaySubject<DiskStatus>(1));
+            serviceRegistry.RegisterSingleton<ISubject<IList<FileSystemStatus>>>(factory => new ReplaySubject<IList<FileSystemStatus>>(1));
             serviceRegistry.RegisterSingleton<ISubject<OsStatus>>(factory => new ReplaySubject<OsStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<IList<NetworkInterfaceStatus>>>(factory => new ReplaySubject<IList<NetworkInterfaceStatus>>(1));
         }

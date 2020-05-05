@@ -71,7 +71,7 @@
 
         public IRepositoryBase<Entities.Disk.Disk> DiskRepository => new RepositoryBase<Entities.Disk.Disk>(this.dbContext, this.logger);
 
-        public IRepositoryBase<Entities.Disk.DiskStatus> DiskStatusRepository => new RepositoryBase<Entities.Disk.DiskStatus>(this.dbContext, this.logger);
+        public IRepositoryBase<Entities.Disk.FileSystemStatus> FileSystemStatusRepository => new RepositoryBase<Entities.Disk.FileSystemStatus>(this.dbContext, this.logger);
 
         public IRepositoryBase<Entities.Memory.RandomAccessMemory> RandomAccessMemoryRepository => new RepositoryBase<Entities.Memory.RandomAccessMemory>(this.dbContext, this.logger);
 

@@ -24,8 +24,8 @@
         public Task<OsStatus> GetStatusAsync()
         {
             logger.Trace("Infra layer -> OsService -> GetStatusAsync");
-            var diskStatus = this.GetOsStatus();
-            return Task.FromResult(diskStatus);
+            var osStatus = this.GetOsStatus();
+            return Task.FromResult(osStatus);
         }
 
         public IObservable<OsStatus> GetStatusObservable()

@@ -73,7 +73,7 @@ export class RaspberryPiService {
               }
             }
             disk {
-              fileSystem
+              name
               type
               total
               status {

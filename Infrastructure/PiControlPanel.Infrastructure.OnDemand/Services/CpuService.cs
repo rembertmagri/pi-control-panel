@@ -33,8 +33,35 @@
         public Task<CpuLoadStatus> GetLoadStatusAsync(int cores)
         {
             logger.Trace("Infra layer -> CpuService -> GetLoadStatusAsync");
-            var averageLoad = this.GetLoadStatus(cores);
-            return Task.FromResult(averageLoad);
+
+            var result = BashCommands.Top.Bash();
+            logger.Debug($"Result of '{BashCommands.Top}' command: '{result}'");
+            string[] lines = result.Split(new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            var averageLoadInfo = lines.First(l => l.Contains("load average:"));
+            var averageLoadRegex = new Regex(@"load average: (?<lastMinute>\d+\.\d{2}), (?<last5Minutes>\d+\.\d{2}), (?<last15Minutes>\d+\.\d{2})$");
+            var averageLoadGroups = averageLoadRegex.Match(averageLoadInfo).Groups;
+
+            var realTimeLoadInfo = lines.First(l => l.StartsWith("%Cpu(s):"));
+            var realTimeLoadRegex = new Regex(@"^%Cpu\(s\):\s*(?<user>\d{1,3}\.\d{1}) us,\s*(?<kernel>\d{1,3}\.\d{1}) sy, .*$");
+            var realTimeLoadGroups = realTimeLoadRegex.Match(realTimeLoadInfo).Groups;
+
+            var processLines = lines.SkipWhile(l => !l.Contains("PID")).ToList();
+            processLines.RemoveAt(0);
+            processLines = processLines.Take(10).ToList();
+            var dateTime = DateTime.Now;
+
+            return Task.FromResult(new CpuLoadStatus()
+            {
+                LastMinuteAverage = (100 * double.Parse(averageLoadGroups["lastMinute"].Value)) / cores,
+                Last5MinutesAverage = (100 * double.Parse(averageLoadGroups["last5Minutes"].Value)) / cores,
+                Last15MinutesAverage = (100 * double.Parse(averageLoadGroups["last15Minutes"].Value)) / cores,
+                UserRealTime = double.Parse(realTimeLoadGroups["user"].Value),
+                KernelRealTime = double.Parse(realTimeLoadGroups["kernel"].Value),
+                Processes = this.GetProcesses(processLines, dateTime),
+                DateTime = dateTime
+            });
         }
 
         public IObservable<CpuLoadStatus> GetLoadStatusObservable()
@@ -52,8 +79,23 @@
         public Task<CpuTemperature> GetTemperatureAsync()
         {
             logger.Trace("Infra layer -> CpuService -> GetTemperatureAsync");
-            var temperature = this.GetTemperature();
-            return Task.FromResult(temperature);
+
+            var result = BashCommands.MeasureTemp.Bash();
+            logger.Debug($"Result of '{BashCommands.MeasureTemp}' command: '{result}'");
+
+            var temperatureResult = result.Substring(result.IndexOf('=') + 1, result.IndexOf("'") - (result.IndexOf('=') + 1));
+            logger.Debug($"Temperature substring: '{temperatureResult}'");
+
+            if (double.TryParse(temperatureResult, out var temperature))
+            {
+                return Task.FromResult(new CpuTemperature()
+                {
+                    Temperature = temperature,
+                    DateTime = DateTime.Now
+                });
+            }
+            logger.Warn($"Could not parse temperature: '{temperatureResult}'");
+            return null;
         }
 
         public IObservable<CpuTemperature> GetTemperatureObservable()
@@ -71,62 +113,14 @@
         public async Task<CpuFrequency> GetFrequencyAsync(int samplingInterval)
         {
             logger.Trace("Infra layer -> CpuService -> GetFrequencyAsync");
-            return await this.GetFrequencyFromStatsAsync(samplingInterval);
-        }
 
-        public IObservable<CpuFrequency> GetFrequencyObservable()
-        {
-            logger.Trace("Infra layer -> CpuService -> GetFrequencyObservable");
-            return this.cpuFrequencySubject.AsObservable();
-        }
-
-        public void PublishFrequency(CpuFrequency frequency)
-        {
-            logger.Trace("Infra layer -> CpuService -> PublishFrequency");
-            this.cpuFrequencySubject.OnNext(frequency);
-        }
-
-        protected override Cpu GetModel()
-        {
-            var result = BashCommands.CatProcCpuInfo.Bash();
-            logger.Debug($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            var cores = lines.Count(line => line.StartsWith("processor"));
-            logger.Debug($"Number of cores: '{cores}'");
-            var model = lines.Last(line => line.StartsWith("model name"))
-                .Split(':')[1].Trim();
-            logger.Debug($"Cpu model: '{model}'");
-
-            result = BashCommands.CatBootConfig.Bash();
-            logger.Debug($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
-            lines = result.Split(new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries);
-            var frequencyLine = lines.FirstOrDefault(line => line.Contains("arm_freq="));
-            var frequencyLineRegex = new Regex(@"^(?<commented>#?)\s*arm_freq=(?<frequency>\d+)$");
-            logger.Debug($"Frequency line in config file: '{frequencyLine}'");
-            var frequencyLineGroups = frequencyLineRegex.Match(frequencyLine).Groups;
-            var frequency = !string.IsNullOrEmpty(frequencyLineGroups["commented"].Value) ?
-                1500 : int.Parse(frequencyLineGroups["frequency"].Value);
-
-            return new Cpu()
-            {
-                Cores = cores,
-                Model = model,
-                MaximumFrequency = frequency
-            };
-        }
-
-        private async Task<CpuFrequency> GetFrequencyFromStatsAsync(int samplingInterval)
-        {
             var result = BashCommands.CatCpuFreqStats.Bash();
             logger.Debug($"Result of '{BashCommands.CatCpuFreqStats}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             var frequencyStats = new Dictionary<int, long>();
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 var state = line.Split(' ');
                 if (int.TryParse(state[0], out var frequency) && long.TryParse(state[1], out var time))
@@ -178,55 +172,47 @@
             return null;
         }
 
-        private CpuTemperature GetTemperature()
+        public IObservable<CpuFrequency> GetFrequencyObservable()
         {
-            var result = BashCommands.MeasureTemp.Bash();
-            logger.Debug($"Result of '{BashCommands.MeasureTemp}' command: '{result}'");
-
-            var temperatureResult = result.Substring(result.IndexOf('=') + 1, result.IndexOf("'") - (result.IndexOf('=') + 1));
-            logger.Debug($"Temperature substring: '{temperatureResult}'");
-
-            if (double.TryParse(temperatureResult, out var temperature))
-            {
-                return new CpuTemperature()
-                {
-                    Temperature = temperature,
-                    DateTime = DateTime.Now
-                };
-            }
-            logger.Warn($"Could not parse temperature: '{temperatureResult}'");
-            return null;
+            logger.Trace("Infra layer -> CpuService -> GetFrequencyObservable");
+            return this.cpuFrequencySubject.AsObservable();
         }
 
-        private CpuLoadStatus GetLoadStatus(int cores)
+        public void PublishFrequency(CpuFrequency frequency)
         {
-            var result = BashCommands.Top.Bash();
-            logger.Debug($"Result of '{BashCommands.Top}' command: '{result}'");
+            logger.Trace("Infra layer -> CpuService -> PublishFrequency");
+            this.cpuFrequencySubject.OnNext(frequency);
+        }
+
+        protected override Cpu GetModel()
+        {
+            var result = BashCommands.CatProcCpuInfo.Bash();
+            logger.Debug($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
-            var averageLoadInfo = lines.First(l => l.Contains("load average:"));
-            var averageLoadRegex = new Regex(@"load average: (?<lastMinute>\d+\.\d{2}), (?<last5Minutes>\d+\.\d{2}), (?<last15Minutes>\d+\.\d{2})$");
-            var averageLoadGroups = averageLoadRegex.Match(averageLoadInfo).Groups;
+            var cores = lines.Count(line => line.StartsWith("processor"));
+            logger.Debug($"Number of cores: '{cores}'");
+            var model = lines.Last(line => line.StartsWith("model name"))
+                .Split(':')[1].Trim();
+            logger.Debug($"Cpu model: '{model}'");
 
-            var realTimeLoadInfo = lines.First(l => l.StartsWith("%Cpu(s):"));
-            var realTimeLoadRegex = new Regex(@"^%Cpu\(s\):\s*(?<user>\d{1,3}\.\d{1}) us,\s*(?<kernel>\d{1,3}\.\d{1}) sy, .*$");
-            var realTimeLoadGroups = realTimeLoadRegex.Match(realTimeLoadInfo).Groups;
+            result = BashCommands.CatBootConfig.Bash();
+            logger.Debug($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
+            lines = result.Split(new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+            var frequencyLine = lines.FirstOrDefault(line => line.Contains("arm_freq="));
+            var frequencyLineRegex = new Regex(@"^(?<commented>#?)\s*arm_freq=(?<frequency>\d+)$");
+            logger.Debug($"Frequency line in config file: '{frequencyLine}'");
+            var frequencyLineGroups = frequencyLineRegex.Match(frequencyLine).Groups;
+            var frequency = !string.IsNullOrEmpty(frequencyLineGroups["commented"].Value) ?
+                1500 : int.Parse(frequencyLineGroups["frequency"].Value);
 
-            var processLines = lines.SkipWhile(l => !l.Contains("PID")).ToList();
-            processLines.RemoveAt(0);
-            processLines = processLines.Take(10).ToList();
-            var dateTime = DateTime.Now;
-
-            return new CpuLoadStatus()
+            return new Cpu()
             {
-                LastMinuteAverage = (100 * double.Parse(averageLoadGroups["lastMinute"].Value)) / cores,
-                Last5MinutesAverage = (100 * double.Parse(averageLoadGroups["last5Minutes"].Value)) / cores,
-                Last15MinutesAverage = (100 * double.Parse(averageLoadGroups["last15Minutes"].Value)) / cores,
-                UserRealTime = double.Parse(realTimeLoadGroups["user"].Value),
-                KernelRealTime = double.Parse(realTimeLoadGroups["kernel"].Value),
-                Processes = this.GetProcesses(processLines, dateTime),
-                DateTime = dateTime
+                Cores = cores,
+                Model = model,
+                MaximumFrequency = frequency
             };
         }
 

@@ -29,8 +29,12 @@
                         .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();
                     cfg.CreateMap<Models.Os.OsStatus, Entities.Os.OsStatus>()
                         .ReverseMap();
-                    cfg.CreateMap<Models.Disk.Disk, Entities.Disk.Disk>().ReverseMap();
-                    cfg.CreateMap<Models.Disk.DiskStatus, Entities.Disk.DiskStatus>()
+                    cfg.CreateMap<Models.Disk.Disk, Entities.Disk.Disk>()
+                        .ForMember(e => e.FileSystems, opt => opt.MapFrom(m => m.FileSystems))
+                        .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();
+                    cfg.CreateMap<Models.Disk.FileSystem, Entities.Disk.FileSystem>()
+                        .ReverseMap();
+                    cfg.CreateMap<Models.Disk.FileSystemStatus, Entities.Disk.FileSystemStatus>()
                         .ReverseMap();
                     cfg.CreateMap<Models.Memory.RandomAccessMemory, Entities.Memory.RandomAccessMemory>()
                         .ForMember(x => x.ID, opt => opt.Ignore()).ReverseMap();

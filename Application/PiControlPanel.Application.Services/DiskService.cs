@@ -5,17 +5,18 @@
     using PiControlPanel.Domain.Models.Hardware.Disk;
     using PiControlPanel.Domain.Models.Paging;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
     public class DiskService : BaseService<Disk>, IDiskService
     {
-        private readonly Persistence.Disk.IDiskStatusService persistenceStatusService;
+        private readonly Persistence.Disk.IFileSystemStatusService persistenceStatusService;
 
         public DiskService(
             Persistence.Disk.IDiskService persistenceService,
-            Persistence.Disk.IDiskStatusService persistenceStatusService,
+            Persistence.Disk.IFileSystemStatusService persistenceStatusService,
             OnDemand.IDiskService onDemandService,
             ILogger logger)
             : base(persistenceService, onDemandService, logger)
@@ -23,37 +24,43 @@
             this.persistenceStatusService = persistenceStatusService;
         }
 
-        public async Task<DiskStatus> GetLastStatusAsync()
+        public async Task<FileSystemStatus> GetLastFileSystemStatusAsync(string fileSystemName)
         {
-            logger.Trace("Application layer -> DiskService -> GetLastStatusAsync");
-            return await this.persistenceStatusService.GetLastAsync();
+            logger.Trace("Application layer -> DiskService -> GetLastFileSystemStatusAsync");
+            return await this.persistenceStatusService.GetLastAsync(fileSystemName);
         }
 
-        public async Task<PagingOutput<DiskStatus>> GetStatusesAsync(PagingInput pagingInput)
+        public async Task<PagingOutput<FileSystemStatus>> GetFileSystemStatusesAsync(string fileSystemName, PagingInput pagingInput)
         {
-            logger.Trace("Application layer -> DiskService -> GetStatusesAsync");
-            return await this.persistenceStatusService.GetPageAsync(pagingInput);
+            logger.Trace("Application layer -> DiskService -> GetFileSystemStatusesAsync");
+            return await this.persistenceStatusService.GetPageAsync(fileSystemName, pagingInput);
         }
 
-        public IObservable<DiskStatus> GetStatusObservable()
+        public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            logger.Trace("Application layer -> DiskService -> GetStatusObservable");
-            return ((OnDemand.IDiskService)this.onDemandService).GetStatusObservable();
+            logger.Trace("Application layer -> DiskService -> GetFileSystemStatusObservable");
+            return ((OnDemand.IDiskService)this.onDemandService).GetFileSystemStatusObservable(fileSystemName);
         }
 
-        public async Task SaveStatusAsync()
+        public async Task SaveFileSystemStatusAsync()
         {
-            logger.Trace("Application layer -> DiskService -> SaveStatusAsync");
-            var status = await ((OnDemand.IDiskService)this.onDemandService).GetStatusAsync();
+            logger.Trace("Application layer -> DiskService -> SaveFileSystemStatusAsync");
 
-            await this.persistenceStatusService.AddAsync(status);
-            ((OnDemand.IDiskService)this.onDemandService).PublishStatus(status);
-        }
+            var disk = await this.persistenceService.GetAsync();
+            if (disk == null)
+            {
+                logger.Info("Disk information not available yet, returning...");
+                return;
+            }
 
-        protected override async Task<Disk> GetPersistedInfoAsync(Disk onDemandInfo)
-        {
-            return await ((Persistence.Disk.IDiskService)this.persistenceService)
-                .GetAsync(onDemandInfo.FileSystem);
+            var fileSystemNames = disk.FileSystems.Select(i => i.Name).ToList();
+            var fileSystemsStatus = await ((OnDemand.IDiskService)this.onDemandService).GetFileSystemsStatusAsync(fileSystemNames);
+
+            foreach (var fileSystemStatus in fileSystemsStatus)
+            {
+                await this.persistenceStatusService.AddAsync(fileSystemStatus);
+            }
+            ((OnDemand.IDiskService)this.onDemandService).PublishFileSystemsStatus(fileSystemsStatus);
         }
     }
 }

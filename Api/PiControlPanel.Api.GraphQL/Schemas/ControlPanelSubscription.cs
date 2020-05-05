@@ -100,20 +100,25 @@
                     return swapMemoryService.GetStatusObservable();
                 });
 
-            FieldSubscribe<DiskStatusType>(
-                "DiskStatus",
+            FieldSubscribe<FileSystemStatusType>(
+                "FileSystemStatus",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "FileSystemName" }
+                ),
                 resolve: context =>
                 {
                     return context.Source;
                 },
                 subscribe: context =>
                 {
-                    logger.Info("DiskStatus subscription");
+                    logger.Info("FileSystemStatus subscription");
                     MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
                     GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return diskService.GetStatusObservable();
+                    var fileSystemName = context.GetArgument<string>("fileSystemName");
+
+                    return diskService.GetFileSystemStatusObservable(fileSystemName);
                 });
 
             FieldSubscribe<OsStatusType>(

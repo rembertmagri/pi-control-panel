@@ -1,6 +1,7 @@
 ﻿namespace PiControlPanel.Infrastructure.OnDemand.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
@@ -14,66 +15,81 @@
 
     public class DiskService : BaseService<Disk>, IDiskService
     {
-        private readonly ISubject<DiskStatus> diskStatusSubject;
+        private readonly ISubject<IList<FileSystemStatus>> fileSystemsStatusSubject;
 
-        public DiskService(ISubject<DiskStatus> diskStatusSubject, ILogger logger)
+        public DiskService(ISubject<IList<FileSystemStatus>> fileSystemsStatusSubject, ILogger logger)
             : base(logger)
         {
-            this.diskStatusSubject = diskStatusSubject;
+            this.fileSystemsStatusSubject = fileSystemsStatusSubject;
         }
 
-        public Task<DiskStatus> GetStatusAsync()
+        public Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
         {
-            logger.Trace("Infra layer -> DiskService -> GetStatusAsync");
-            var diskStatus = this.GetDiskStatus();
-            return Task.FromResult(diskStatus);
+            logger.Trace("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
+
+            var result = BashCommands.Df.Bash();
+            logger.Debug($"Result of '{BashCommands.Df}' command: '{result}'");
+            string[] lines = result.Split(new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            IList<FileSystemStatus> fileSystemsStatus = new List<FileSystemStatus>();
+            foreach(var fileSystemName in fileSystemNames)
+            {
+                var fileSystemInfo = lines.First(l => l.StartsWith($"{fileSystemName} "));
+                var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
+                var groups = regex.Match(fileSystemInfo).Groups;
+                fileSystemsStatus.Add(new FileSystemStatus()
+                {
+                    FileSystemName = groups["name"].Value,
+                    Used = int.Parse(groups["used"].Value),
+                    Available = int.Parse(groups["free"].Value),
+                    DateTime = DateTime.Now
+                });
+            }
+
+            return Task.FromResult(fileSystemsStatus);
         }
 
-        public IObservable<DiskStatus> GetStatusObservable()
+        public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            logger.Trace("Infra layer -> DiskService -> GetStatusObservable");
-            return this.diskStatusSubject.AsObservable();
+            logger.Trace("Infra layer -> DiskService -> GetFileSystemStatusObservable");
+            return this.fileSystemsStatusSubject
+                .Select(l => l.FirstOrDefault(i => i.FileSystemName == fileSystemName))
+                .AsObservable();
         }
 
-        public void PublishStatus(DiskStatus status)
+        public void PublishFileSystemsStatus(IList<FileSystemStatus> fileSystemsStatus)
         {
-            logger.Trace("Infra layer -> DiskService -> PublishStatus");
-            this.diskStatusSubject.OnNext(status);
+            logger.Trace("Infra layer -> DiskService -> PublishFileSystemsStatus");
+            this.fileSystemsStatusSubject.OnNext(fileSystemsStatus);
         }
 
         protected override Disk GetModel()
         {
+            var model = new Disk()
+            {
+                FileSystems = new List<FileSystem>()
+            };
+
             var result = BashCommands.Df.Bash();
             logger.Debug($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
-            var diskInfo = lines.First(l => l.StartsWith("/dev/") && l.Contains("ext4"));
-            var regex = new Regex(@"^(?<filesystem>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
-            var groups = regex.Match(diskInfo).Groups;
+            var fileSystemsInfo = lines.Where(l => l.StartsWith("/dev/"));
+            var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
 
-            return new Disk()
+            foreach (var fileSystemInfo in fileSystemsInfo)
             {
-                FileSystem = groups["filesystem"].Value,
-                Type = groups["type"].Value,
-                Total = int.Parse(groups["total"].Value)
-            };
-        }
-
-        private DiskStatus GetDiskStatus()
-        {
-            var result = BashCommands.Df.Bash();
-            logger.Debug($"Result of '{BashCommands.Df}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries);
-            var diskInfo = lines.First(l => l.StartsWith("/dev/") && l.Contains("ext4"));
-            var regex = new Regex(@"^(?<filesystem>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
-            var groups = regex.Match(diskInfo).Groups;
-            return new DiskStatus()
-            {
-                Used = int.Parse(groups["used"].Value),
-                Available = int.Parse(groups["free"].Value),
-                DateTime = DateTime.Now
-            };
+                var groups = regex.Match(fileSystemInfo).Groups;
+                model.FileSystems.Add(
+                    new FileSystem()
+                    {
+                        Name = groups["name"].Value,
+                        Type = groups["type"].Value,
+                        Total = int.Parse(groups["total"].Value)
+                    });
+            }
+            return model;
         }
     }
 }

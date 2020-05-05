@@ -65,7 +65,7 @@ export interface ICpuProcess {
 }
 
 export interface IDisk {
-  fileSystem: string;
+  name: string;
   type: string;
   total: number;
   status: IDiskStatus;

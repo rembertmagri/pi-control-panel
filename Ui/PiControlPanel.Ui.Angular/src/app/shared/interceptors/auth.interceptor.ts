@@ -47,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError(error => {
           console.error(`Error '${error.name}' while handling request.`);
           if (error.status === UNAUTHORIZED) {
-            alert('Your session has expired, please login again');
+            console.error(`Session expired, redirecting to login...`);
             this.authService.logout();
             this.router.navigate(['/login']);
           }

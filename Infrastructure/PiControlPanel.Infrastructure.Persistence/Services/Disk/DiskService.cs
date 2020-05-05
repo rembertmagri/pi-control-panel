@@ -15,10 +15,9 @@
             this.repository = unitOfWork.DiskRepository;
         }
 
-        public async Task<Disk> GetAsync(string fileSystem)
+        protected override Task<Entities.Disk.Disk> GetFromRepository()
         {
-            var entity = await repository.GetAsync(c => c.FileSystem == fileSystem);
-            return mapper.Map<Disk>(entity);
+            return this.repository.GetAsync(s => s.FileSystems);
         }
     }
 }

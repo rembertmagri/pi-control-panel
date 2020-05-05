@@ -1,11 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Models.Hardware.Disk
 {
+    using System.Collections.Generic;
+
     public class Disk
     {
-        public string FileSystem { get; set; }
-
-        public string Type { get; set; }
-
-        public int Total { get; set; }
+        public IList<FileSystem> FileSystems { get; set; }
     }
 }

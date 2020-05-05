@@ -1,15 +1,16 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.OnDemand
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
     public interface IDiskService : IBaseService<Disk>
     {
-        Task<DiskStatus> GetStatusAsync();
+        Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames);
 
-        IObservable<DiskStatus> GetStatusObservable();
+        IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName);
 
-        void PublishStatus(DiskStatus status);
+        void PublishFileSystemsStatus(IList<FileSystemStatus> fileSystemsStatus);
     }
 }
