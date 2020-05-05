@@ -7,6 +7,7 @@
     {
         public FileSystemStatusType()
         {
+            Field(x => x.FileSystemName);
             Field(x => x.Used);
             Field(x => x.Available);
             Field<DateTimeGraphType>("dateTime");
