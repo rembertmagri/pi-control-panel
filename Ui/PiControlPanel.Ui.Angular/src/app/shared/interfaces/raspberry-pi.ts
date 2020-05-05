@@ -65,14 +65,19 @@ export interface ICpuProcess {
 }
 
 export interface IDisk {
+  fileSystems: IFileSystem[];
+}
+
+export interface IFileSystem {
   name: string;
   type: string;
   total: number;
-  status: IDiskStatus;
-  statuses: IDiskStatus[];
+  status: IFileSystemStatus;
+  statuses: IFileSystemStatus[];
 }
 
-export interface IDiskStatus {
+export interface IFileSystemStatus {
+  fileSystemName: string;
   used: number;
   available: number;
   dateTime: string;

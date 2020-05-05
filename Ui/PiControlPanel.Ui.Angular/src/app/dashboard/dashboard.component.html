@@ -75,26 +75,13 @@
         </div>
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">Disk</h4>
+            <h4 class="card-header">GPU</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.name}}</dd>
-                <dt class="col-sm-3">Type</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.type}}</dd>
-                <dt class="col-sm-3">Total</dt>
-                <dd class="col-sm-9">{{raspberryPi.disk.total}} KB</dd>
-                <dt class="col-sm-3">Status</dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Used</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.used}} KB ({{100 * raspberryPi.disk.status.used / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Available</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.available}} KB ({{100 * raspberryPi.disk.status.available / raspberryPi.disk.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.disk.status.dateTime | date:'medium'}}</dd>
-                  </dl>
-                </dd>
+                <dt class="col-sm-3">Memory</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
+                <dt class="col-sm-3">Frequency</dt>
+                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
               </dl>
             </div>
           </div>
@@ -290,14 +277,33 @@
 
         <div class="col-sm">
           <div class="card">
-            <h4 class="card-header">GPU</h4>
+            <h4 class="card-header">Disk</h4>
             <div class="card-body">
-              <dl class="row">
-                <dt class="col-sm-3">Memory</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
-                <dt class="col-sm-3">Frequency</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
-              </dl>
+              <div *ngFor="let fileSystem of raspberryPi.disk.fileSystems">
+                <div class="card">
+                  <h4 class="card-header">{{fileSystem.name}}</h4>
+                  <div class="card-body">
+                    <dl class="row">
+                      <dt class="col-sm-3">Type</dt>
+                      <dd class="col-sm-9">{{fileSystem.type}}</dd>
+                      <dt class="col-sm-3">Total</dt>
+                      <dd class="col-sm-9">{{fileSystem.total}} KB</dd>
+                      <dt class="col-sm-3">Status</dt>
+                      <dd class="col-sm-9">
+                        <dl class="row">
+                          <dt class="col-sm-4">Used</dt>
+                          <dd class="col-sm-8">{{fileSystem.status.used}} KB ({{100 * fileSystem.status.used / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
+                          <dt class="col-sm-4">Available</dt>
+                          <dd class="col-sm-8">{{fileSystem.status.available}} KB ({{100 * fileSystem.status.available / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
+                          <dt class="col-sm-4">Datetime</dt>
+                          <dd class="col-sm-8">{{fileSystem.status.dateTime | date:'medium'}}</dd>
+                        </dl>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+                <br />
+              </div>
             </div>
           </div>
           <br />

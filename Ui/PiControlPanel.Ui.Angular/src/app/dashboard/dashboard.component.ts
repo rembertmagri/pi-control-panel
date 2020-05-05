@@ -38,7 +38,7 @@ import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.s
 import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
 import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
-import { DiskStatusService } from '../shared/services/disk-status.service';
+import { FileSystemStatusService } from '../shared/services/disk-file-system-status.service';
 import { OsStatusService } from '../shared/services/os-status.service';
 import { NetworkInterfaceStatusService } from '../shared/services/network-interface-status.service';
 import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
@@ -59,8 +59,8 @@ export class DashboardComponent implements OnInit {
   subscribedToNewCpuLoadStatuses: boolean;
   subscribedToNewRamStatuses: boolean;
   subscribedToNewSwapMemoryStatuses: boolean;
-  subscribedToNewDiskStatuses: boolean;
   subscribedToNewOsStatuses: boolean;
+  subscribedToNewDiskFileSystemStatuses: boolean[];
   subscribedToNewNetworkInterfaceStatuses: boolean[];
 
   cpuFrequencyBehaviorSubjectSubscription: Subscription;
@@ -68,8 +68,8 @@ export class DashboardComponent implements OnInit {
   cpuLoadStatusBehaviorSubjectSubscription: Subscription;
   ramStatusBehaviorSubjectSubscription: Subscription;
   swapMemoryStatusBehaviorSubjectSubscription: Subscription;
-  diskStatusBehaviorSubjectSubscription: Subscription;
   osStatusBehaviorSubjectSubscription: Subscription;
+  diskFileSystemStatusBehaviorSubjectSubscriptions: Subscription[];
   networkInterfaceStatusBehaviorSubjectSubscriptions: Subscription[];
 
   isSuperUser: boolean;
@@ -90,8 +90,8 @@ export class DashboardComponent implements OnInit {
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
     private swapMemoryStatusService: SwapMemoryStatusService,
-    private diskStatusService: DiskStatusService,
     private osStatusService: OsStatusService,
+    private diskFileSystemStatusService: FileSystemStatusService,
     private networkInterfaceStatusService: NetworkInterfaceStatusService) { }
 
   ngOnInit() {
@@ -200,20 +200,6 @@ export class DashboardComponent implements OnInit {
         error => this.errorMessage = <any>error
       );
     
-    this.subscribedToNewDiskStatuses = false;
-    this.diskStatusBehaviorSubjectSubscription = this.diskStatusService.getLastDiskStatuses()
-      .subscribe(
-        result => {
-          this.raspberryPi.disk.status = first(result.items);
-          this.raspberryPi.disk.statuses = result.items;
-          if(!this.subscribedToNewDiskStatuses) {
-            this.diskStatusService.subscribeToNewDiskStatuses();
-            this.subscribedToNewDiskStatuses = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-    
     this.subscribedToNewOsStatuses = false;
     this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
       .subscribe(
@@ -227,6 +213,26 @@ export class DashboardComponent implements OnInit {
         },
         error => this.errorMessage = <any>error
       );
+    
+    const numberOfFileSystems = this.raspberryPi.disk.fileSystems.length;
+    this.subscribedToNewDiskFileSystemStatuses = fill(Array(numberOfFileSystems), false);
+    this.diskFileSystemStatusBehaviorSubjectSubscriptions = fill(Array(numberOfFileSystems), null);
+    for(const fileSystem of this.raspberryPi.disk.fileSystems) {
+      const fileSystemName = fileSystem.name;
+      this.diskFileSystemStatusBehaviorSubjectSubscriptions[fileSystemName] =
+        this.diskFileSystemStatusService.getLastFileSystemStatuses(fileSystemName)
+          .subscribe(
+            result => {
+              fileSystem.status = first(result.items);
+              fileSystem.statuses = result.items;
+              if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
+                this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
+                this.subscribedToNewDiskFileSystemStatuses[fileSystemName] = true;
+              }
+            },
+            error => this.errorMessage = <any>error
+          );
+    }
     
     const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
     this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
@@ -283,11 +289,15 @@ export class DashboardComponent implements OnInit {
     if (!isNil(this.swapMemoryStatusBehaviorSubjectSubscription)) {
       this.swapMemoryStatusBehaviorSubjectSubscription.unsubscribe();
     }
-    if (!isNil(this.diskStatusBehaviorSubjectSubscription)) {
-      this.diskStatusBehaviorSubjectSubscription.unsubscribe();
-    }
     if (!isNil(this.osStatusBehaviorSubjectSubscription)) {
       this.osStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isEmpty(this.diskFileSystemStatusBehaviorSubjectSubscriptions)) {
+      for(const diskFileSystemStatusBehaviorSubjectSubscription of this.diskFileSystemStatusBehaviorSubjectSubscriptions) {
+        if (!isNil(diskFileSystemStatusBehaviorSubjectSubscription)) {
+          diskFileSystemStatusBehaviorSubjectSubscription.unsubscribe();
+        }
+      }
     }
     if (!isEmpty(this.networkInterfaceStatusBehaviorSubjectSubscriptions)) {
       for(const networkInterfaceStatusBehaviorSubjectSubscription of this.networkInterfaceStatusBehaviorSubjectSubscriptions) {

@@ -75,7 +75,7 @@
             logger.Debug($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
-            var fileSystemsInfo = lines.Where(l => l.StartsWith("/dev/"));
+            var fileSystemsInfo = lines.Where(l => l.StartsWith("/dev/") && !l.EndsWith("/boot"));
             var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
 
             foreach (var fileSystemInfo in fileSystemsInfo)

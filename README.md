@@ -113,7 +113,7 @@ query RaspberryPi {
         total
         type
         status {
-	  fileSystemName
+          fileSystemName
           available
           used
           dateTime
@@ -748,7 +748,7 @@ query FileSystemStatuses($name: String!, $firstFileSystemStatuses: Int, $afterFi
       fileSystem(name: $name) {
         statuses(first: $firstFileSystemStatuses, after: $afterFileSystemStatuses) {
       	  items {
-	    fileSystemName
+      	    fileSystemName
             available
             used
             dateTime
@@ -793,7 +793,7 @@ query FileSystemStatuses($name: String!, $lastFileSystemStatuses: Int, $beforeFi
       fileSystem(name: $name) {
         statuses(last: $lastFileSystemStatuses, before: $beforeFileSystemStatuses) {
       	  items {
-	    fileSystemName
+            fileSystemName
             available
             used
             dateTime
