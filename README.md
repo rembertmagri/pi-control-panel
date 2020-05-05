@@ -108,13 +108,16 @@ query RaspberryPi {
       }
     }
     disk {
-      fileSystem
-      type
-      total
-      status {
-        used
-        available
-        dateTime
+      fileSystems {
+        name
+        total
+        type
+        status {
+	  fileSystemName
+          available
+          used
+          dateTime
+        }
       }
     }
     ram {
@@ -735,26 +738,29 @@ HTTP Headers:
 }
 ````
 
-##### Disk First Statuses Query
+##### File System First Statuses Query
 
 Query:
 ````graphql
-query DiskStatuses($firstDiskStatuses: Int, $afterDiskStatuses: String) {
+query FileSystemStatuses($name: String!, $firstFileSystemStatuses: Int, $afterFileSystemStatuses: String) {
   raspberryPi {
     disk {
-      statuses(first: $firstDiskStatuses, after: $afterDiskStatuses) {
-        items {
-          used
-          available
-          dateTime
+      fileSystem(name: $name) {
+        statuses(first: $firstFileSystemStatuses, after: $afterFileSystemStatuses) {
+      	  items {
+	    fileSystemName
+            available
+            used
+            dateTime
+          }
+          pageInfo {
+            startCursor
+            hasPreviousPage
+            endCursor
+            hasNextPage
+          }
+          totalCount
         }
-        pageInfo {
-          startCursor
-          hasPreviousPage
-          endCursor
-          hasNextPage
-        }
-        totalCount
       }
     }
   }
@@ -764,8 +770,9 @@ query DiskStatuses($firstDiskStatuses: Int, $afterDiskStatuses: String) {
 Query variables:
 ````graphql
 {
-  "firstDiskStatuses": 10,
-  "afterDiskStatuses": "ca23bf..."
+  "name": "/dev/root",
+  "firstFileSystemStatuses": 10,
+  "afterFileSystemStatuses": "ca23bf..."
 }
 ````
 
@@ -776,26 +783,29 @@ HTTP Headers:
 }
 ````
 
-##### Disk Last Statuses Query
+##### File System Last Statuses Query
 
 Query:
 ````graphql
-query DiskStatuses($lastDiskStatuses: Int, $beforeDiskStatuses: String) {
+query FileSystemStatuses($name: String!, $lastFileSystemStatuses: Int, $beforeFileSystemStatuses: String) {
   raspberryPi {
     disk {
-      statuses(last: $lastDiskStatuses, before: $beforeDiskStatuses) {
-        items {
-          used
-          available
-          dateTime
+      fileSystem(name: $name) {
+        statuses(last: $lastFileSystemStatuses, before: $beforeFileSystemStatuses) {
+      	  items {
+	    fileSystemName
+            available
+            used
+            dateTime
+          }
+          pageInfo {
+            startCursor
+            hasPreviousPage
+            endCursor
+            hasNextPage
+          }
+          totalCount
         }
-        pageInfo {
-          startCursor
-          hasPreviousPage
-          endCursor
-          hasNextPage
-        }
-        totalCount
       }
     }
   }
@@ -805,8 +815,9 @@ query DiskStatuses($lastDiskStatuses: Int, $beforeDiskStatuses: String) {
 Query variables:
 ````graphql
 {
-  "lastDiskStatuses": 10,
-  "beforeDiskStatuses": "ca23bf..."
+  "name": "/dev/root",
+  "lastFileSystemStatuses": 10,
+  "beforeFileSystemStatuses": "ca23bf..."
 }
 ````
 
@@ -817,16 +828,24 @@ HTTP Headers:
 }
 ````
 
-##### Disk Status Subscription
+##### File System Status Subscription
 
 Query:
 ````graphql
-subscription DiskStatus {
-  diskStatus {
-    used
+subscription FileSystemStatus($fileSystemName: String!) {
+  fileSystemStatus(fileSystemName: $fileSystemName) {
+    fileSystemName
     available
+    used
     dateTime
   }
+}
+````
+
+Query variables:
+````graphql
+{
+  "fileSystemName": "/dev/root"
 }
 ````
 
@@ -1210,13 +1229,16 @@ docker-compose up -d
 ````graphql
   raspberryPi {
     disk {
-      fileSystem
-      type
-      total
-      status {
-        used
-        available
-        dateTime
+      fileSystems {
+        name
+        total
+        type
+        status {
+	  fileSystemName
+          available
+          used
+          dateTime
+        }
       }
     }
     ram {
@@ -1254,7 +1276,7 @@ docker-compose up -d
     }
   }
 ````
-* All Disk Status queries and subscription
+* All File System Status queries and subscription
 * All RAM and Swap Memory Status queries and subscription
 * All Network Status queries and subscription
 * Refresh Token Query
