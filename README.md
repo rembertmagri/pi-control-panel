@@ -85,15 +85,15 @@ query RaspberryPi {
       }
       loadStatus {
         dateTime
-	lastMinuteAverage
-	last5MinutesAverage
-	last15MinutesAverage
-	kernelRealTime
-	userRealTime
-	totalRealTime
-	processes {
-	  processId
-	  user
+        lastMinuteAverage
+        last5MinutesAverage
+        last15MinutesAverage
+        kernelRealTime
+        userRealTime
+        totalRealTime
+        processes {
+          processId
+          user
           priority
           niceValue
           totalMemory
@@ -124,9 +124,9 @@ query RaspberryPi {
       total
       status {
         used
-	free
-	diskCache
-	dateTime
+        free
+        diskCache
+        dateTime
       }
     }
     swapMemory {
@@ -147,7 +147,7 @@ query RaspberryPi {
       hostname
       status {
         uptime
-	dateTime
+        dateTime
       }
     }
     network {
@@ -1234,7 +1234,7 @@ docker-compose up -d
         total
         type
         status {
-	  fileSystemName
+          fileSystemName
           available
           used
           dateTime
@@ -1245,9 +1245,9 @@ docker-compose up -d
       total
       status {
         used
-	free
-	diskCache
-	dateTime
+        free
+        diskCache
+        dateTime
       }
     }
     swapMemory {
@@ -1258,26 +1258,9 @@ docker-compose up -d
         dateTime
       }
     }
-    network {
-      networkInterfaces {
-        name
-        ipAddress
-        subnetMask
-        defaultGateway
-        networkInterfaceStatus {
-          networkInterfaceName
-          totalReceived
-          receiveSpeed
-          totalSent
-          sendSpeed
-          dateTime
-        }
-      }
-    }
   }
 ````
 * All File System Status queries and subscription
 * All RAM and Swap Memory Status queries and subscription
-* All Network Status queries and subscription
 * Refresh Token Query
 * Shutdown Mutation (Returns true, but doesn't actually shut the container down)

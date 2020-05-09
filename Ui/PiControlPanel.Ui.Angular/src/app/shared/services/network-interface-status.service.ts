@@ -243,9 +243,11 @@ export class NetworkInterfaceStatusService {
   }
 
   refetch() {
-    forEach(this.searchQueries, (searchQuery, interfaceName) => {
-      searchQuery.refetch();
-    });
+    if (this.searchQueries) {
+      forEach(this.searchQueries, (searchQuery, fileSystemName) => {
+        searchQuery.refetch();
+      });
+    }
   }
 
 }

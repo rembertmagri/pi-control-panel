@@ -56,7 +56,7 @@
       </div>
 
       <div class="row">
-        <div class="col-sm">
+        <div class="col-sm" *ngIf="raspberryPi.chipset">
           <div class="card">
             <h4 class="card-header">Chipset</h4>
             <div class="card-body">
@@ -73,7 +73,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm">
+        <div class="col-sm" *ngIf="raspberryPi.gpu">
           <div class="card">
             <h4 class="card-header">GPU</h4>
             <div class="card-body">
@@ -86,7 +86,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm">
+        <div class="col-sm" *ngIf="raspberryPi.os">
           <div class="card">
             <h4 class="card-header">OS</h4>
             <div class="card-body">
@@ -114,7 +114,7 @@
       <br />
       <div class="row">
         <div class="col-sm">
-          <div class="card">
+          <div class="card" *ngIf="raspberryPi.cpu">
             <div class="card-header">
               <div class="container">
                 <div class="row d-flex justify-content-between">
@@ -230,7 +230,7 @@
             </div>
           </div>
           <br/>
-          <div class="card">
+          <div class="card" *ngIf="raspberryPi.ram">
             <h4 class="card-header">RAM</h4>
             <div class="card-body">
               <dl class="row">
@@ -253,7 +253,7 @@
             </div>
           </div>
           <br />
-          <div class="card">
+          <div class="card" *ngIf="raspberryPi.swapMemory">
             <h4 class="card-header">Swap Memory</h4>
             <div class="card-body">
               <dl class="row">
@@ -276,7 +276,7 @@
         </div>
 
         <div class="col-sm">
-          <div class="card">
+          <div class="card" *ngIf="raspberryPi.disk">
             <h4 class="card-header">Disk</h4>
             <div class="card-body">
               <div *ngFor="let fileSystem of raspberryPi.disk.fileSystems">
@@ -307,7 +307,7 @@
             </div>
           </div>
           <br />
-          <div class="card">
+          <div class="card" *ngIf="raspberryPi.network">
             <h4 class="card-header">Network</h4>
             <div class="card-body">
               <div *ngFor="let networkInterface of raspberryPi.network.networkInterfaces">

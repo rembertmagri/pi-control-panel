@@ -20,14 +20,15 @@ COPY ["Infrastructure/PiControlPanel.Infrastructure.OnDemand/PiControlPanel.Infr
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence/PiControlPanel.Infrastructure.Persistence.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/PiControlPanel.Infrastructure.Persistence.Contracts.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiControlPanel.Infrastructure.Persistence.Entities.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/"]
-RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj"
+RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj" -r linux-x64
 COPY . .
 WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
-RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release -o /app/build
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release -r linux-x64 -o /app/build
 
 # Publish API Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release -r linux-x64 -o /app/publish
+RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage
 FROM node:13.10.1-buster-slim as build-ui
@@ -43,5 +44,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish-api /app/publish .
 COPY --from=build-ui /app/dist ./PiControlPanel.Ui.Angular/dist
-ENTRYPOINT ["dotnet", "PiControlPanel.Api.GraphQL.dll"]
+ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
 HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:80/healthcheck || exit 1

@@ -14,6 +14,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
+  get,
   remove,
   orderBy,
   map,
@@ -110,163 +111,179 @@ export class DashboardComponent implements OnInit {
         error => this.errorMessage = <any>error
       );
 
-    this.subscribedToNewCpuFrequencies = false;
-    this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
-      .subscribe(
-        result => {
-          this.raspberryPi.cpu.frequency = first(result.items);
-          this.raspberryPi.cpu.frequencies = result.items;
-          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
-            this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
-            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-          }
-          if(!this.subscribedToNewCpuFrequencies) {
-            this.cpuFrequencyService.subscribeToNewCpuFrequencies();
-            this.subscribedToNewCpuFrequencies = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-
-    this.subscribedToNewCpuTemperatures = false;
-    this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
-      .subscribe(
-        result => {
-          this.raspberryPi.cpu.temperature = first(result.items);
-          this.raspberryPi.cpu.temperatures = result.items;
-          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
-            this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
-            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-          }
-          if(!this.subscribedToNewCpuTemperatures) {
-            this.cpuTemperatureService.subscribeToNewCpuTemperatures();
-            this.subscribedToNewCpuTemperatures = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-
-    this.subscribedToNewCpuLoadStatuses = false;
-    this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
-      .subscribe(
-        result => {
-          this.raspberryPi.cpu.loadStatus = first(result.items);
-          this.raspberryPi.cpu.loadStatuses = result.items;
-          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
-            this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
-            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-          }
-          if(!this.subscribedToNewCpuLoadStatuses) {
-            this.cpuLoadStatusService.subscribeToNewCpuLoadStatuses();
-            this.subscribedToNewCpuLoadStatuses = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-
-    this.subscribedToNewRamStatuses = false;
-    this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
-      .subscribe(
-        result => {
-          this.raspberryPi.ram.status = first(result.items);
-          this.raspberryPi.ram.statuses = result.items;
-          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
-            this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
-            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-          }
-          if(!this.subscribedToNewRamStatuses) {
-            this.ramStatusService.subscribeToNewMemoryStatuses();
-            this.subscribedToNewRamStatuses = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-
-    this.subscribedToNewSwapMemoryStatuses = false;
-    this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
-      .subscribe(
-        result => {
-          this.raspberryPi.swapMemory.status = first(result.items);
-          this.raspberryPi.swapMemory.statuses = result.items;
-          if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
-            this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
-            this.modalRef.content.chartData = [...this.modalRef.content.chartData];
-          }
-          if(!this.subscribedToNewSwapMemoryStatuses) {
-            this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
-            this.subscribedToNewSwapMemoryStatuses = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-    
-    this.subscribedToNewOsStatuses = false;
-    this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
-      .subscribe(
-        result => {
-          this.raspberryPi.os.status = first(result.items);
-          this.raspberryPi.os.statuses = result.items;
-          if(!this.subscribedToNewOsStatuses) {
-            this.osStatusService.subscribeToNewOsStatuses();
-            this.subscribedToNewOsStatuses = true;
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-    
-    const numberOfFileSystems = this.raspberryPi.disk.fileSystems.length;
-    this.subscribedToNewDiskFileSystemStatuses = fill(Array(numberOfFileSystems), false);
-    this.diskFileSystemStatusBehaviorSubjectSubscriptions = fill(Array(numberOfFileSystems), null);
-    for(const fileSystem of this.raspberryPi.disk.fileSystems) {
-      const fileSystemName = fileSystem.name;
-      this.diskFileSystemStatusBehaviorSubjectSubscriptions[fileSystemName] =
-        this.diskFileSystemStatusService.getLastFileSystemStatuses(fileSystemName)
-          .subscribe(
-            result => {
-              fileSystem.status = first(result.items);
-              fileSystem.statuses = result.items;
-              if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
-                this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
-                this.subscribedToNewDiskFileSystemStatuses[fileSystemName] = true;
-              }
-            },
-            error => this.errorMessage = <any>error
-          );
+    if(!isNil(get(this.raspberryPi, 'cpu.frequency'))) {
+      this.subscribedToNewCpuFrequencies = false;
+      this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
+        .subscribe(
+          result => {
+            this.raspberryPi.cpu.frequency = first(result.items);
+            this.raspberryPi.cpu.frequencies = result.items;
+            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
+              this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
+              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            }
+            if(!this.subscribedToNewCpuFrequencies) {
+              this.cpuFrequencyService.subscribeToNewCpuFrequencies();
+              this.subscribedToNewCpuFrequencies = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
     }
     
-    const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
-    this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
-    this.networkInterfaceStatusBehaviorSubjectSubscriptions = fill(Array(numberOfNetworkInterfaces), null);
-    for(const networkInterface of this.raspberryPi.network.networkInterfaces) {
-      const interfaceName = networkInterface.name;
+    if(!isNil(get(this.raspberryPi, 'cpu.temperature'))) {
+      this.subscribedToNewCpuTemperatures = false;
+      this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
+        .subscribe(
+          result => {
+            this.raspberryPi.cpu.temperature = first(result.items);
+            this.raspberryPi.cpu.temperatures = result.items;
+            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
+              this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
+              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            }
+            if(!this.subscribedToNewCpuTemperatures) {
+              this.cpuTemperatureService.subscribeToNewCpuTemperatures();
+              this.subscribedToNewCpuTemperatures = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
 
-      this.unselectedChartItems.push(`Network ${interfaceName} Rx (B/s)`);
-      this.unselectedChartItems.push(`Network ${interfaceName} Tx (B/s)`);
+    if(!isNil(get(this.raspberryPi, 'cpu.loadStatus'))) {
+      this.subscribedToNewCpuLoadStatuses = false;
+      this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
+        .subscribe(
+          result => {
+            this.raspberryPi.cpu.loadStatus = first(result.items);
+            this.raspberryPi.cpu.loadStatuses = result.items;
+            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
+              this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
+              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            }
+            if(!this.subscribedToNewCpuLoadStatuses) {
+              this.cpuLoadStatusService.subscribeToNewCpuLoadStatuses();
+              this.subscribedToNewCpuLoadStatuses = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
 
-      this.networkInterfaceStatusBehaviorSubjectSubscriptions[interfaceName] =
-        this.networkInterfaceStatusService.getLastNetworkInterfaceStatuses(interfaceName)
-          .subscribe(
-            result => {
-              networkInterface.status = first(result.items);
-              networkInterface.statuses = result.items;
-              const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
-              if(!isNil(this.modalRef)) {
-                if(includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
-                  this.modalRef.content.chartData[5+2*index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
-                  this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+    if(!isNil(get(this.raspberryPi, 'ram.status'))) {
+      this.subscribedToNewRamStatuses = false;
+      this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
+        .subscribe(
+          result => {
+            this.raspberryPi.ram.status = first(result.items);
+            this.raspberryPi.ram.statuses = result.items;
+            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
+              this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
+              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            }
+            if(!this.subscribedToNewRamStatuses) {
+              this.ramStatusService.subscribeToNewMemoryStatuses();
+              this.subscribedToNewRamStatuses = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
+
+    if(!isNil(get(this.raspberryPi, 'swapMemory.status'))) {
+      this.subscribedToNewSwapMemoryStatuses = false;
+      this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
+        .subscribe(
+          result => {
+            this.raspberryPi.swapMemory.status = first(result.items);
+            this.raspberryPi.swapMemory.statuses = result.items;
+            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
+              this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
+              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            }
+            if(!this.subscribedToNewSwapMemoryStatuses) {
+              this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
+              this.subscribedToNewSwapMemoryStatuses = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
+    
+    if(!isNil(get(this.raspberryPi, 'os.status'))) {
+      this.subscribedToNewOsStatuses = false;
+      this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
+        .subscribe(
+          result => {
+            this.raspberryPi.os.status = first(result.items);
+            this.raspberryPi.os.statuses = result.items;
+            if(!this.subscribedToNewOsStatuses) {
+              this.osStatusService.subscribeToNewOsStatuses();
+              this.subscribedToNewOsStatuses = true;
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
+    
+    if(!isNil(get(this.raspberryPi, 'disk.fileSystems'))) {
+      const numberOfFileSystems = this.raspberryPi.disk.fileSystems.length;
+      this.subscribedToNewDiskFileSystemStatuses = fill(Array(numberOfFileSystems), false);
+      this.diskFileSystemStatusBehaviorSubjectSubscriptions = fill(Array(numberOfFileSystems), null);
+      for(const fileSystem of this.raspberryPi.disk.fileSystems) {
+        const fileSystemName = fileSystem.name;
+        this.diskFileSystemStatusBehaviorSubjectSubscriptions[fileSystemName] =
+          this.diskFileSystemStatusService.getLastFileSystemStatuses(fileSystemName)
+            .subscribe(
+              result => {
+                fileSystem.status = first(result.items);
+                fileSystem.statuses = result.items;
+                if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
+                  this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
+                  this.subscribedToNewDiskFileSystemStatuses[fileSystemName] = true;
                 }
-                if(includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
-                  this.modalRef.content.chartData[5+2*index+1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
-                  this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+              },
+              error => this.errorMessage = <any>error
+            );
+      }
+    }
+    
+    if(!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+      const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
+      this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
+      this.networkInterfaceStatusBehaviorSubjectSubscriptions = fill(Array(numberOfNetworkInterfaces), null);
+      for(const networkInterface of this.raspberryPi.network.networkInterfaces) {
+        const interfaceName = networkInterface.name;
+
+        this.unselectedChartItems.push(`Network ${interfaceName} Rx (B/s)`);
+        this.unselectedChartItems.push(`Network ${interfaceName} Tx (B/s)`);
+
+        this.networkInterfaceStatusBehaviorSubjectSubscriptions[interfaceName] =
+          this.networkInterfaceStatusService.getLastNetworkInterfaceStatuses(interfaceName)
+            .subscribe(
+              result => {
+                networkInterface.status = first(result.items);
+                networkInterface.statuses = result.items;
+                const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
+                if(!isNil(this.modalRef)) {
+                  if(includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
+                    this.modalRef.content.chartData[5+2*index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
+                    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                  }
+                  if(includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
+                    this.modalRef.content.chartData[5+2*index+1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
+                    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                  }
                 }
-              }
-              if(!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
-                this.networkInterfaceStatusService.subscribeToNewNetworkInterfaceStatuses(interfaceName);
-                this.subscribedToNewNetworkInterfaceStatuses[interfaceName] = true;
-              }
-            },
-            error => this.errorMessage = <any>error
-          );
+                if(!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
+                  this.networkInterfaceStatusService.subscribeToNewNetworkInterfaceStatuses(interfaceName);
+                  this.subscribedToNewNetworkInterfaceStatuses[interfaceName] = true;
+                }
+              },
+              error => this.errorMessage = <any>error
+            );
+      }
     }
   }
 
@@ -324,23 +341,25 @@ export class DashboardComponent implements OnInit {
         }
       );
     });
-    forEach(this.raspberryPi.network.networkInterfaces, (networkInterface) => {
-      const interfaceName = networkInterface.name;
-      this.modalRef.content.chartData.push(
-        {
-          name: `Network ${interfaceName} Rx (B/s)`,
-          series: includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`) ?
-            this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName) : []
-        }
-      );
-      this.modalRef.content.chartData.push(
-        {
-          name: `Network ${interfaceName} Tx (B/s)`,
-          series: includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`) ?
-            this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName) : []
-        }
-      );
-    });
+    if(!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+      forEach(this.raspberryPi.network.networkInterfaces, (networkInterface) => {
+        const interfaceName = networkInterface.name;
+        this.modalRef.content.chartData.push(
+          {
+            name: `Network ${interfaceName} Rx (B/s)`,
+            series: includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`) ?
+              this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName) : []
+          }
+        );
+        this.modalRef.content.chartData.push(
+          {
+            name: `Network ${interfaceName} Tx (B/s)`,
+            series: includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`) ?
+              this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName) : []
+          }
+        );
+      });
+    }
     this.modalRef.content.chartData = [...this.modalRef.content.chartData];
   }
 
@@ -449,6 +468,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuNormalizedFrequencies() {
+    if(isNil(get(this.raspberryPi, 'cpu.frequencies'))) {
+      return [];
+    }
     const maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
     const minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'));
     const frequencyData = map(this.raspberryPi.cpu.frequencies, (frequency: ICpuFrequency) => {
@@ -462,6 +484,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuTemperatures() {
+    if(isNil(get(this.raspberryPi, 'cpu.temperatures'))) {
+      return [];
+    }
     const temperatureData = map(this.raspberryPi.cpu.temperatures, (temperature: ICpuTemperature) => {
       return {
         value: temperature.value,
@@ -472,6 +497,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuLoadStatuses() {
+    if(isNil(get(this.raspberryPi, 'cpu.loadStatuses'))) {
+      return [];
+    }
     const loadStatusData = map(this.raspberryPi.cpu.loadStatuses, (loadStatus: ICpuLoadStatus) => {
       return {
         value: loadStatus.totalRealTime,
@@ -486,6 +514,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedRamStatuses() {
+    if(isNil(get(this.raspberryPi, 'ram.statuses'))) {
+      return [];
+    }
     const ramStatusData = map(this.raspberryPi.ram.statuses, (memoryStatus: IRandomAccessMemoryStatus) => {
       const total = memoryStatus.free + memoryStatus.used + memoryStatus.diskCache;
       return {
@@ -497,6 +528,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedSwapMemoryStatuses() {
+    if(isNil(get(this.raspberryPi, 'swapMemory.statuses'))) {
+      return [];
+    }
     const swapMemoryStatusData = map(this.raspberryPi.swapMemory.statuses, (memoryStatus: IMemoryStatus) => {
       const total = memoryStatus.free + memoryStatus.used;
       return {
@@ -508,6 +542,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
+    if(isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+      return [];
+    }
     const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
     const maxReceiveSpeed = max(map(networkInterface.statuses, 'receiveSpeed'));
     const minReceiveSpeed = min(map(networkInterface.statuses, 'receiveSpeed'));
@@ -522,6 +559,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
+    if(isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+      return [];
+    }
     const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
     const maxSendSpeed = max(map(networkInterface.statuses, 'sendSpeed'));
     const minSendSpeed = min(map(networkInterface.statuses, 'sendSpeed'));

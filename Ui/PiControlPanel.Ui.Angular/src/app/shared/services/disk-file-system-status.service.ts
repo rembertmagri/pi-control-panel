@@ -235,9 +235,11 @@ export class FileSystemStatusService {
   }
 
   refetch() {
-    forEach(this.searchQueries, (searchQuery, fileSystemName) => {
-      searchQuery.refetch();
-    });
+    if (this.searchQueries) {
+      forEach(this.searchQueries, (searchQuery, fileSystemName) => {
+        searchQuery.refetch();
+      });
+    }
   }
 
 }

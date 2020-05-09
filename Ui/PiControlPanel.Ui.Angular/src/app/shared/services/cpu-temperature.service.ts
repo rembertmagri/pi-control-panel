@@ -207,7 +207,9 @@ export class CpuTemperatureService {
   }
 
   refetch() {
-    this.searchQuery.refetch()
+    if (this.searchQuery) {
+      this.searchQuery.refetch();
+    }
   }
 
 }

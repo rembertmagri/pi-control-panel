@@ -226,11 +226,11 @@ export class RaspberryPiService {
             .global()
             .centerHorizontally()
             .centerVertically()
-    })
+    });
   }
 
   private showSpinner() {
-    this.overlayRef.attach(new ComponentPortal(MatSpinner))
+    this.overlayRef.attach(new ComponentPortal(MatSpinner));
   }
  
   private stopSpinner() {

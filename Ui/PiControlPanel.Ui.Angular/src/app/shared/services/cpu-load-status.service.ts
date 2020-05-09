@@ -264,7 +264,9 @@ export class CpuLoadStatusService {
   }
 
   refetch() {
-    this.searchQuery.refetch()
+    if (this.searchQuery) {
+      this.searchQuery.refetch();
+    }
   }
 
 }

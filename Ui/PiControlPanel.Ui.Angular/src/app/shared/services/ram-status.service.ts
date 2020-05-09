@@ -213,7 +213,9 @@ export class RamStatusService {
   }
 
   refetch() {
-    this.searchQuery.refetch()
+    if (this.searchQuery) {
+      this.searchQuery.refetch();
+    }
   }
 
 }
