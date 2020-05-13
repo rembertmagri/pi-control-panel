@@ -1,6 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Description>Raspberry Pi control panel application layer services</Description>
+    <Authors>Rembert Magri</Authors>
+    <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 

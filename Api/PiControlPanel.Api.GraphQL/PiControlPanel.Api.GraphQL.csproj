@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <Description>Raspberry Pi control panel API</Description>
+    <Authors>Rembert Magri</Authors>
+    <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>7d783840-9d10-484d-bffb-3901bccf7419</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
