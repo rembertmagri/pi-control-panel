@@ -40,28 +40,29 @@ sudo usermod -aG video picontrolpanel
 sudo mkdir /var/log/picontrolpanel
 sudo chown picontrolpanel /var/log/picontrolpanel
 ````
-2. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /opt/picontrolpanel; copy pi-control-panel\package\pi-control-panel_1.0_armhf\etc\systemd\system\picontrolpanel.service to /etc/systemd/system/picontrolpanel.service
-3. Login as picontrolpanel user
+2. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /opt/picontrolpanel
+3. Copy pi-control-panel\package\pi-control-panel_1.0_armhf\etc\systemd\system\picontrolpanel.service to /etc/systemd/system/picontrolpanel.service
+4. Login as picontrolpanel
 ````bash
 su - picontrolpanel
 ````
-4. Give execution permission to the application
+5. Give execution permission to the application
 ````bash
 chmod +x PiControlPanel.Api.GraphQL
 ````
-5. Run as process
+6. Run as process
 ````bash
 export ASPNETCORE_URLS=http://+:8080
 export ASPNETCORE_ENVIRONMENT=Production
 ./PiControlPanel.Api.GraphQL
 ````
-5. Or run as service
+6. Or run as service
 ````bash
 sudo chmod 644 /etc/systemd/system/picontrolpanel.service
 sudo systemctl enable picontrolpanel
 sudo systemctl start picontrolpanel
 ````
-6. Access http://<<ip_of_raspberry_pi>>:8080/
+7. Access http://<<ip_of_raspberry_pi>>:8080/
 
 #### Available operations
 To test the available operations directly, run the application as a process setting the environment to Development and accessing http://<<ip_of_raspberry_pi>>:8080/playground
