@@ -11,10 +11,12 @@ if [ -d '/opt/picontrolpanel' ]; then
 else
 	echo 'First installing PiControlPanel...'
 	useradd -m picontrolpanel
-	echo picontrolpanel:raspberry | chpasswd
+	echo picontrolpanel:v!p4S#hM | chpasswd
 	usermod -aG sudo picontrolpanel
 	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
 	usermod -aG video picontrolpanel
-	mkdir /var/log/picontrolpanel
-	chown picontrolpanel /var/log/picontrolpanel
+	if [ ! -d '/var/log/picontrolpanel' ]; then
+		mkdir /var/log/picontrolpanel
+		chown picontrolpanel /var/log/picontrolpanel
+	fi
 fi
