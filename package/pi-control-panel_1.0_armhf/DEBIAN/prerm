@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo 'Stopping PiControlPanel service...'
+
+if (systemctl is-active --quiet picontrolpanel) then
+	systemctl stop picontrolpanel
+fi
+if (systemctl is-enabled --quiet picontrolpanel) then
+	systemctl disable picontrolpanel
+fi

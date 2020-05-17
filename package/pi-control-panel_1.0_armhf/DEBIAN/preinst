@@ -3,11 +3,15 @@
 echo 'Looking for old versions of PiControlPanel...'
 
 if [ -d '/opt/picontrolpanel' ]; then
-	systemctl stop picontrolpanel
-	systemctl disable picontrolpanel
+	if (systemctl is-active --quiet picontrolpanel) then
+		systemctl stop picontrolpanel
+	fi
+	if (systemctl is-enabled --quiet picontrolpanel) then
+		systemctl disable picontrolpanel
+	fi
 	rm /etc/systemd/system/picontrolpanel.service
 	rm -f /opt/picontrolpanel
-	echo 'Removed old versions of PiControlPanel'
+	echo 'Removed old version of PiControlPanel'
 else
 	echo 'First installing PiControlPanel...'
 	useradd -m picontrolpanel
