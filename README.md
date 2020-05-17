@@ -1,6 +1,36 @@
 # Pi Control Panel
 
-## Create user to run the app
+## Creating the Debian Package
+
+1. Publish the PiControlPanel.Api.GraphQL project targeting ARM; this will publish the files into pi-control-panel/package/pi-control-panel_1.0_armhf/opt/picontrolpanel
+2. If building on Windows, copy the entire content of pi-control-panel/package to your Raspberry Pi or any other Linux machine and give execution permission to the following files
+````bash
+chmod +x pi-control-panel_1.0_armhf/DEBIAN/preinst
+chmod +x pi-control-panel_1.0_armhf/DEBIAN/postinst
+chmod +x pi-control-panel_1.0_armhf/DEBIAN/prerm
+chmod +x pi-control-panel_1.0_armhf/DEBIAN/postrm
+````
+3. Build the Package
+````bash
+dpkg-deb --build pi-control-panel_1.0_armhf
+````
+
+## Running
+
+### Running on Raspberry Pi from the Debian package
+1. Download or copy the package
+2. Install the package
+````bash
+sudo apt install ./pi-control-panel_1.0_armhf.deb
+````
+3. Access http://<<ip_of_raspberry_pi>>:8080/
+4. To uninstall:
+````bash
+sudo apt remove pi-control-panel
+````
+
+### Running on Raspberry Pi from the source code
+1. Create the user to run the app and the log directory
 ````bash
 sudo useradd -m picontrolpanel
 sudo passwd picontrolpanel
@@ -10,28 +40,28 @@ sudo usermod -aG video picontrolpanel
 sudo mkdir /var/log/picontrolpanel
 sudo chown picontrolpanel /var/log/picontrolpanel
 ````
-
-## Running
-
-### Running on Raspberry Pi
-1. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /home/picontrolpanel
-2. Give execution permission to the application
+2. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /opt/picontrolpanel; copy pi-control-panel\package\pi-control-panel_1.0_armhf\etc\systemd\system\picontrolpanel.service to /etc/systemd/system/picontrolpanel.service
+3. Login as picontrolpanel user
+````bash
+su - picontrolpanel
+````
+4. Give execution permission to the application
 ````bash
 chmod +x PiControlPanel.Api.GraphQL
 ````
-3. Run as process
+5. Run as process
 ````bash
 export ASPNETCORE_URLS=http://+:8080
 export ASPNETCORE_ENVIRONMENT=Production
 ./PiControlPanel.Api.GraphQL
 ````
-4. Or run as service
+5. Or run as service
 ````bash
-sudo cp picontrolpanel.service /etc/systemd/system/picontrolpanel.service
 sudo chmod 644 /etc/systemd/system/picontrolpanel.service
 sudo systemctl enable picontrolpanel
+sudo systemctl start picontrolpanel
 ````
-5. Access http://<<ip_of_raspberry_pi>>:8080/
+6. Access http://<<ip_of_raspberry_pi>>:8080/
 
 #### Available operations
 To test the available operations directly, run the application as a process setting the environment to Development and accessing http://<<ip_of_raspberry_pi>>:8080/playground
