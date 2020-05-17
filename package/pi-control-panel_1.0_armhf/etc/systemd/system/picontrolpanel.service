@@ -7,11 +7,11 @@ StartLimitIntervalSec=0
 Type=exec
 Restart=always
 RestartSec=1
-WorkingDirectory=/home/picontrolpanel
+WorkingDirectory=/opt/picontrolpanel
 User=picontrolpanel
 Environment=ASPNETCORE_URLS=http://+:8080
 Environment=ASPNETCORE_ENVIRONMENT=Production
-ExecStart=/home/picontrolpanel/PiControlPanel.Api.GraphQL
+ExecStart=/opt/picontrolpanel/PiControlPanel.Api.GraphQL
 
 [Install]
 WantedBy=multi-user.target

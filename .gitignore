@@ -351,3 +351,6 @@ MigrationBackup/
 
 # SQLite Databases
 *.db
+
+# Published files
+/package/pi-control-panel_*_armhf/opt/picontrolpanel/**

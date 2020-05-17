@@ -53,15 +53,6 @@
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
-
-    <!-- Include the Systemd service file in the publish output -->
-    <ItemGroup>
-      <SystemdServiceFile Include="../../picontrolpanel.service" />
-      <ResolvedFileToPublish Include="@(SystemdServiceFile)">
-        <RelativePath>%(Filename)%(Extension)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
   </Target>
 
 </Project>

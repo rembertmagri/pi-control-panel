@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo 'Looking for old versions of PiControlPanel...'
+
+if [ -d '/opt/picontrolpanel' ]; then
+	systemctl stop picontrolpanel
+	systemctl disable picontrolpanel
+	rm /etc/systemd/system/picontrolpanel.service
+	rm -f /opt/picontrolpanel
+	echo 'Removed old versions of PiControlPanel'
+else
+	echo 'First installing PiControlPanel...'
+	useradd -m picontrolpanel
+	echo picontrolpanel:raspberry | chpasswd
+	usermod -aG sudo picontrolpanel
+	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
+	usermod -aG video picontrolpanel
+	mkdir /var/log/picontrolpanel
+	chown picontrolpanel /var/log/picontrolpanel
+fi

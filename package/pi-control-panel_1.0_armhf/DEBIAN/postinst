@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo 'Finishing installation of PiControlPanel...'
+
+chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
+systemctl enable picontrolpanel
+systemctl start picontrolpanel
+
+echo 'Installation of PiControlPanel is complete. Login @ "http://<<raspberry_pi_ip>>:8080"'
