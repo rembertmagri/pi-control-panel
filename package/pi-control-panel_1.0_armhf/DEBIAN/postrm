@@ -2,7 +2,7 @@
 
 echo 'Removing PiControlPanel...'
 
-rm -f /var/log/picontrolpanel
+rm -fr /var/log/picontrolpanel
 sed --in-place '/picontrolpanel ALL=(ALL) NOPASSWD: ALL/d' /etc/sudoers
 userdel picontrolpanel
-rm -f /home/picontrolpanel
+rm -fr /home/picontrolpanel

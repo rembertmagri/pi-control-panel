@@ -9,8 +9,8 @@ if [ -d '/opt/picontrolpanel' ]; then
 	if (systemctl is-enabled --quiet picontrolpanel) then
 		systemctl disable picontrolpanel
 	fi
-	rm /etc/systemd/system/picontrolpanel.service
-	rm -f /opt/picontrolpanel
+	rm -f /etc/systemd/system/picontrolpanel.service
+	rm -fr /opt/picontrolpanel
 	echo 'Removed old version of PiControlPanel'
 else
 	echo 'First installing PiControlPanel...'
