@@ -73,6 +73,15 @@ export class DashboardComponent implements OnInit {
   diskFileSystemStatusBehaviorSubjectSubscriptions: Subscription[];
   networkInterfaceStatusBehaviorSubjectSubscriptions: Subscription[];
 
+  cpuFrequencyPeriodicRefetchSubscription: Subscription;
+  cpuTemperaturePeriodicRefetchSubscription: Subscription;
+  cpuLoadStatusPeriodicRefetchSubscription: Subscription;
+  ramStatusPeriodicRefetchSubscription: Subscription;
+  swapMemoryStatusPeriodicRefetchSubscription: Subscription;
+  osStatusPeriodicRefetchSubscription: Subscription;
+  diskFileSystemStatusPeriodicRefetchSubscription: Subscription;
+  networkInterfaceStatusPeriodicRefetchSubscription: Subscription;
+
   isSuperUser: boolean;
   refreshTokenPeriodicallySubscription: Subscription;
   CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
@@ -124,6 +133,13 @@ export class DashboardComponent implements OnInit {
             }
             if(!this.subscribedToNewCpuFrequencies) {
               this.cpuFrequencyService.subscribeToNewCpuFrequencies();
+              this.cpuFrequencyPeriodicRefetchSubscription = this.cpuFrequencyService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `CPU frequency refetched @ ${new Date()}` : "Failed to refetch CPU frequency");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewCpuFrequencies = true;
             }
           },
@@ -144,6 +160,13 @@ export class DashboardComponent implements OnInit {
             }
             if(!this.subscribedToNewCpuTemperatures) {
               this.cpuTemperatureService.subscribeToNewCpuTemperatures();
+              this.cpuTemperaturePeriodicRefetchSubscription = this.cpuTemperatureService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `CPU temperature refetched @ ${new Date()}` : "Failed to refetch CPU temperature");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewCpuTemperatures = true;
             }
           },
@@ -164,6 +187,13 @@ export class DashboardComponent implements OnInit {
             }
             if(!this.subscribedToNewCpuLoadStatuses) {
               this.cpuLoadStatusService.subscribeToNewCpuLoadStatuses();
+              this.cpuLoadStatusPeriodicRefetchSubscription = this.cpuLoadStatusService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `CPU load status refetched @ ${new Date()}` : "Failed to refetch CPU load status");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewCpuLoadStatuses = true;
             }
           },
@@ -184,6 +214,13 @@ export class DashboardComponent implements OnInit {
             }
             if(!this.subscribedToNewRamStatuses) {
               this.ramStatusService.subscribeToNewMemoryStatuses();
+              this.ramStatusPeriodicRefetchSubscription = this.ramStatusService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `RAM status refetched @ ${new Date()}` : "Failed to refetch RAM status");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewRamStatuses = true;
             }
           },
@@ -204,6 +241,13 @@ export class DashboardComponent implements OnInit {
             }
             if(!this.subscribedToNewSwapMemoryStatuses) {
               this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
+              this.swapMemoryStatusPeriodicRefetchSubscription = this.swapMemoryStatusService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `Swap memory status refetched @ ${new Date()}` : "Failed to refetch swap memory status");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewSwapMemoryStatuses = true;
             }
           },
@@ -220,6 +264,13 @@ export class DashboardComponent implements OnInit {
             this.raspberryPi.os.statuses = result.items;
             if(!this.subscribedToNewOsStatuses) {
               this.osStatusService.subscribeToNewOsStatuses();
+              this.osStatusPeriodicRefetchSubscription = this.osStatusService.refetchPeriodically()
+                .subscribe(
+                  result => {
+                    console.log(result ? `OS status refetched @ ${new Date()}` : "Failed to refetch OS status");
+                  },
+                  error => this.errorMessage = <any>error
+                );
               this.subscribedToNewOsStatuses = true;
             }
           },
@@ -241,6 +292,15 @@ export class DashboardComponent implements OnInit {
                 fileSystem.statuses = result.items;
                 if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
                   this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
+                  if (isNil(this.diskFileSystemStatusPeriodicRefetchSubscription)) {
+                    this.diskFileSystemStatusPeriodicRefetchSubscription = this.diskFileSystemStatusService.refetchPeriodically()
+                      .subscribe(
+                        result => {
+                          console.log(result ? `Disk file system statuses refetched @ ${new Date()}` : "Failed to refetch disk file system statuses");
+                        },
+                        error => this.errorMessage = <any>error
+                      );
+                  }
                   this.subscribedToNewDiskFileSystemStatuses[fileSystemName] = true;
                 }
               },
@@ -278,6 +338,15 @@ export class DashboardComponent implements OnInit {
                 }
                 if(!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
                   this.networkInterfaceStatusService.subscribeToNewNetworkInterfaceStatuses(interfaceName);
+                  if (isNil(this.networkInterfaceStatusPeriodicRefetchSubscription)) {
+                    this.networkInterfaceStatusPeriodicRefetchSubscription = this.networkInterfaceStatusService.refetchPeriodically()
+                      .subscribe(
+                        result => {
+                          console.log(result ? `Network interface statuses refetched @ ${new Date()}` : "Failed to refetch network interface statuses");
+                        },
+                        error => this.errorMessage = <any>error
+                      );
+                  }
                   this.subscribedToNewNetworkInterfaceStatuses[interfaceName] = true;
                 }
               },
@@ -294,20 +363,38 @@ export class DashboardComponent implements OnInit {
     if (!isNil(this.cpuFrequencyBehaviorSubjectSubscription)) {
       this.cpuFrequencyBehaviorSubjectSubscription.unsubscribe();
     }
+    if (!isNil(this.cpuFrequencyPeriodicRefetchSubscription)) {
+      this.cpuFrequencyPeriodicRefetchSubscription.unsubscribe();
+    }
     if (!isNil(this.cpuTemperatureBehaviorSubjectSubscription)) {
       this.cpuTemperatureBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.cpuTemperaturePeriodicRefetchSubscription)) {
+      this.cpuTemperaturePeriodicRefetchSubscription.unsubscribe();
     }
     if (!isNil(this.cpuLoadStatusBehaviorSubjectSubscription)) {
       this.cpuLoadStatusBehaviorSubjectSubscription.unsubscribe();
     }
+    if (!isNil(this.cpuLoadStatusPeriodicRefetchSubscription)) {
+      this.cpuLoadStatusPeriodicRefetchSubscription.unsubscribe();
+    }
     if (!isNil(this.ramStatusBehaviorSubjectSubscription)) {
       this.ramStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.ramStatusPeriodicRefetchSubscription)) {
+      this.ramStatusPeriodicRefetchSubscription.unsubscribe();
     }
     if (!isNil(this.swapMemoryStatusBehaviorSubjectSubscription)) {
       this.swapMemoryStatusBehaviorSubjectSubscription.unsubscribe();
     }
+    if (!isNil(this.swapMemoryStatusPeriodicRefetchSubscription)) {
+      this.swapMemoryStatusPeriodicRefetchSubscription.unsubscribe();
+    }
     if (!isNil(this.osStatusBehaviorSubjectSubscription)) {
       this.osStatusBehaviorSubjectSubscription.unsubscribe();
+    }
+    if (!isNil(this.osStatusPeriodicRefetchSubscription)) {
+      this.osStatusPeriodicRefetchSubscription.unsubscribe();
     }
     if (!isEmpty(this.diskFileSystemStatusBehaviorSubjectSubscriptions)) {
       for(const diskFileSystemStatusBehaviorSubjectSubscription of this.diskFileSystemStatusBehaviorSubjectSubscriptions) {
@@ -316,12 +403,18 @@ export class DashboardComponent implements OnInit {
         }
       }
     }
+    if (!isNil(this.diskFileSystemStatusPeriodicRefetchSubscription)) {
+      this.diskFileSystemStatusPeriodicRefetchSubscription.unsubscribe();
+    }
     if (!isEmpty(this.networkInterfaceStatusBehaviorSubjectSubscriptions)) {
       for(const networkInterfaceStatusBehaviorSubjectSubscription of this.networkInterfaceStatusBehaviorSubjectSubscriptions) {
         if (!isNil(networkInterfaceStatusBehaviorSubjectSubscription)) {
           networkInterfaceStatusBehaviorSubjectSubscription.unsubscribe();
         }
       }
+    }
+    if (!isNil(this.networkInterfaceStatusPeriodicRefetchSubscription)) {
+      this.networkInterfaceStatusPeriodicRefetchSubscription.unsubscribe();
     }
   }
 

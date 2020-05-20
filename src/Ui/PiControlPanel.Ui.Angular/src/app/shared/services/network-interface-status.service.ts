@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { unionBy, forEach } from 'lodash';
+import { Observable, timer } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { unionBy, forEach, isNil } from 'lodash';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { INetworkInterfaceStatus } from '../interfaces/raspberry-pi';
 import { Connection } from '../interfaces/connection';
-import { DEFAULT_PAGE_SIZE } from '../constants/consts';
+import { DEFAULT_PAGE_SIZE, QUERY_REFETCH_DUE_TIME, QUERY_REFETCH_PERIOD } from '../constants/consts';
 import { ErrorHandlingService } from './error-handling.service';
 
 @Injectable({
@@ -240,6 +240,21 @@ export class NetworkInterfaceStatusService {
         }
       });
     }
+  }
+
+  refetchPeriodically(): Observable<boolean> {
+    return timer(QUERY_REFETCH_DUE_TIME, QUERY_REFETCH_PERIOD)
+      .pipe(
+        tap(() => {
+          if (this.searchQueries) {
+            forEach(this.searchQueries, (searchQuery, fileSystemName) => {
+              searchQuery.resetLastResults();
+              searchQuery.refetch();
+            });
+          }
+        }),
+        map(result => !isNil(result))
+      );
   }
 
   refetch() {
