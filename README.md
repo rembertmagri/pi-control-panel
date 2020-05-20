@@ -2,17 +2,21 @@
 
 ## Creating the Debian Package
 
-1. Publish the PiControlPanel.Api.GraphQL project targeting ARM; this will publish the files into pi-control-panel/package/pi-control-panel_1.0_armhf/opt/picontrolpanel
+1. Publish the PiControlPanel.Api.GraphQL project targeting ARM; this will publish the files into pi-control-panel/package/pi-control-panel_VERSION.SUBVERSION_armhf/opt/picontrolpanel
 2. If building on Windows, copy the entire content of pi-control-panel/package to your Raspberry Pi or any other Linux machine and give execution permission to the following files
 ````bash
-chmod +x pi-control-panel_1.0_armhf/DEBIAN/preinst
-chmod +x pi-control-panel_1.0_armhf/DEBIAN/postinst
-chmod +x pi-control-panel_1.0_armhf/DEBIAN/prerm
-chmod +x pi-control-panel_1.0_armhf/DEBIAN/postrm
+chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/preinst
+chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/postinst
+chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/prerm
+chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/postrm
 ````
-3. Build the Package
+3. Rename directory pi-control-panel_VERSION.SUBVERSION_armhf to match the version of the packages. Example:
 ````bash
-dpkg-deb --build pi-control-panel_1.0_armhf
+mv pi-control-panel_VERSION.SUBVERSION_armhf pi-control-panel_1.2_armhf
+````
+4. Build the Package
+````bash
+dpkg-deb --build pi-control-panel_1.2_armhf
 ````
 
 ## Running
@@ -25,7 +29,7 @@ cd pi-control-panel-package/
 ````
 2. Install the package
 ````bash
-sudo apt install ./pi-control-panel_1.0_armhf.deb
+sudo apt install ./pi-control-panel_1.2_armhf.deb
 ````
 3. Access http://<<ip_of_raspberry_pi>>:8080/
 4. To uninstall:
