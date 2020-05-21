@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo 'Executing post removal steps...'
+
+systemctl daemon-reload
+systemctl reset-failed
+
+rm -fr /var/log/picontrolpanel
+sed --in-place '/picontrolpanel ALL=(ALL) NOPASSWD: ALL/d' /etc/sudoers
+killall -9 -u picontrolpanel
+userdel picontrolpanel
+rm -fr /home/picontrolpanel
+
+echo -e '\nPiControlPanel was uninstalled successfully\n'

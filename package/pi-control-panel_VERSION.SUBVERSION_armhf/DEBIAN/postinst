@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo 'Executing post installation steps...'
+
+if [ ! $(getent passwd picontrolpanel) ]; then
+	echo 'Creating user...'
+	useradd -m picontrolpanel
+	echo picontrolpanel:v!p4S#hM | chpasswd
+	usermod -aG sudo picontrolpanel
+	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
+	usermod -aG video picontrolpanel
+fi
+
+if [ ! -d '/var/log/picontrolpanel' ]; then
+	echo 'Creating log directory...'
+	mkdir /var/log/picontrolpanel
+	chown picontrolpanel /var/log/picontrolpanel
+fi
+
+chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
+systemctl enable picontrolpanel
+systemctl start picontrolpanel
+
+echo -e '\nInstallation of PiControlPanel is complete.\nLogin @ "http://<<raspberry_pi_ip>>:8080"\n'
