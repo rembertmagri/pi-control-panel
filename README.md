@@ -12,11 +12,11 @@ chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/postrm
 ````
 3. Rename directory pi-control-panel_VERSION.SUBVERSION_armhf to match the version of the packages. Example:
 ````bash
-mv pi-control-panel_VERSION.SUBVERSION_armhf pi-control-panel_1.2_armhf
+mv pi-control-panel_VERSION.SUBVERSION_armhf pi-control-panel_1.3_armhf
 ````
 4. Build the Package
 ````bash
-dpkg-deb --build pi-control-panel_1.2_armhf
+dpkg-deb --build pi-control-panel_1.3_armhf
 ````
 
 ## Running
@@ -29,7 +29,7 @@ cd pi-control-panel-package/
 ````
 2. Install the package
 ````bash
-sudo apt install ./pi-control-panel_1.2_armhf.deb
+sudo apt install ./pi-control-panel_1.3_armhf.deb
 ````
 3. Access http://<<ip_of_raspberry_pi>>:8080/
 4. To uninstall:
