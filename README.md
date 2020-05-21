@@ -5,7 +5,6 @@
 1. Publish the PiControlPanel.Api.GraphQL project targeting ARM; this will publish the files into pi-control-panel/package/pi-control-panel_VERSION.SUBVERSION_armhf/opt/picontrolpanel
 2. If building on Windows, copy the entire content of pi-control-panel/package to your Raspberry Pi or any other Linux machine and give execution permission to the following files
 ````bash
-chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/preinst
 chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/postinst
 chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/prerm
 chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/postrm
