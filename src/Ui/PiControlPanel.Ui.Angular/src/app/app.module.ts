@@ -8,11 +8,10 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { OverlayModule } from '@angular/cdk/overlay'
-import { MatSpinner } from '@angular/material';
+import { MatProgressSpinnerModule, MatSpinner } from '@angular/material/progress-spinner';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 import { NgBytesPipeModule } from 'angular-pipes';
 

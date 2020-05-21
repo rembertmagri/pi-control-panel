@@ -12,7 +12,7 @@
     <UiPath>../../Ui/PiControlPanel.Ui.Angular/</UiPath>
     <PublishTrimmed>true</PublishTrimmed>
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

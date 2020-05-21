@@ -5,7 +5,7 @@ import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.se
 import { RamStatusService } from 'src/app/shared/services/ram-status.service';
 import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
 import { NetworkInterfaceStatusService } from 'src/app/shared/services/network-interface-status.service';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { isNil, get } from 'lodash';
 
 @Component({

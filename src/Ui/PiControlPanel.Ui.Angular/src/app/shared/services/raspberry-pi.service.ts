@@ -9,7 +9,7 @@ import { ErrorHandlingService } from './error-handling.service';
 import { CpuMaxFrequencyLevel } from '../constants/cpu-max-frequency-level';
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { MatSpinner } from '@angular/material';
+import { MatSpinner } from '@angular/material/progress-spinner';
 
 @Injectable({
   providedIn: 'root',
