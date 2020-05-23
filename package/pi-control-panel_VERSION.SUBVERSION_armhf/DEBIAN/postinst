@@ -4,7 +4,7 @@ echo 'Executing post installation steps...'
 
 if [ ! $(getent passwd picontrolpanel) ]; then
 	echo 'Creating user...'
-	useradd -m picontrolpanel
+	useradd -M picontrolpanel
 	echo picontrolpanel:v!p4S#hM | chpasswd
 	usermod -aG sudo picontrolpanel
 	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
@@ -17,8 +17,22 @@ if [ ! -d '/var/log/picontrolpanel' ]; then
 	chown picontrolpanel /var/log/picontrolpanel
 fi
 
+if [ ! -d '/var/db' ]; then
+	echo 'Creating /var/db directory...'
+	mkdir /var/db
+fi
+
+if [ ! -d '/var/db/picontrolpanel' ]; then
+	echo 'Creating db directory...'
+	mkdir /var/db/picontrolpanel
+	chown picontrolpanel /var/db/picontrolpanel
+fi
+
 chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
 systemctl enable picontrolpanel
 systemctl start picontrolpanel
 
-echo -e '\nInstallation of PiControlPanel is complete.\nLogin @ "http://<<raspberry_pi_ip>>:8080"\n'
+echo -e '\nInstallation of PiControlPanel is complete!'
+
+raspberryPiIp=$(hostname -I | cut -d' ' -f1)
+echo -e "Login @ http://localhost:8080 from Raspberry Pi or http://$raspberryPiIp:8080 from another machine\n"
