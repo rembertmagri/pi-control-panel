@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Application
 {
-    using PiControlPanel.Domain.Models.Hardware.Network;
-    using PiControlPanel.Domain.Models.Paging;
     using System;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Network;
+    using PiControlPanel.Domain.Models.Paging;
 
     public interface INetworkService : IBaseService<Network>
     {

@@ -1,5 +1,8 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using global::GraphQL;
     using global::GraphQL.Execution;
     using global::GraphQL.Instrumentation;
@@ -8,9 +11,6 @@
     using global::GraphQL.Types;
     using global::GraphQL.Validation;
     using Microsoft.Extensions.Options;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     public class InstrumentingGraphQLExecutor<TSchema> : DefaultGraphQLExecuter<TSchema>
         where TSchema : ISchema

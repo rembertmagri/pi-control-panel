@@ -1,13 +1,13 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System;
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Paging;
     using PiControlPanel.Domain.Models.Hardware.Memory;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
-    using System;
 
     public class MemoryService<T, U> : BaseService<T>, IMemoryService<T, U>
         where T : Memory
@@ -27,25 +27,25 @@
 
         public async Task<U> GetLastStatusAsync()
         {
-            logger.Debug("Application layer -> MemoryService -> GetLastStatusAsync");
+            this.logger.Debug("Application layer -> MemoryService -> GetLastStatusAsync");
             return await this.persistenceStatusService.GetLastAsync();
         }
 
         public async Task<PagingOutput<U>> GetStatusesAsync(PagingInput pagingInput)
         {
-            logger.Debug("Application layer -> MemoryService -> GetStatusesAsync");
+            this.logger.Debug("Application layer -> MemoryService -> GetStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(pagingInput);
         }
 
         public IObservable<U> GetStatusObservable()
         {
-            logger.Debug("Application layer -> MemoryService -> GetStatusObservable");
+            this.logger.Debug("Application layer -> MemoryService -> GetStatusObservable");
             return ((OnDemand.IMemoryService<T, U>)this.onDemandService).GetStatusObservable();
         }
 
         public async Task SaveStatusAsync()
         {
-            logger.Debug("Application layer -> MemoryService -> SaveStatusAsync");
+            this.logger.Debug("Application layer -> MemoryService -> SaveStatusAsync");
             var status = await ((OnDemand.IMemoryService<T, U>)this.onDemandService).GetStatusAsync();
 
             await this.persistenceStatusService.AddAsync(status);

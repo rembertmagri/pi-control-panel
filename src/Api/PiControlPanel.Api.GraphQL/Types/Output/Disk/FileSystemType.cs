@@ -10,11 +10,11 @@
     {
         public FileSystemType(IDiskService fileSystemService, ILogger logger)
         {
-            Field(x => x.Name);
-            Field(x => x.Type);
-            Field(x => x.Total);
+            this.Field(x => x.Name);
+            this.Field(x => x.Type);
+            this.Field(x => x.Total);
 
-            Field<FileSystemStatusType>()
+            this.Field<FileSystemStatusType>()
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
@@ -25,7 +25,7 @@
                     return await fileSystemService.GetLastFileSystemStatusAsync(context.Source.Name);
                 });
 
-            Connection<FileSystemStatusType>()
+            this.Connection<FileSystemStatusType>()
                 .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>

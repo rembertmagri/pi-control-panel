@@ -8,13 +8,13 @@
 
     public class OsType : ObjectGraphType<Os>
     {
-        public OsType(IOsService osService, ILogger logger)
+        public OsType(IOsService operatingSystemService, ILogger logger)
         {
-            Field(x => x.Name);
-            Field(x => x.Kernel);
-            Field(x => x.Hostname);
+            this.Field(x => x.Name);
+            this.Field(x => x.Kernel);
+            this.Field(x => x.Hostname);
 
-            Field<OsStatusType>()
+            this.Field<OsStatusType>()
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
@@ -22,10 +22,10 @@
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return await osService.GetLastStatusAsync();
+                    return await operatingSystemService.GetLastStatusAsync();
                 });
 
-            Connection<OsStatusType>()
+            this.Connection<OsStatusType>()
                 .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>
@@ -35,7 +35,7 @@
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
-                    var statuses = await osService.GetStatusesAsync(pagingInput);
+                    var statuses = await operatingSystemService.GetStatusesAsync(pagingInput);
 
                     return statuses.ToConnection();
                 });

@@ -28,36 +28,36 @@
         {
             try
             {
-                bool.TryParse(configuration[$"Workers:CpuFrequency:Enabled"], out var enabled);
+                bool.TryParse(this.configuration[$"Workers:CpuFrequency:Enabled"], out var enabled);
                 if (!enabled)
                 {
-                    logger.Warn($"CpuFrequencyWorker is not enabled, returning...");
+                    this.logger.Warn($"CpuFrequencyWorker is not enabled, returning...");
                     return;
                 }
 
-                logger.Info($"CpuFrequencyWorker started");
+                this.logger.Info($"CpuFrequencyWorker started");
 
-                var workerInterval = int.Parse(configuration["Workers:CpuFrequency:Interval"]);
+                var workerInterval = int.Parse(this.configuration["Workers:CpuFrequency:Interval"]);
                 if (workerInterval <= 0)
                 {
-                    logger.Debug($"CpuFrequencyWorker has no interval set for recurring task, returning...");
+                    this.logger.Debug($"CpuFrequencyWorker has no interval set for recurring task, returning...");
                     return;
                 }
 
-                logger.Info($"CpuFrequencyWorker configured to run at interval of {workerInterval} ms");
+                this.logger.Info($"CpuFrequencyWorker configured to run at interval of {workerInterval} ms");
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    logger.Debug($"CpuFrequencyWorker running at: {DateTimeOffset.Now}");
+                    this.logger.Debug($"CpuFrequencyWorker running at: {DateTimeOffset.Now}");
                     await this.SaveRecurring(workerInterval);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                logger.Error(ex, $"error running CpuFrequencyWorker");
+                this.logger.Error(ex, $"error running CpuFrequencyWorker");
             }
             finally
             {
-                logger.Info($"CpuFrequencyWorker ended");
+                this.logger.Info($"CpuFrequencyWorker ended");
             }
         }
 

@@ -1,8 +1,8 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
@@ -24,24 +24,24 @@
 
         public Task<T> GetAsync()
         {
-            logger.Debug($"Application layer -> BaseService<{typeof(T).Name}> -> GetAsync");
-            return persistenceService.GetAsync();
+            this.logger.Debug($"Application layer -> BaseService<{typeof(T).Name}> -> GetAsync");
+            return this.persistenceService.GetAsync();
         }
 
         public async Task SaveAsync()
         {
-            logger.Debug($"Application layer -> BaseService<{typeof(T).Name}> -> SaveAsync");
+            this.logger.Debug($"Application layer -> BaseService<{typeof(T).Name}> -> SaveAsync");
             var onDemandInfo = await this.onDemandService.GetAsync();
 
             var persistedInfo = await this.GetPersistedInfoAsync(onDemandInfo);
             if (persistedInfo == null)
             {
-                logger.Debug($"{typeof(T).Name} info not set on DB, creating...");
+                this.logger.Debug($"{typeof(T).Name} info not set on DB, creating...");
                 await this.persistenceService.AddAsync(onDemandInfo);
             }
             else
             {
-                logger.Debug($"Updating {typeof(T).Name} info on DB...");
+                this.logger.Debug($"Updating {typeof(T).Name} info on DB...");
                 await this.persistenceService.UpdateAsync(onDemandInfo);
             }
         }

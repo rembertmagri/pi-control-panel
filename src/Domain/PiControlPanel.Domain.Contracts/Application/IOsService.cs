@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Application
 {
-    using PiControlPanel.Domain.Models.Hardware.Os;
-    using PiControlPanel.Domain.Models.Paging;
     using System;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Os;
+    using PiControlPanel.Domain.Models.Paging;
 
     public interface IOsService : IBaseService<Os>
     {

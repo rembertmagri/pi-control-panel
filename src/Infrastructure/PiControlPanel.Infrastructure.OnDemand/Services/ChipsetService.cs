@@ -19,22 +19,22 @@
         protected override Chipset GetModel()
         {
             var result = BashCommands.CatProcCpuInfo.Bash();
-            logger.Trace($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             var version = lines.Last(line => line.StartsWith("Hardware"))
                 .Split(':')[1].Trim();
-            logger.Trace($"Chipset version: '{version}'");
+            this.logger.Trace($"Chipset version: '{version}'");
             var revision = lines.Last(line => line.StartsWith("Revision"))
                 .Split(':')[1].Trim();
-            logger.Trace($"Chipset revision: '{revision}'");
+            this.logger.Trace($"Chipset revision: '{revision}'");
             var serial = lines.Last(line => line.StartsWith("Serial"))
                 .Split(':')[1].Trim();
-            logger.Trace($"Chipset serial: '{serial}'");
+            this.logger.Trace($"Chipset serial: '{serial}'");
             var model = lines.Last(line => line.StartsWith("Model"))
                 .Split(':')[1].Trim();
-            logger.Trace($"Chipset model: '{model}'");
+            this.logger.Trace($"Chipset model: '{model}'");
 
             return new Chipset()
             {

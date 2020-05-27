@@ -6,7 +6,7 @@
     using PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Cpu;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
-    
+
     public class CpuService : BaseService<Cpu, Entities.Cpu.Cpu>, ICpuService
     {
         public CpuService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
@@ -17,8 +17,8 @@
 
         public async Task<Cpu> GetAsync(string model)
         {
-            var entity = await repository.GetAsync(c => c.Model == model);
-            return mapper.Map<Cpu>(entity);
+            var entity = await this.repository.GetAsync(c => c.Model == model);
+            return this.mapper.Map<Cpu>(entity);
         }
     }
 }

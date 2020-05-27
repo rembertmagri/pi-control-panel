@@ -1,7 +1,7 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.OnDemand
 {
-    using PiControlPanel.Domain.Models.Authentication;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Authentication;
 
     public interface IUserAccountService
     {

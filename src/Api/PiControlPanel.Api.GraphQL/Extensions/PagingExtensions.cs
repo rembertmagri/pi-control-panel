@@ -1,10 +1,10 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
+    using System.Linq;
     using global::GraphQL.Builders;
     using global::GraphQL.Types.Relay.DataObjects;
     using PiControlPanel.Domain.Models.Hardware;
     using PiControlPanel.Domain.Models.Paging;
-    using System.Linq;
 
     public static class PagingExtensions
     {

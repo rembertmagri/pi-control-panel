@@ -10,7 +10,7 @@
         public ControlPanelDbContext(IConfiguration configuration)
         {
             this.configuration = configuration;
-            Database.EnsureCreated();
+            this.Database.EnsureCreated();
         }
 
         public DbSet<Entities.Chipset> Chipset { get; set; }
@@ -51,7 +51,7 @@
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                var connectionString = this.configuration.GetConnectionString("DefaultConnection");
                 optionsBuilder.UseSqlite(connectionString)
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }

@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 

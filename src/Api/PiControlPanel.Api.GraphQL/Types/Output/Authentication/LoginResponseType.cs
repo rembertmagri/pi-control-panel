@@ -7,9 +7,9 @@
     {
         public LoginResponseType()
         {
-            Field(x => x.Username);
-            Field("jwt", x => x.JsonWebToken);
-            Field(x => x.Roles, false, typeof(ListGraphType<StringGraphType>));
+            this.Field(x => x.Username);
+            this.Field("jwt", x => x.JsonWebToken);
+            this.Field(x => x.Roles, false, typeof(ListGraphType<StringGraphType>));
         }
     }
 }

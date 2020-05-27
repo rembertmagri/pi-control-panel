@@ -13,7 +13,6 @@
         /// <summary>
         /// Commits all changes asynchronously
         /// </summary>
-        /// <returns></returns>
         Task CommitAsync();
 
         /// <summary>

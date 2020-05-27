@@ -24,33 +24,33 @@
         public async Task<T> GetAsync()
         {
             var entity = await this.GetFromRepository();
-            return mapper.Map<T>(entity);
+            return this.mapper.Map<T>(entity);
         }
-        
+
         public async Task AddAsync(T model)
         {
-            var entity = mapper.Map<U>(model);
-            repository.Create(entity);
+            var entity = this.mapper.Map<U>(model);
+            this.repository.Create(entity);
             await this.unitOfWork.CommitAsync();
         }
 
         public async Task UpdateAsync(T model)
         {
-            var entity = mapper.Map<U>(model);
-            repository.Update(entity);
+            var entity = this.mapper.Map<U>(model);
+            this.repository.Update(entity);
             await this.unitOfWork.CommitAsync();
         }
 
         public async Task RemoveAsync(T model)
         {
-            var entity = mapper.Map<U>(model);
-            repository.Remove(entity);
+            var entity = this.mapper.Map<U>(model);
+            this.repository.Remove(entity);
             await this.unitOfWork.CommitAsync();
         }
 
         protected virtual Task<U> GetFromRepository()
         {
-            return repository.GetAsync();
+            return this.repository.GetAsync();
         }
     }
 }

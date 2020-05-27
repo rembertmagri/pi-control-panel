@@ -1,22 +1,21 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Types.Output.Disk
 {
+    using System.Linq;
     using global::GraphQL.Types;
     using NLog;
     using PiControlPanel.Domain.Models.Hardware.Disk;
-    using System.Linq;
 
     public class DiskType : ObjectGraphType<Disk>
     {
         public DiskType(ILogger logger)
         {
-            Field(x => x.FileSystems, false, typeof(ListGraphType<FileSystemType>))
+            this.Field(x => x.FileSystems, false, typeof(ListGraphType<FileSystemType>))
                 .Resolve(context => context.Source.FileSystems);
 
-            Field<FileSystemType>(
+            this.Field<FileSystemType>(
                 "FileSystem",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "Name" }
-                ),
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "Name" }),
                 resolve: context =>
                 {
                     logger.Debug("FileSystem field");

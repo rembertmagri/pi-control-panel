@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Disk
 {
-    using PiControlPanel.Domain.Models.Hardware.Disk;
-    using PiControlPanel.Domain.Models.Paging;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Disk;
+    using PiControlPanel.Domain.Models.Paging;
 
     public interface IFileSystemStatusService
     {

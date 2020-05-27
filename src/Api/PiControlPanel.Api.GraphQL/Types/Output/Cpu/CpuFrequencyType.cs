@@ -7,8 +7,8 @@
     {
         public CpuFrequencyType()
         {
-            Field("value", x => x.Frequency);
-            Field<DateTimeGraphType>("dateTime");
+            this.Field("value", x => x.Frequency);
+            this.Field<DateTimeGraphType>("dateTime");
         }
     }
 }

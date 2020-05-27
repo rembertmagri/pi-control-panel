@@ -5,7 +5,6 @@
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models;
 
-
     public static class GraphQLUserContextExtensions
     {
         public static BusinessContext GetBusinessContext(this GraphQLUserContext graphQLUserContext)

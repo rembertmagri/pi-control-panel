@@ -20,34 +20,34 @@
 
         public Task<bool> RebootAsync()
         {
-            logger.Debug("Application layer -> ControlPanelService -> RebootAsync");
-            return onDemandService.RebootAsync();
+            this.logger.Debug("Application layer -> ControlPanelService -> RebootAsync");
+            return this.onDemandService.RebootAsync();
         }
 
         public Task<bool> ShutdownAsync()
         {
-            logger.Debug("Application layer -> ControlPanelService -> ShutdownAsync");
-            return onDemandService.ShutdownAsync();
+            this.logger.Debug("Application layer -> ControlPanelService -> ShutdownAsync");
+            return this.onDemandService.ShutdownAsync();
         }
 
         public Task<bool> UpdateAsync()
         {
-            logger.Debug("Application layer -> ControlPanelService -> UpdateAsync");
-            return onDemandService.UpdateAsync();
+            this.logger.Debug("Application layer -> ControlPanelService -> UpdateAsync");
+            return this.onDemandService.UpdateAsync();
         }
 
         public async Task<bool> KillAsync(BusinessContext context, int processId)
         {
-            logger.Debug("Application layer -> ControlPanelService -> KillAsync");
+            this.logger.Debug("Application layer -> ControlPanelService -> KillAsync");
 
             var isAuthorizedToKill = await this.IsAuthorizedToKillAsync(context, processId);
             if (!isAuthorizedToKill)
             {
-                logger.Warn($"User '{context.Username}' is not authorized to kill process '{processId}'");
+                this.logger.Warn($"User '{context.Username}' is not authorized to kill process '{processId}'");
                 return false;
             }
 
-            return await onDemandService.KillAsync(context, processId);
+            return await this.onDemandService.KillAsync(context, processId);
         }
 
         public async Task<bool> IsAuthorizedToKillAsync(BusinessContext context, int processId)
@@ -57,14 +57,14 @@
                 return true;
             }
 
-            var processOwnerUsername = await onDemandService.GetProcessOwnerUsernameAsync(processId);
+            var processOwnerUsername = await this.onDemandService.GetProcessOwnerUsernameAsync(processId);
             return context.Username.Equals(processOwnerUsername);
         }
 
         public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
-            logger.Debug("Application layer -> ControlPanelService -> OverclockAsync");
-            return onDemandService.OverclockAsync(cpuMaxFrequencyLevel);
+            this.logger.Debug("Application layer -> ControlPanelService -> OverclockAsync");
+            return this.onDemandService.OverclockAsync(cpuMaxFrequencyLevel);
         }
     }
 }

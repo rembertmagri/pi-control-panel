@@ -34,14 +34,14 @@
         {
             var entity = await this.GetAll(where)
                 .OrderByDescending(t => t.DateTime).FirstOrDefaultAsync();
-            return mapper.Map<T>(entity);
+            return this.mapper.Map<T>(entity);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(LambdaExpression where = null)
         {
             var entities = await this.GetAll(where)
                 .OrderBy(t => t.DateTime).ToListAsync();
-            return mapper.Map<List<T>>(entities);
+            return this.mapper.Map<List<T>>(entities);
         }
 
         public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput, LambdaExpression where = null)
@@ -64,11 +64,13 @@
                     {
                         throw new ArgumentOutOfRangeException("After", $"No entity found with id={pagingInput.After}");
                     }
+
                     totalSkipped = entities
                         .Count(e => e.DateTime <= afterEntity.DateTime);
                     entities = entities
                         .Where(e => e.DateTime > afterEntity.DateTime);
                 }
+
                 entities = entities
                         .Take(pagingInput.First.Value);
                 hasNextPage = totalSkipped + pagingInput.First.Value < totalCount;
@@ -85,11 +87,13 @@
                     {
                         throw new ArgumentOutOfRangeException("Before", $"No entity found with id={pagingInput.Before}");
                     }
+
                     totalSkipped = entities
                         .Count(e => e.DateTime >= beforeEntity.DateTime);
                     entities = entities
                         .Where(e => e.DateTime < beforeEntity.DateTime);
                 }
+
                 entities = entities
                         .Take(pagingInput.Last.Value)
                         .OrderBy(t => t.DateTime);
@@ -101,7 +105,7 @@
             return new PagingOutput<T>()
             {
                 TotalCount = totalCount,
-                Result = mapper.Map<List<T>>(result),
+                Result = this.mapper.Map<List<T>>(result),
                 HasNextPage = hasNextPage,
                 HasPreviousPage = hasPreviousPage
             };
@@ -109,8 +113,8 @@
 
         public async Task AddAsync(T model)
         {
-            var entity = mapper.Map<U>(model);
-            repository.Create(entity);
+            var entity = this.mapper.Map<U>(model);
+            this.repository.Create(entity);
             await this.unitOfWork.CommitAsync();
         }
 
@@ -118,9 +122,10 @@
         {
             if (where == null)
             {
-                return repository.GetAll();
+                return this.repository.GetAll();
             }
-            return repository.GetMany(where as Expression<Func<U, bool>>);
+
+            return this.repository.GetMany(where as Expression<Func<U, bool>>);
         }
     }
 }

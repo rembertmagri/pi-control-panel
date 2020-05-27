@@ -7,10 +7,10 @@
     {
         public FileSystemStatusType()
         {
-            Field(x => x.FileSystemName);
-            Field(x => x.Used);
-            Field(x => x.Available);
-            Field<DateTimeGraphType>("dateTime");
+            this.Field(x => x.FileSystemName);
+            this.Field(x => x.Used);
+            this.Field(x => x.Available);
+            this.Field<DateTimeGraphType>("dateTime");
         }
     }
 }

@@ -6,7 +6,7 @@
     {
         [Required]
         public string NetworkInterfaceName { get; set; }
-        
+
         [Required]
         public long TotalReceived { get; set; }
 

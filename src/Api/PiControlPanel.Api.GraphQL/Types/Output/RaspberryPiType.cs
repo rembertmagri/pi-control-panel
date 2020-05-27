@@ -8,13 +8,18 @@
 
     public class RaspberryPiType : ObjectGraphType
     {
-        public RaspberryPiType(IChipsetService chipsetService, ICpuService cpuService,
+        public RaspberryPiType(
+            IChipsetService chipsetService,
+            ICpuService cpuService,
             IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
-            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IGpuService gpuService,
-            IDiskService diskService, IOsService osService, INetworkService networkService,
+            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService,
+            IGpuService gpuService,
+            IDiskService diskService,
+            IOsService operatingSystemService,
+            INetworkService networkService,
             ILogger logger)
         {
-            Field<ChipsetType>()
+            this.Field<ChipsetType>()
                 .Name("Chipset")
                 .ResolveAsync(async context =>
                 {
@@ -25,7 +30,7 @@
                     return await chipsetService.GetAsync();
                 });
 
-            Field<Cpu.CpuType>()
+            this.Field<Cpu.CpuType>()
                 .Name("Cpu")
                 .ResolveAsync(async context =>
                 {
@@ -36,7 +41,7 @@
                     return await cpuService.GetAsync();
                 });
 
-            Field<MemoryType<RandomAccessMemory, RandomAccessMemoryStatus>>()
+            this.Field<MemoryType<RandomAccessMemory, RandomAccessMemoryStatus>>()
                 .Name("Ram")
                 .ResolveAsync(async context =>
                 {
@@ -47,7 +52,7 @@
                     return await randomAccessMemoryService.GetAsync();
                 });
 
-            Field<MemoryType<SwapMemory, SwapMemoryStatus>>()
+            this.Field<MemoryType<SwapMemory, SwapMemoryStatus>>()
                 .Name("swapMemory")
                 .ResolveAsync(async context =>
                 {
@@ -58,7 +63,7 @@
                     return await swapMemoryService.GetAsync();
                 });
 
-            Field<GpuType>()
+            this.Field<GpuType>()
                 .Name("Gpu")
                 .ResolveAsync(async context =>
                 {
@@ -69,7 +74,7 @@
                     return await gpuService.GetAsync();
                 });
 
-            Field<Disk.DiskType>()
+            this.Field<Disk.DiskType>()
                 .Name("Disk")
                 .ResolveAsync(async context =>
                 {
@@ -80,7 +85,7 @@
                     return await diskService.GetAsync();
                 });
 
-            Field<Os.OsType>()
+            this.Field<Os.OsType>()
                 .Name("Os")
                 .ResolveAsync(async context =>
                 {
@@ -88,10 +93,10 @@
                     GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return await osService.GetAsync();
+                    return await operatingSystemService.GetAsync();
                 });
 
-            Field<Network.NetworkType>()
+            this.Field<Network.NetworkType>()
                 .Name("Network")
                 .ResolveAsync(async context =>
                 {

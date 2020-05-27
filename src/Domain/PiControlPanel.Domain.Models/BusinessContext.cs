@@ -6,17 +6,17 @@
     public class BusinessContext
     {
         /// <summary>
-        /// Username of currently logged in user
+        /// Gets or sets the username of the currently logged in user
         /// </summary>
         public string Username { get; set; }
 
         /// <summary>
-        /// Determine whether user is anonymous or not
+        /// Gets or sets a value indicating whether the user is anonymous or not
         /// </summary>
         public bool IsAnonymous { get; set; }
 
         /// <summary>
-        /// Determine whether user is sudoer or not
+        /// Gets or sets a value indicating whether the user is sudoer or not
         /// </summary>
         public bool IsSuperUser { get; set; }
     }

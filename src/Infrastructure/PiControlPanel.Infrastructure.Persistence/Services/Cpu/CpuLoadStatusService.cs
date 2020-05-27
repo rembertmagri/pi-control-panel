@@ -1,5 +1,10 @@
 ﻿namespace PiControlPanel.Infrastructure.Persistence.Services.Cpu
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -7,11 +12,6 @@
     using PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Cpu;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Repositories;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
 
     public class CpuLoadStatusService :
         BaseTimedService<Domain.Models.Hardware.Cpu.CpuLoadStatus, Entities.Cpu.CpuLoadStatus>,
@@ -19,8 +19,11 @@
     {
         private readonly IConfiguration configuration;
 
-        public CpuLoadStatusService(IConfiguration configuration, IUnitOfWork unitOfWork,
-            IMapper mapper, ILogger logger)
+        public CpuLoadStatusService(
+            IConfiguration configuration,
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            ILogger logger)
             : base(unitOfWork, mapper, logger)
         {
             this.configuration = configuration;
@@ -48,7 +51,7 @@
                 var repository = unitOfWork.CpuLoadStatusRepository;
                 var entities = await repository.GetMany(l => dateTimes.Contains(l.DateTime))
                     .ToDictionaryAsync(i => i.DateTime, i => i);
-                return mapper.Map<Dictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>>(entities);
+                return this.mapper.Map<Dictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>>(entities);
             }
         }
 

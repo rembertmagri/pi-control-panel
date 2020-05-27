@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Application
 {
+    using System;
     using System.Threading.Tasks;
     using PiControlPanel.Domain.Models.Paging;
     using PiControlPanel.Domain.Models.Hardware.Memory;
-    using System;
 
     public interface IMemoryService<T, U> : IBaseService<T>
         where T : Memory

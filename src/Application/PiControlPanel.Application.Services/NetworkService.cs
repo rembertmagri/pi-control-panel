@@ -1,12 +1,12 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Network;
     using PiControlPanel.Domain.Models.Paging;
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
@@ -26,30 +26,30 @@
 
         public async Task<NetworkInterfaceStatus> GetLastNetworkInterfaceStatusAsync(string networkInterfaceName)
         {
-            logger.Debug("Application layer -> NetworkService -> GetLastNetworkInterfaceStatusAsync");
+            this.logger.Debug("Application layer -> NetworkService -> GetLastNetworkInterfaceStatusAsync");
             return await this.persistenceNetworkInterfaceStatusService.GetLastAsync(networkInterfaceName);
         }
 
         public async Task<PagingOutput<NetworkInterfaceStatus>> GetNetworkInterfaceStatusesAsync(string networkInterfaceName, PagingInput pagingInput)
         {
-            logger.Debug("Application layer -> NetworkService -> GetNetworkInterfaceStatusesAsync");
+            this.logger.Debug("Application layer -> NetworkService -> GetNetworkInterfaceStatusesAsync");
             return await this.persistenceNetworkInterfaceStatusService.GetPageAsync(networkInterfaceName, pagingInput);
         }
 
         public IObservable<NetworkInterfaceStatus> GetNetworkInterfaceStatusObservable(string networkInterfaceName)
         {
-            logger.Debug("Application layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
+            this.logger.Debug("Application layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
             return ((OnDemand.INetworkService)this.onDemandService).GetNetworkInterfaceStatusObservable(networkInterfaceName);
         }
 
         public async Task SaveNetworkInterfacesStatusAsync(int samplingInterval)
         {
-            logger.Debug("Application layer -> NetworkService -> SaveNetworkInterfacesStatusAsync");
+            this.logger.Debug("Application layer -> NetworkService -> SaveNetworkInterfacesStatusAsync");
 
             var network = await this.persistenceService.GetAsync();
             if (network == null)
             {
-                logger.Info("Network information not available yet, returning...");
+                this.logger.Info("Network information not available yet, returning...");
                 await Task.Delay(samplingInterval);
                 return;
             }

@@ -7,8 +7,8 @@
     {
         public UserAccountInputType()
         {
-            Field<StringGraphType>("Username");
-            Field<StringGraphType>("Password");
+            this.Field<StringGraphType>("Username");
+            this.Field<StringGraphType>("Password");
         }
     }
 }

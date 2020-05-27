@@ -7,8 +7,8 @@
     {
         public GpuType()
         {
-            Field(x => x.Memory);
-            Field(x => x.Frequency);
+            this.Field(x => x.Memory);
+            this.Field(x => x.Frequency);
         }
     }
 }

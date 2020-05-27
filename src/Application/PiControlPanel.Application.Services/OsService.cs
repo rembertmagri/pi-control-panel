@@ -1,11 +1,11 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System;
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Os;
     using PiControlPanel.Domain.Models.Paging;
-    using System;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
@@ -25,25 +25,25 @@
 
         public async Task<OsStatus> GetLastStatusAsync()
         {
-            logger.Debug("Application layer -> OsService -> GetLastStatusAsync");
+            this.logger.Debug("Application layer -> OsService -> GetLastStatusAsync");
             return await this.persistenceStatusService.GetLastAsync();
         }
 
         public async Task<PagingOutput<OsStatus>> GetStatusesAsync(PagingInput pagingInput)
         {
-            logger.Debug("Application layer -> OsService -> GetStatusesAsync");
+            this.logger.Debug("Application layer -> OsService -> GetStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(pagingInput);
         }
 
         public IObservable<OsStatus> GetStatusObservable()
         {
-            logger.Debug("Application layer -> OsService -> GetStatusObservable");
+            this.logger.Debug("Application layer -> OsService -> GetStatusObservable");
             return ((OnDemand.IOsService)this.onDemandService).GetStatusObservable();
         }
 
         public async Task SaveStatusAsync()
         {
-            logger.Debug("Application layer -> OsService -> SaveStatusAsync");
+            this.logger.Debug("Application layer -> OsService -> SaveStatusAsync");
             var status = await ((OnDemand.IOsService)this.onDemandService).GetStatusAsync();
 
             await this.persistenceStatusService.AddAsync(status);

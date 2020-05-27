@@ -20,9 +20,11 @@
         private readonly IUserAccountService userAccountService;
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
-        
-        public SecurityService(IUserAccountService userAccountService,
-            IConfiguration configuration, ILogger logger)
+
+        public SecurityService(
+            IUserAccountService userAccountService,
+            IConfiguration configuration,
+            ILogger logger)
         {
             this.userAccountService = userAccountService;
             this.configuration = configuration;
@@ -31,7 +33,7 @@
 
         public async Task<LoginResponse> LoginAsync(UserAccount userAccount)
         {
-            logger.Debug("Application layer -> SecurityService -> LoginAsync");
+            this.logger.Debug("Application layer -> SecurityService -> LoginAsync");
 
             if (userAccount == null ||
                 string.IsNullOrWhiteSpace(userAccount.Username) ||
@@ -40,7 +42,7 @@
                 throw new BusinessException("Missing user account information");
             }
 
-            var isUserAccountValid = await userAccountService.ValidateAsync(userAccount);
+            var isUserAccountValid = await this.userAccountService.ValidateAsync(userAccount);
             if (!isUserAccountValid)
             {
                 throw new BusinessException("Invalid user account");
@@ -51,7 +53,7 @@
 
         public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
         {
-            logger.Debug("Application layer -> SecurityService -> GetLoginResponseAsync");
+            this.logger.Debug("Application layer -> SecurityService -> GetLoginResponseAsync");
 
             var jsonWebToken = await this.GenerateJwtSecurityTokenAsync(userAccount);
             var roleClaims = jsonWebToken.Claims.Where(c => c.Type == ClaimTypes.Role);
@@ -66,14 +68,14 @@
 
         private async Task<JwtSecurityToken> GenerateJwtSecurityTokenAsync(UserAccount userAccount)
         {
-            logger.Debug("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
-            
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            this.logger.Debug("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsIdentity = await this.CreateClaimsIdentityAsync(userAccount);
 
-            return new JwtSecurityToken(configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
+            return new JwtSecurityToken(this.configuration["Jwt:Issuer"],
+                this.configuration["Jwt:Audience"],
                 claimsIdentity.Claims,
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: credentials);
@@ -85,7 +87,7 @@
 
             if (userAccount != null)
             {
-                logger.Info($"Creating claims for user {userAccount.Username}");
+                this.logger.Info($"Creating claims for user {userAccount.Username}");
                 identity.AddClaim(new Claim(CustomClaimTypes.Username, userAccount.Username));
                 identity.AddClaim(new Claim(CustomClaimTypes.IsAnonymous, false.ToString()));
                 identity.AddClaim(new Claim(CustomClaimTypes.IsAuthenticated, true.ToString()));
@@ -99,7 +101,7 @@
             }
             else
             {
-                logger.Info("Creating claims for anonymous user");
+                this.logger.Info("Creating claims for anonymous user");
                 identity.AddClaim(new Claim(CustomClaimTypes.IsAnonymous, true.ToString()));
             }
 

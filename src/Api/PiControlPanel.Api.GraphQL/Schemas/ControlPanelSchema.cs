@@ -8,9 +8,9 @@
         public ControlPanelSchema(IDependencyResolver dependencyResolver)
             : base(dependencyResolver)
         {
-            Query = dependencyResolver.Resolve<ControlPanelQuery>();
-            Mutation = dependencyResolver.Resolve<ControlPanelMutation>();
-            Subscription = dependencyResolver.Resolve<ControlPanelSubscription>();
+            this.Query = dependencyResolver.Resolve<ControlPanelQuery>();
+            this.Mutation = dependencyResolver.Resolve<ControlPanelMutation>();
+            this.Subscription = dependencyResolver.Resolve<ControlPanelSubscription>();
         }
     }
 }

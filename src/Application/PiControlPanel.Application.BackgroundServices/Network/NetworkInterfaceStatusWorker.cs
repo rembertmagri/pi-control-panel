@@ -28,36 +28,36 @@
         {
             try
             {
-                bool.TryParse(configuration[$"Workers:NetworkInterfaceStatus:Enabled"], out var enabled);
+                bool.TryParse(this.configuration[$"Workers:NetworkInterfaceStatus:Enabled"], out var enabled);
                 if (!enabled)
                 {
-                    logger.Warn($"NetworkInterfaceStatusWorker is not enabled, returning...");
+                    this.logger.Warn($"NetworkInterfaceStatusWorker is not enabled, returning...");
                     return;
                 }
 
-                logger.Info($"NetworkInterfaceStatusWorker started");
+                this.logger.Info($"NetworkInterfaceStatusWorker started");
 
-                var workerInterval = int.Parse(configuration["Workers:NetworkInterfaceStatus:Interval"]);
+                var workerInterval = int.Parse(this.configuration["Workers:NetworkInterfaceStatus:Interval"]);
                 if (workerInterval <= 0)
                 {
-                    logger.Debug($"NetworkInterfaceStatusWorker has no interval set for recurring task, returning...");
+                    this.logger.Debug($"NetworkInterfaceStatusWorker has no interval set for recurring task, returning...");
                     return;
                 }
 
-                logger.Info($"NetworkInterfaceStatusWorker configured to run at interval of {workerInterval} ms");
+                this.logger.Info($"NetworkInterfaceStatusWorker configured to run at interval of {workerInterval} ms");
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    logger.Debug($"NetworkInterfaceStatusWorker running at: {DateTimeOffset.Now}");
+                    this.logger.Debug($"NetworkInterfaceStatusWorker running at: {DateTimeOffset.Now}");
                     await this.SaveRecurring(workerInterval);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                logger.Error(ex, $"error running NetworkInterfaceStatusWorker");
+                this.logger.Error(ex, $"error running NetworkInterfaceStatusWorker");
             }
             finally
             {
-                logger.Info($"NetworkInterfaceStatusWorker ended");
+                this.logger.Info($"NetworkInterfaceStatusWorker ended");
             }
         }
 

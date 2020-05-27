@@ -8,16 +8,17 @@
     {
         public MemoryStatusType()
         {
-            Field<DateTimeGraphType>("dateTime");
-            Field(x => x.Used);
-            Field(x => x.Free);
-            Field<IntGraphType>(
+            this.Field<DateTimeGraphType>("dateTime");
+            this.Field(x => x.Used);
+            this.Field(x => x.Free);
+            this.Field<IntGraphType>(
                 "DiskCache",
                 resolve: context => {
-                    if(typeof(T) == typeof(RandomAccessMemoryStatus))
+                    if (typeof(T) == typeof(RandomAccessMemoryStatus))
                     {
                         return (context.Source as RandomAccessMemoryStatus).DiskCache;
                     }
+
                     return 0;
             });
         }

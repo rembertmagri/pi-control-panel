@@ -1,8 +1,8 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.OnDemand
 {
-    using PiControlPanel.Domain.Models.Hardware.Os;
     using System;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Os;
 
     public interface IOsService : IBaseService<Os>
     {

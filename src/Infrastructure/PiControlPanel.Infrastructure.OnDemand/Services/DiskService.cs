@@ -25,10 +25,10 @@
 
         public Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
         {
-            logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
+            this.logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
 
             var result = BashCommands.Df.Bash();
-            logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
@@ -52,7 +52,7 @@
 
         public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            logger.Debug("Infra layer -> DiskService -> GetFileSystemStatusObservable");
+            this.logger.Debug("Infra layer -> DiskService -> GetFileSystemStatusObservable");
             return this.fileSystemsStatusSubject
                 .Select(l => l.FirstOrDefault(i => i.FileSystemName == fileSystemName))
                 .AsObservable();
@@ -60,7 +60,7 @@
 
         public void PublishFileSystemsStatus(IList<FileSystemStatus> fileSystemsStatus)
         {
-            logger.Debug("Infra layer -> DiskService -> PublishFileSystemsStatus");
+            this.logger.Debug("Infra layer -> DiskService -> PublishFileSystemsStatus");
             this.fileSystemsStatusSubject.OnNext(fileSystemsStatus);
         }
 
@@ -72,7 +72,7 @@
             };
 
             var result = BashCommands.Df.Bash();
-            logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
             var fileSystemsInfo = lines.Where(l => l.StartsWith("/dev/") && !l.EndsWith("/boot"));
@@ -89,6 +89,7 @@
                         Total = int.Parse(groups["total"].Value)
                     });
             }
+
             return model;
         }
     }

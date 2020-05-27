@@ -15,12 +15,15 @@
 
     public class ControlPanelSubscription : ObjectGraphType
     {
-        public ControlPanelSubscription(ICpuService cpuService, IDiskService diskService,
-            IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
-            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService, IOsService osService,
-            INetworkService networkService, ILogger logger)
+        public ControlPanelSubscription(ICpuService cpuService,
+            IDiskService diskService,
+            IMemoryService<RandomAccessMemory,RandomAccessMemoryStatus> randomAccessMemoryService,
+            IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService,
+            IOsService operatingSystemService,
+            INetworkService networkService,
+            ILogger logger)
         {
-            FieldSubscribe<CpuLoadStatusType>(
+            this.FieldSubscribe<CpuLoadStatusType>(
                 "CpuLoadStatus",
                 resolve: context =>
                 {
@@ -36,7 +39,7 @@
                     return cpuService.GetLoadStatusObservable();
                 });
 
-            FieldSubscribe<CpuTemperatureType>(
+            this.FieldSubscribe<CpuTemperatureType>(
                 "CpuTemperature",
                 resolve: context =>
                 {
@@ -52,7 +55,7 @@
                     return cpuService.GetTemperatureObservable();
                 });
 
-            FieldSubscribe<CpuFrequencyType>(
+            this.FieldSubscribe<CpuFrequencyType>(
                 "CpuFrequency",
                 resolve: context =>
                 {
@@ -68,7 +71,7 @@
                     return cpuService.GetFrequencyObservable();
                 });
 
-            FieldSubscribe<MemoryStatusType<RandomAccessMemoryStatus>>(
+            this.FieldSubscribe<MemoryStatusType<RandomAccessMemoryStatus>>(
                 "RamStatus",
                 resolve: context =>
                 {
@@ -84,7 +87,7 @@
                     return randomAccessMemoryService.GetStatusObservable();
                 });
 
-            FieldSubscribe<MemoryStatusType<SwapMemoryStatus>>(
+            this.FieldSubscribe<MemoryStatusType<SwapMemoryStatus>>(
                 "SwapMemoryStatus",
                 resolve: context =>
                 {
@@ -100,11 +103,10 @@
                     return swapMemoryService.GetStatusObservable();
                 });
 
-            FieldSubscribe<FileSystemStatusType>(
+            this.FieldSubscribe<FileSystemStatusType>(
                 "FileSystemStatus",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "FileSystemName" }
-                ),
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "FileSystemName" }),
                 resolve: context =>
                 {
                     return context.Source;
@@ -121,7 +123,7 @@
                     return diskService.GetFileSystemStatusObservable(fileSystemName);
                 });
 
-            FieldSubscribe<OsStatusType>(
+            this.FieldSubscribe<OsStatusType>(
                 "OsStatus",
                 resolve: context =>
                 {
@@ -134,14 +136,13 @@
                     GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
                     var businessContext = graphQLUserContext.GetBusinessContext();
 
-                    return osService.GetStatusObservable();
+                    return operatingSystemService.GetStatusObservable();
                 });
 
-            FieldSubscribe<NetworkInterfaceStatusType>(
+            this.FieldSubscribe<NetworkInterfaceStatusType>(
                 "NetworkInterfaceStatus",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "NetworkInterfaceName" }
-                ),
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "NetworkInterfaceName" }),
                 resolve: context =>
                 {
                     return context.Source;

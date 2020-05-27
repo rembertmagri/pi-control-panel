@@ -22,116 +22,119 @@
 
         public Task<bool> RebootAsync()
         {
-            logger.Debug("Infra layer -> ControlPanelService -> RebootAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> RebootAsync");
             var result = BashCommands.SudoReboot.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoReboot}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoReboot}' command: '{result}'");
             return Task.FromResult(true);
         }
 
         public Task<bool> ShutdownAsync()
         {
-            logger.Debug("Infra layer -> ControlPanelService -> ShutdownAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> ShutdownAsync");
             var result = BashCommands.SudoShutdown.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
             return Task.FromResult(true);
         }
 
         public Task<bool> UpdateAsync()
         {
-            logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
             var result = BashCommands.SudoAptgetUpdade.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoAptgetUpdade}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoAptgetUpdade}' command: '{result}'");
             result = BashCommands.SudoAptgetUpgrade.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoAptgetUpgrade}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoAptgetUpgrade}' command: '{result}'");
 
             string lastLine = result
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .LastOrDefault();
-            logger.Info($"Firmware update summary: '{lastLine}'");
+            this.logger.Info($"Firmware update summary: '{lastLine}'");
             if ("0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded."
                 .Equals(lastLine))
             {
-                logger.Info("Firmware already up-to-date, no need to update.");
+                this.logger.Info("Firmware already up-to-date, no need to update.");
                 return Task.FromResult(false);
             }
-            
+
             result = BashCommands.SudoAptgetAutoremove.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoAptgetAutoremove}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoremove}' command: '{result}'");
             result = BashCommands.SudoAptgetAutoclean.Bash();
-            logger.Trace($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
 
             return this.RebootAsync();
         }
 
         public Task<bool> KillAsync(BusinessContext context, int processId)
         {
-            logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
 
             var sudoKillCommand = string.Format(BashCommands.SudoKill, processId);
             var result = sudoKillCommand.Bash();
 
             if (!string.IsNullOrEmpty(result))
             {
-                logger.Warn($"Result of '{sudoKillCommand}' command: '{result}'");
+                this.logger.Warn($"Result of '{sudoKillCommand}' command: '{result}'");
                 return Task.FromResult(false);
             }
 
-            logger.Info($"Result of '{sudoKillCommand}' command is empty, success");
+            this.logger.Info($"Result of '{sudoKillCommand}' command is empty, success");
             return Task.FromResult(true);
         }
 
         public Task<string> GetProcessOwnerUsernameAsync(int processId)
         {
-            logger.Debug("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
 
-            var psUserCommand = string.Format(BashCommands.PsUser, processId);
-            var result = psUserCommand.Bash();
+            var processStatusUserCommand = string.Format(BashCommands.PsUser, processId);
+            var result = processStatusUserCommand.Bash();
 
             if (string.IsNullOrEmpty(result))
             {
-                logger.Warn($"Result of '{psUserCommand}' command is empty, process '{processId}' doesn't exist");
+                this.logger.Warn($"Result of '{processStatusUserCommand}' command is empty, process '{processId}' doesn't exist");
                 return Task.FromResult(string.Empty);
             }
 
-            logger.Trace($"Result of '{psUserCommand}' command: '{result}'");
+            this.logger.Trace($"Result of '{processStatusUserCommand}' command: '{result}'");
             return Task.FromResult(result);
         }
 
         public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
-            logger.Debug("Infra layer -> ControlPanelService -> OverclockAsync");
+            this.logger.Debug("Infra layer -> ControlPanelService -> OverclockAsync");
 
             var result = BashCommands.CatBootConfig.Bash();
-            logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
+            this.logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
             var lines = result.Split(new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
             var frequencyLine = lines.FirstOrDefault(line => line.Contains("arm_freq="));
             var frequencyLineRegex = new Regex(@"^(?<commented>#?)\s*arm_freq=(?<frequency>\d+)$");
-            logger.Trace($"Frequency line in config file: '{frequencyLine}'");
+            this.logger.Trace($"Frequency line in config file: '{frequencyLine}'");
             var frequencyLineGroups = frequencyLineRegex.Match(frequencyLine).Groups;
             var currentFrequency = !string.IsNullOrEmpty(frequencyLineGroups["commented"].Value) ?
                 1500 : int.Parse(frequencyLineGroups["frequency"].Value);
 
             if (currentFrequency == (int)cpuMaxFrequencyLevel)
             {
-                logger.Info($"Frequency already set to {currentFrequency}, no need to restart");
+                this.logger.Info($"Frequency already set to {currentFrequency}, no need to restart");
                 return Task.FromResult(false);
             }
 
             var overVoltageLine = lines.FirstOrDefault(line => line.Contains("over_voltage="));
-            
+
             if (string.IsNullOrEmpty(overVoltageLine))
             {
-                logger.Info($"over_voltage configuration didn't exist, creating...");
-                var createOverVoltageConfigCommand = string.Format(BashCommands.SudoSedBootConfig,
-                    frequencyLine, $"#over_voltage=0\\n{frequencyLine}");
+                this.logger.Info($"over_voltage configuration didn't exist, creating...");
+                var createOverVoltageConfigCommand = string.Format(
+                    BashCommands.SudoSedBootConfig,
+                    frequencyLine,
+                    $"#over_voltage=0\\n{frequencyLine}");
                 result = createOverVoltageConfigCommand.Bash();
                 if (!string.IsNullOrEmpty(result))
                 {
-                    logger.Error($"Result of '{createOverVoltageConfigCommand}' command: '{result}', couldn't create over_voltage configuration");
+                    this.logger.Error($"Result of '{createOverVoltageConfigCommand}' command: '{result}', couldn't create over_voltage configuration");
                     throw new BusinessException("Couldn't create over_voltage configuration");
                 }
-                logger.Debug($"Result of '{createOverVoltageConfigCommand}' command is empty, success");
+
+                this.logger.Debug($"Result of '{createOverVoltageConfigCommand}' command is empty, success");
                 overVoltageLine = "#over_voltage=0";
             }
 
@@ -153,25 +156,31 @@
                     throw new BusinessException($"Invalid value for cpu frequency level: {cpuMaxFrequencyLevel}");
             }
 
-            var setOverVoltageConfigCommand = string.Format(BashCommands.SudoSedBootConfig,
-                    $"{overVoltageLine}", $"over_voltage={overVoltage}");
+            var setOverVoltageConfigCommand = string.Format(
+                BashCommands.SudoSedBootConfig,
+                $"{overVoltageLine}",
+                $"over_voltage={overVoltage}");
             result = setOverVoltageConfigCommand.Bash();
             if (!string.IsNullOrEmpty(result))
             {
-                logger.Error($"Result of '{setOverVoltageConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
+                this.logger.Error($"Result of '{setOverVoltageConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
                 throw new BusinessException("Couldn't set over_voltage configuration");
             }
-            logger.Debug($"Result of '{setOverVoltageConfigCommand}' command is empty, success");
 
-            var setFrequencyConfigCommand = string.Format(BashCommands.SudoSedBootConfig,
-                    $"{frequencyLine}", $"arm_freq={frequency}");
+            this.logger.Debug($"Result of '{setOverVoltageConfigCommand}' command is empty, success");
+
+            var setFrequencyConfigCommand = string.Format(
+                BashCommands.SudoSedBootConfig,
+                $"{frequencyLine}",
+                $"arm_freq={frequency}");
             result = setFrequencyConfigCommand.Bash();
             if (!string.IsNullOrEmpty(result))
             {
-                logger.Error($"Result of '{setFrequencyConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
+                this.logger.Error($"Result of '{setFrequencyConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
                 throw new BusinessException("Couldn't set arm_freq configuration");
             }
-            logger.Debug($"Result of '{setFrequencyConfigCommand}' command is empty, success");
+
+            this.logger.Debug($"Result of '{setFrequencyConfigCommand}' command is empty, success");
 
             return this.RebootAsync();
         }

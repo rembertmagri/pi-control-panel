@@ -7,8 +7,8 @@
     {
         public OsStatusType()
         {
-            Field(x => x.Uptime);
-            Field<DateTimeGraphType>("dateTime");
+            this.Field(x => x.Uptime);
+            this.Field<DateTimeGraphType>("dateTime");
         }
     }
 }

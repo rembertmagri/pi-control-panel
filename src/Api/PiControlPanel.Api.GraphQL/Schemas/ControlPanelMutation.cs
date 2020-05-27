@@ -15,7 +15,7 @@
         {
             this.AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
-            FieldAsync<BooleanGraphType>(
+            this.FieldAsync<BooleanGraphType>(
                 "Reboot",
                 resolve: async context =>
                 {
@@ -27,7 +27,7 @@
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            FieldAsync<BooleanGraphType>(
+            this.FieldAsync<BooleanGraphType>(
                 "Shutdown",
                 resolve: async context =>
                 {
@@ -39,7 +39,7 @@
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            FieldAsync<BooleanGraphType>(
+            this.FieldAsync<BooleanGraphType>(
                 "Update",
                 resolve: async context =>
                 {
@@ -51,11 +51,10 @@
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            FieldAsync<BooleanGraphType>(
+            this.FieldAsync<BooleanGraphType>(
                 "Kill",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "ProcessId" }
-                ),
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "ProcessId" }),
                 resolve: async context =>
                 {
                     logger.Info("Kill mutation");
@@ -68,11 +67,10 @@
                 })
                 .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
-            FieldAsync<BooleanGraphType>(
+            this.FieldAsync<BooleanGraphType>(
                 "Overclock",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<CpuMaxFrequencyLevelType>> { Name = "CpuMaxFrequencyLevel" }
-                ),
+                    new QueryArgument<NonNullGraphType<CpuMaxFrequencyLevelType>> { Name = "CpuMaxFrequencyLevel" }),
                 resolve: async context =>
                 {
                     logger.Info("Overclock mutation");

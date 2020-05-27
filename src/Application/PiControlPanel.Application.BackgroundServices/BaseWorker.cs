@@ -28,38 +28,38 @@
         {
             try
             {
-                bool.TryParse(configuration[$"Workers:{typeof(T).Name}:Enabled"], out var enabled);
+                bool.TryParse(this.configuration[$"Workers:{typeof(T).Name}:Enabled"], out var enabled);
                 if (!enabled)
                 {
-                    logger.Warn($"{this.GetType().Name} is not enabled, returning...");
+                    this.logger.Warn($"{this.GetType().Name} is not enabled, returning...");
                     return;
                 }
 
-                logger.Info($"{this.GetType().Name} started");
+                this.logger.Info($"{this.GetType().Name} started");
                 await this.SaveAsync();
 
-                var workerInterval = int.Parse(configuration[$"Workers:{typeof(T).Name}:Interval"]);
+                var workerInterval = int.Parse(this.configuration[$"Workers:{typeof(T).Name}:Interval"]);
                 if (workerInterval <= 0)
                 {
-                    logger.Debug($"{this.GetType().Name} has no interval set for recurring task, returning...");
+                    this.logger.Debug($"{this.GetType().Name} has no interval set for recurring task, returning...");
                     return;
                 }
 
-                logger.Info($"{this.GetType().Name} configured to run at interval of {workerInterval} ms");
+                this.logger.Info($"{this.GetType().Name} configured to run at interval of {workerInterval} ms");
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    logger.Debug($"{this.GetType().Name} running at: {DateTimeOffset.Now}");
+                    this.logger.Debug($"{this.GetType().Name} running at: {DateTimeOffset.Now}");
                     await this.SaveRecurring(stoppingToken);
                     await Task.Delay(workerInterval, stoppingToken);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                logger.Error(ex, $"error running {this.GetType().Name}");
+                this.logger.Error(ex, $"error running {this.GetType().Name}");
             }
             finally
             {
-                logger.Info($"{this.GetType().Name} ended");
+                this.logger.Info($"{this.GetType().Name} ended");
             }
         }
 
@@ -70,7 +70,7 @@
 
         protected virtual Task SaveRecurring(CancellationToken stoppingToken)
         {
-            logger.Debug($"{this.GetType().Name} has no recurring task, returning...");
+            this.logger.Debug($"{this.GetType().Name} has no recurring task, returning...");
             return Task.CompletedTask;
         }
     }

@@ -1,10 +1,10 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.Persistence
 {
-    using PiControlPanel.Domain.Models.Hardware;
-    using PiControlPanel.Domain.Models.Paging;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware;
+    using PiControlPanel.Domain.Models.Paging;
 
     public interface IBaseTimedObjectService<T> where T : BaseTimedObject
     {

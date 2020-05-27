@@ -1,4 +1,4 @@
-namespace PiControlPanel.Api.GraphQL
+﻿namespace PiControlPanel.Api.GraphQL
 {
     using System;
     using System.IO;

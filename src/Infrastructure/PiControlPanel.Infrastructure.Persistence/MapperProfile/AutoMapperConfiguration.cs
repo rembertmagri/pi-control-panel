@@ -51,8 +51,8 @@
                         .ReverseMap();
                     cfg.CreateMap<Models.Network.NetworkInterfaceStatus, Entities.Network.NetworkInterfaceStatus>()
                         .ReverseMap();
-                }
-            );
+                });
+
             return config;
         }
 

@@ -1,7 +1,7 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.Persistence
 {
-    using PiControlPanel.Domain.Models.Hardware;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware;
 
     public interface IChipsetService : IBaseService<Chipset>
     {

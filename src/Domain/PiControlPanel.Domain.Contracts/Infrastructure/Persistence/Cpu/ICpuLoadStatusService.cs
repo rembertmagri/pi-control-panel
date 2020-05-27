@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Cpu
 {
-    using PiControlPanel.Domain.Models.Hardware.Cpu;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Cpu;
 
     public interface ICpuLoadStatusService : IBaseTimedObjectService<CpuLoadStatus>
     {

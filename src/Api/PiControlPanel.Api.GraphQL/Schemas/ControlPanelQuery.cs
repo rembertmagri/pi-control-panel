@@ -15,11 +15,10 @@
     {
         public ControlPanelQuery(ISecurityService securityService, ILogger logger)
         {
-            FieldAsync<LoginResponseType>(
+            this.FieldAsync<LoginResponseType>(
                 "Login",
                 arguments: new QueryArguments(
-                    new QueryArgument<UserAccountInputType> { Name = "UserAccount" }
-                ),
+                    new QueryArgument<UserAccountInputType> { Name = "UserAccount" }),
                 resolve: async context =>
                 {
                     logger.Info("Login query");
@@ -28,7 +27,7 @@
                     return await securityService.LoginAsync(userAccount);
                 });
 
-            FieldAsync<LoginResponseType>(
+            this.FieldAsync<LoginResponseType>(
                 "RefreshToken",
                 resolve: async context =>
                 {
@@ -45,7 +44,7 @@
                 })
                 .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
-            Field<RaspberryPiType>(
+            this.Field<RaspberryPiType>(
                 "RaspberryPi",
                 resolve: context =>
                 {

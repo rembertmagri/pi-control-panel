@@ -1,11 +1,11 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
-    using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
-    using Microsoft.AspNetCore.Http;
-    using Newtonsoft.Json.Linq;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
+    using Microsoft.AspNetCore.Http;
+    using Newtonsoft.Json.Linq;
 
     public class JwtTokenPayloadListener : IOperationMessageListener
     {
@@ -24,7 +24,7 @@
                 if (payload != null)
                 {
                     var authorizationTokenObject = ((JObject)payload)["Authorization"];
-                    
+
                     if (authorizationTokenObject != null)
                     {
                         var token = authorizationTokenObject.ToString().Replace("Bearer ", string.Empty);

@@ -1,7 +1,7 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
-    using global::GraphQL.Server.Transports.AspNetCore;
     using System.Threading.Tasks;
+    using global::GraphQL.Server.Transports.AspNetCore;
     using Microsoft.AspNetCore.Http;
 
     public class GraphQLUserContextBuilder : IUserContextBuilder

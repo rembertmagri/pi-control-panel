@@ -1,12 +1,12 @@
 ﻿namespace PiControlPanel.Application.Services
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Disk;
     using PiControlPanel.Domain.Models.Paging;
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
@@ -26,30 +26,30 @@
 
         public async Task<FileSystemStatus> GetLastFileSystemStatusAsync(string fileSystemName)
         {
-            logger.Debug("Application layer -> DiskService -> GetLastFileSystemStatusAsync");
+            this.logger.Debug("Application layer -> DiskService -> GetLastFileSystemStatusAsync");
             return await this.persistenceStatusService.GetLastAsync(fileSystemName);
         }
 
         public async Task<PagingOutput<FileSystemStatus>> GetFileSystemStatusesAsync(string fileSystemName, PagingInput pagingInput)
         {
-            logger.Debug("Application layer -> DiskService -> GetFileSystemStatusesAsync");
+            this.logger.Debug("Application layer -> DiskService -> GetFileSystemStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(fileSystemName, pagingInput);
         }
 
         public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            logger.Debug("Application layer -> DiskService -> GetFileSystemStatusObservable");
+            this.logger.Debug("Application layer -> DiskService -> GetFileSystemStatusObservable");
             return ((OnDemand.IDiskService)this.onDemandService).GetFileSystemStatusObservable(fileSystemName);
         }
 
         public async Task SaveFileSystemStatusAsync()
         {
-            logger.Debug("Application layer -> DiskService -> SaveFileSystemStatusAsync");
+            this.logger.Debug("Application layer -> DiskService -> SaveFileSystemStatusAsync");
 
             var disk = await this.persistenceService.GetAsync();
             if (disk == null)
             {
-                logger.Info("Disk information not available yet, returning...");
+                this.logger.Info("Disk information not available yet, returning...");
                 return;
             }
 

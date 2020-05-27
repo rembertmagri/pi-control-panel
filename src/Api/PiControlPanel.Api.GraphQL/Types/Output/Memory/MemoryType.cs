@@ -12,9 +12,9 @@
     {
         public MemoryType(IMemoryService<T, U> memoryService, ILogger logger)
         {
-            Field(x => x.Total);
+            this.Field(x => x.Total);
 
-            Field<MemoryStatusType<U>>()
+            this.Field<MemoryStatusType<U>>()
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
@@ -25,7 +25,7 @@
                     return await memoryService.GetLastStatusAsync();
                 });
 
-            Connection<MemoryStatusType<U>>()
+            this.Connection<MemoryStatusType<U>>()
                 .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>

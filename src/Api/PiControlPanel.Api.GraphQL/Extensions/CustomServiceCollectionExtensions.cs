@@ -12,11 +12,18 @@
     using PiControlPanel.Api.GraphQL.Schemas;
     using PiControlPanel.Api.GraphQL.Types.Output;
 
+    /// <summary>
+    /// Extension methods for GraphQL dependency injection
+    /// </summary>
     public static class CustomServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomGraphQL(this IServiceCollection services,
-            IWebHostEnvironment webHostEnvironment) =>
-            services
+        /// <summary>
+        /// The GraphQL user context for the current request
+        /// </summary>
+        public static IServiceCollection AddCustomGraphQL(
+            this IServiceCollection services, IWebHostEnvironment webHostEnvironment)
+        {
+            return services
                 .AddGraphQL(
                     options =>
                     {
@@ -39,6 +46,7 @@
                 .Services
                 .AddTransient<IOperationMessageListener, JwtTokenPayloadListener>()
                 .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
+        }
 
         public static IServiceContainer AddGraphQLServicesDependency(this IServiceContainer container)
         {

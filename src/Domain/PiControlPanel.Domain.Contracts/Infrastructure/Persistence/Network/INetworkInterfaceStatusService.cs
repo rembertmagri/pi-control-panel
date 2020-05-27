@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Contracts.Infrastructure.Persistence.Network
 {
-    using PiControlPanel.Domain.Models.Hardware.Network;
-    using PiControlPanel.Domain.Models.Paging;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PiControlPanel.Domain.Models.Hardware.Network;
+    using PiControlPanel.Domain.Models.Paging;
 
     public interface INetworkInterfaceStatusService
     {

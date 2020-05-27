@@ -7,8 +7,8 @@
     {
         public CpuTemperatureType()
         {
-            Field("value", x => x.Temperature);
-            Field<DateTimeGraphType>("dateTime");
+            this.Field("value", x => x.Temperature);
+            this.Field<DateTimeGraphType>("dateTime");
         }
     }
 }

@@ -7,10 +7,10 @@
     {
         public ChipsetType()
         {
-            Field(x => x.Version);
-            Field(x => x.Revision);
-            Field(x => x.Serial);
-            Field(x => x.Model);
+            this.Field(x => x.Version);
+            this.Field(x => x.Revision);
+            this.Field(x => x.Serial);
+            this.Field(x => x.Model);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace PiControlPanel.Api.GraphQL
+﻿namespace PiControlPanel.Api.GraphQL
 {
     using System;
     using System.Security.Claims;
@@ -48,6 +48,15 @@ namespace PiControlPanel.Api.GraphQL
             this.logger = NLogBuilder.ConfigureNLog("Configuration/nlog.config").GetCurrentClassLogger();
         }
 
+        /// <value>Property <c>isRunningInContainer</c> represents if running the application inside a Docker container.</value>
+        private bool isRunningInContainer
+        {
+            get
+            {
+                return true.ToString().Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -71,23 +80,23 @@ namespace PiControlPanel.Api.GraphQL
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["Jwt:Issuer"],
-                        ValidAudience = configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                        ValidIssuer = this.configuration["Jwt:Issuer"],
+                        ValidAudience = this.configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]))
                     };
 
-                    if (webHostEnvironment.IsDevelopment())
+                    if (this.webHostEnvironment.IsDevelopment())
                     {
                         options.Events = new JwtBearerEvents
                         {
                             OnAuthenticationFailed = context =>
                             {
-                                logger.Warn("OnAuthenticationFailed: " + context.Exception.Message);
+                                this.logger.Warn("OnAuthenticationFailed: " + context.Exception.Message);
                                 return Task.CompletedTask;
                             },
                             OnTokenValidated = context =>
                             {
-                                logger.Trace("OnTokenValidated: " + context.SecurityToken);
+                                this.logger.Trace("OnTokenValidated: " + context.SecurityToken);
                                 return Task.CompletedTask;
                             }
                         };
@@ -122,7 +131,7 @@ namespace PiControlPanel.Api.GraphQL
                 options.AllowSynchronousIO = true;
             });
 
-            if (!isRunningInContainer)
+            if (!this.isRunningInContainer)
             {
                 services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<CpuWorker>();
@@ -134,7 +143,7 @@ namespace PiControlPanel.Api.GraphQL
             }
             else
             {
-                logger.Warn("Running on Docker, not creating incompatible background services.");
+                this.logger.Warn("Running on Docker, not creating incompatible background services.");
             }
 
             services.AddHostedService<DiskWorker>();
@@ -172,8 +181,8 @@ namespace PiControlPanel.Api.GraphQL
             //Registers all services required for the Application layer
             container.RegisterFrom<ApplicationCompositionRoot>();
 
-            container.RegisterSingleton<IConfiguration>(factory => configuration);
-            container.RegisterSingleton<ILogger>(factory => logger);
+            container.RegisterSingleton<IConfiguration>(factory => this.configuration);
+            container.RegisterSingleton<ILogger>(factory => this.logger);
         }
 
         /// <summary>
@@ -210,21 +219,12 @@ namespace PiControlPanel.Api.GraphQL
             {
                 app.UseSpaStaticFiles();
             }
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "PiControlPanel.Ui.Angular";
             });
 
         }
-
-        /// <value>Property <c>isRunningInContainer</c> represents if running the application inside a Docker container.</value>
-        private bool isRunningInContainer
-        {
-            get
-            {
-                return true.ToString().Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), StringComparison.InvariantCultureIgnoreCase);
-            } 
-        }
-
     }
 }
