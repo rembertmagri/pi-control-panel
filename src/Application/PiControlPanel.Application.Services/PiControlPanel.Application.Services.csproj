@@ -5,12 +5,14 @@
     <Authors>Rembert Magri</Authors>
     <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>../../StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="LightInject" Version="6.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.3" />
     <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.1" />
   </ItemGroup>
 
