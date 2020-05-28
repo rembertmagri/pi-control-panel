@@ -6,8 +6,23 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
+    /// <summary>
+    /// The RaspberryPi GraphQL output type.
+    /// </summary>
     public class RaspberryPiType : ObjectGraphType
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RaspberryPiType"/> class.
+        /// </summary>
+        /// <param name="chipsetService">The application layer ChipsetService.</param>
+        /// <param name="cpuService">The application layer CpuService.</param>
+        /// <param name="randomAccessMemoryService">The application layer RandomAccessMemoryService.</param>
+        /// <param name="swapMemoryService">The application layer SwapMemoryService.</param>
+        /// <param name="gpuService">The application layer GpuService.</param>
+        /// <param name="diskService">The application layer DiskService.</param>
+        /// <param name="operatingSystemService">The application layer OsService.</param>
+        /// <param name="networkService">The application layer NetworkService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public RaspberryPiType(
             IChipsetService chipsetService,
             ICpuService cpuService,

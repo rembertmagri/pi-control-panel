@@ -14,8 +14,16 @@
     using NLog.Web;
     using PiControlPanel.Api.GraphQL.Options;
 
+    /// <summary>
+    /// Application entrypoint class.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Application entrypoint method.
+        /// </summary>
+        /// <param name="args">The arguments used when running the application.</param>
+        /// <returns>The execution result code.</returns>
         public static int Main(string[] args)
         {
             var logger = BuildLogger();
@@ -38,6 +46,11 @@
             }
         }
 
+        /// <summary>
+        /// Creates a .Net Core web host builder.
+        /// </summary>
+        /// <param name="args">The arguments used when running the application.</param>
+        /// <returns>The web host builder.</returns>
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseLightInject()
@@ -67,18 +80,18 @@
                 .UseStartup<Startup>();
 
         /// <summary>
-        /// Gets the logger to be used in the application
+        /// Gets the logger to be used in the application.
         /// </summary>
-        /// <returns>An nLog Logger</returns>
+        /// <returns>An NLog Logger instance.</returns>
         private static Logger BuildLogger() => NLogBuilder.ConfigureNLog("Configuration/nlog.config").GetCurrentClassLogger();
 
         /// <summary>
-        /// Loads the configuration information for the app.settings file and it's corresponding environemnt settings file
+        /// Loads the configuration information for the app.settings file and it's corresponding environemnt settings file.
         /// </summary>
-        /// <param name="configurationBuilder">IConfigurationBuilder where the application configuration is loadded into</param>
-        /// <param name="hostingEnvironment">IHostingEnvironment contains current hosting envitonment information</param>
-        /// <param name="args">parameters passed to the aplication at start</param>
-        /// <returns>An IConfigurationBuilder</returns>
+        /// <param name="configurationBuilder">IConfigurationBuilder where the application configuration is loadded into.</param>
+        /// <param name="hostingEnvironment">IHostingEnvironment contains current hosting envitonment information.</param>
+        /// <param name="args">parameters passed to the aplication at start.</param>
+        /// <returns>The configuration builder.</returns>
         private static IConfigurationBuilder AddConfiguration(
             IConfigurationBuilder configurationBuilder,
             IWebHostEnvironment hostingEnvironment,
@@ -113,8 +126,8 @@
                     x => x.AddCommandLine(args));
 
         /// <summary>
-        /// Configure Kestrel server limits from appsettings.json is not supported. So we manually copy them from config.
-        /// See https://github.com/aspnet/KestrelHttpServer/issues/2216
+        /// Configure Kestrel server limits from appsettings.json is not supported, so we manually copy them from config.
+        /// See https://github.com/aspnet/KestrelHttpServer/issues/2216 .
         /// </summary>
         private static void ConfigureKestrelServerLimits(
             WebHostBuilderContext builderContext,

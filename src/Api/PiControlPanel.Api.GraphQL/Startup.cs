@@ -96,12 +96,14 @@
 
             services.AddGraphQLAuth(settings =>
             {
-                settings.AddPolicy(AuthorizationPolicyName.AuthenticatedPolicy,
+                settings.AddPolicy(
+                    AuthorizationPolicyName.AuthenticatedPolicy,
                     p => p
                         .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
                         .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
                         .RequireClaim(ClaimTypes.Role, new string[] { Roles.User }));
-                settings.AddPolicy(AuthorizationPolicyName.SuperUserPolicy,
+                settings.AddPolicy(
+                    AuthorizationPolicyName.SuperUserPolicy,
                     p => p
                         .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
                         .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
@@ -149,9 +151,9 @@
         }
 
         /// <summary>
-        ///     This method is used to add services directly to LightInject
+        ///     This method is used to add services directly to LightInject.
         /// </summary>
-        /// <param name="container">LightInject service container</param>
+        /// <param name="container">LightInject service container.</param>
         public void ConfigureContainer(IServiceContainer container)
         {
             container.SetDefaultLifetime<PerScopeLifetime>();
@@ -169,7 +171,7 @@
             container.Register<IOsService, OsService>();
             container.Register<INetworkService, NetworkService>();
 
-            //Registers all services required for the Application layer
+            // Registers all services required for the Application layer
             container.RegisterFrom<ApplicationCompositionRoot>();
 
             container.RegisterSingleton<IConfiguration>(factory => this.configuration);
@@ -218,7 +220,7 @@
         }
 
         /// <summary>
-        /// Returns true if running the application inside a Docker container
+        /// Returns true if running the application inside a Docker container.
         /// </summary>
         private bool IsRunningInContainer()
         {

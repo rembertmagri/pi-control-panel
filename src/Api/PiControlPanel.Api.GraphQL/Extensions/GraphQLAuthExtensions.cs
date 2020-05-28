@@ -7,8 +7,16 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
 
+    /// <summary>
+    /// Contains extension methods for GraphQL authorization.
+    /// </summary>
     public static class GraphQLAuthExtensions
     {
+        /// <summary>
+        /// Adds custom GraphQL authorization services to the service collection.
+        /// </summary>
+        /// <param name="services">The original service collection.</param>
+        /// <param name="configure">The authorization settings and policies.</param>
         public static void AddGraphQLAuth(this IServiceCollection services, Action<AuthorizationSettings> configure)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

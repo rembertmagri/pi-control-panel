@@ -5,8 +5,16 @@
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models;
 
+    /// <summary>
+    /// Contains extension methods to retrieve the business context from GraphQL user context.
+    /// </summary>
     public static class GraphQLUserContextExtensions
     {
+        /// <summary>
+        /// Creates the BusinessContext from the GraphQLUserContext.
+        /// </summary>
+        /// <param name="graphQLUserContext">The GraphQL user context.</param>
+        /// <returns>The business context created from the GraphQL user context.</returns>
         public static BusinessContext GetBusinessContext(this GraphQLUserContext graphQLUserContext)
         {
             var businessContext = new BusinessContext();

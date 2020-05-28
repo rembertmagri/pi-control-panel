@@ -9,8 +9,16 @@
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models.Enums;
 
+    /// <summary>
+    /// The root mutation GraphQL type.
+    /// </summary>
     public class ControlPanelMutation : ObjectGraphType
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelMutation"/> class.
+        /// </summary>
+        /// <param name="controlPanelService">The application layer ControlPanelService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public ControlPanelMutation(IControlPanelService controlPanelService, ILogger logger)
         {
             this.AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);

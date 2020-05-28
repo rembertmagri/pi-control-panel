@@ -5,8 +5,15 @@
     using NLog;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
+    /// <summary>
+    /// The Disk GraphQL output type.
+    /// </summary>
     public class DiskType : ObjectGraphType<Disk>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiskType"/> class.
+        /// </summary>
+        /// <param name="logger">The NLog logger instance.</param>
         public DiskType(ILogger logger)
         {
             this.Field(x => x.FileSystems, false, typeof(ListGraphType<FileSystemType>))

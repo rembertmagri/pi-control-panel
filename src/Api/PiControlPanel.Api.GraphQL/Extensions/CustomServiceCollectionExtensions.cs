@@ -13,13 +13,16 @@
     using PiControlPanel.Api.GraphQL.Types.Output;
 
     /// <summary>
-    /// Extension methods for GraphQL dependency injection
+    /// Contains extension methods for GraphQL services.
     /// </summary>
     public static class CustomServiceCollectionExtensions
     {
         /// <summary>
-        /// The GraphQL user context for the current request
+        /// Adds custom GraphQL configuration to the service collection.
         /// </summary>
+        /// <param name="services">The original service collection.</param>
+        /// <param name="webHostEnvironment">The instance of the web host environment.</param>
+        /// <returns>The altered service collection.</returns>
         public static IServiceCollection AddCustomGraphQL(
             this IServiceCollection services, IWebHostEnvironment webHostEnvironment)
         {
@@ -32,22 +35,32 @@
 
                         options.EnableMetrics = true;
                     })
+
                 // Adds all graph types in the current assembly with a scoped lifetime.
                 .AddGraphTypes(ServiceLifetime.Scoped)
+
                 // Adds ConnectionType<T>, EdgeType<T> and PageInfoType.
                 .AddRelayGraphTypes()
+
                 // Add a user context from the HttpContext and make it available in field resolvers.
                 // Custom object required for Claims.
                 .AddUserContextBuilder<GraphQLUserContextBuilder>()
-                // Add required services for GraphQL web sockets (support for subscriptions)
+
+                // Add required services for GraphQL web sockets (support for subscriptions).
                 .AddWebSockets()
+
                 // Add GraphQL data loader to reduce the number of calls to our repository.
                 .AddDataLoader()
                 .Services
-                .AddTransient<IOperationMessageListener, JwtTokenPayloadListener>()
+                .AddTransient<IOperationMessageListener, JwtPayloadListener>()
                 .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
         }
 
+        /// <summary>
+        /// Registers GraphQL services for LightInject service container.
+        /// </summary>
+        /// <param name="container">The original service container.</param>
+        /// <returns>The altered service container.</returns>
         public static IServiceContainer AddGraphQLServicesDependency(this IServiceContainer container)
         {
             // Sets LightInject as GraphQL's dependency resolver

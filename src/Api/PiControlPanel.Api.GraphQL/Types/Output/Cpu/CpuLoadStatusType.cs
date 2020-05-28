@@ -7,8 +7,17 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
+    /// <summary>
+    /// The CpuLoadStatus GraphQL output type.
+    /// </summary>
     public class CpuLoadStatusType : ObjectGraphType<CpuLoadStatus>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CpuLoadStatusType"/> class.
+        /// </summary>
+        /// <param name="accessor">GraphQL data loader context accessor.</param>
+        /// <param name="cpuService">The application layer CpuService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public CpuLoadStatusType(
             IDataLoaderContextAccessor accessor,
             ICpuService cpuService,

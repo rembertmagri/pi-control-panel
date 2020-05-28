@@ -3,8 +3,14 @@
     using global::GraphQL.Types;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
+    /// <summary>
+    /// The CpuProcess GraphQL output type.
+    /// </summary>
     public class CpuProcessType : ObjectGraphType<CpuProcess>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CpuProcessType"/> class.
+        /// </summary>
         public CpuProcessType()
         {
             this.Field<DateTimeGraphType>("dateTime");

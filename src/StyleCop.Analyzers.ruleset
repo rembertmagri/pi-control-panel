@@ -102,7 +102,6 @@
     <Rule Id="SA1618" Action="Error" />
     <Rule Id="SA1623" Action="Error" />
     <Rule Id="SA1625" Action="Error" />
-    <Rule Id="SA1629" Action="None" />
     <Rule Id="SA1633" Action="None" />
     <Rule Id="SA1652" Action="None" />
   </Rules>

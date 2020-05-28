@@ -6,8 +6,17 @@
     using PiControlPanel.Domain.Models.Hardware;
     using PiControlPanel.Domain.Models.Paging;
 
+    /// <summary>
+    /// Contains extension methods to handle paging with GraphQL connections.
+    /// </summary>
     public static class PagingExtensions
     {
+        /// <summary>
+        /// Creates paging input object from GraphQL connection context.
+        /// </summary>
+        /// <typeparam name="T">The model generic type parameter.</typeparam>
+        /// <param name="context">The GraphQL connection context.</param>
+        /// <returns>The paging input object.</returns>
         public static PagingInput GetPagingInput<T>(this ResolveConnectionContext<T> context)
         {
             return new PagingInput()
@@ -19,6 +28,12 @@
             };
         }
 
+        /// <summary>
+        /// Creates a GraphQL connection from a paging output object.
+        /// </summary>
+        /// <typeparam name="T">The model generic type parameter.</typeparam>
+        /// <param name="pagingOutput">The paging output object.</param>
+        /// <returns>The GraphQL connection.</returns>
         public static Connection<T> ToConnection<T>(this PagingOutput<T> pagingOutput)
             where T : BaseTimedObject
         {

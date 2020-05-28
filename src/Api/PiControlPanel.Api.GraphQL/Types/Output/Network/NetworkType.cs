@@ -5,8 +5,15 @@
     using NLog;
     using PiControlPanel.Domain.Models.Hardware.Network;
 
+    /// <summary>
+    /// The Network GraphQL output type.
+    /// </summary>
     public class NetworkType : ObjectGraphType<Network>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkType"/> class.
+        /// </summary>
+        /// <param name="logger">The NLog logger instance.</param>
         public NetworkType(ILogger logger)
         {
             this.Field(x => x.NetworkInterfaces, false, typeof(ListGraphType<NetworkInterfaceType>))

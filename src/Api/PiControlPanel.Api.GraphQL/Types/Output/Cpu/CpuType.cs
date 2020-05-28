@@ -6,8 +6,16 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
+    /// <summary>
+    /// The Cpu GraphQL output type.
+    /// </summary>
     public class CpuType : ObjectGraphType<Cpu>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CpuType"/> class.
+        /// </summary>
+        /// <param name="cpuService">The application layer CpuService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public CpuType(ICpuService cpuService, ILogger logger)
         {
             this.Field(x => x.Cores);

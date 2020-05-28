@@ -6,8 +6,16 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
+    /// <summary>
+    /// The FileSystem GraphQL output type.
+    /// </summary>
     public class FileSystemType : ObjectGraphType<FileSystem>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileSystemType"/> class.
+        /// </summary>
+        /// <param name="fileSystemService">The application layer DiskService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public FileSystemType(IDiskService fileSystemService, ILogger logger)
         {
             this.Field(x => x.Name);

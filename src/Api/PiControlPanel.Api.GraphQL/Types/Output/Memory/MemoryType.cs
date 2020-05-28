@@ -6,15 +6,25 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
-    public class MemoryType<T, U> : ObjectGraphType<T>
-        where T : Memory
-        where U : MemoryStatus
+    /// <summary>
+    /// The MemoryType GraphQL output type.
+    /// </summary>
+    /// <typeparam name="TMemory">The Memory generic type parameter.</typeparam>
+    /// <typeparam name="TMemoryStatus">The MemoryStatus generic type parameter.</typeparam>
+    public class MemoryType<TMemory, TMemoryStatus> : ObjectGraphType<TMemory>
+        where TMemory : Memory
+        where TMemoryStatus : MemoryStatus
     {
-        public MemoryType(IMemoryService<T, U> memoryService, ILogger logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoryType{TMemory, TMemoryStatus}"/> class.
+        /// </summary>
+        /// <param name="memoryService">The application layer MemoryService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public MemoryType(IMemoryService<TMemory, TMemoryStatus> memoryService, ILogger logger)
         {
             this.Field(x => x.Total);
 
-            this.Field<MemoryStatusType<U>>()
+            this.Field<MemoryStatusType<TMemoryStatus>>()
                 .Name("Status")
                 .ResolveAsync(async context =>
                 {
@@ -25,7 +35,7 @@
                     return await memoryService.GetLastStatusAsync();
                 });
 
-            this.Connection<MemoryStatusType<U>>()
+            this.Connection<MemoryStatusType<TMemoryStatus>>()
                 .Name("Statuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>

@@ -13,11 +13,25 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
+    /// <summary>
+    /// The root subscription GraphQL type.
+    /// </summary>
     public class ControlPanelSubscription : ObjectGraphType
     {
-        public ControlPanelSubscription(ICpuService cpuService,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelSubscription"/> class.
+        /// </summary>
+        /// <param name="cpuService">The application layer CpuService.</param>
+        /// <param name="diskService">The application layer DiskService.</param>
+        /// <param name="randomAccessMemoryService">The application layer RandomAccessMemoryService.</param>
+        /// <param name="swapMemoryService">The application layer SwapMemoryService.</param>
+        /// <param name="operatingSystemService">The application layer OsService.</param>
+        /// <param name="networkService">The application layer NetworkService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public ControlPanelSubscription(
+            ICpuService cpuService,
             IDiskService diskService,
-            IMemoryService<RandomAccessMemory,RandomAccessMemoryStatus> randomAccessMemoryService,
+            IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus> randomAccessMemoryService,
             IMemoryService<SwapMemory, SwapMemoryStatus> swapMemoryService,
             IOsService operatingSystemService,
             INetworkService networkService,

@@ -7,15 +7,22 @@
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json.Linq;
 
-    public class JwtTokenPayloadListener : IOperationMessageListener
+    /// <inheritdoc/>
+    public class JwtPayloadListener : IOperationMessageListener
     {
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public JwtTokenPayloadListener(IHttpContextAccessor httpContextAccessor)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JwtPayloadListener"/> class,
+        /// a GraphQL custom payload listener to handle JSON Web Token.
+        /// </summary>
+        /// <param name="httpContextAccessor">The Http context accessor that contains the HTTP context.</param>
+        public JwtPayloadListener(IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor;
         }
 
+        /// <inheritdoc/>
         public Task BeforeHandleAsync(MessageHandlingContext context)
         {
             if (MessageType.GQL_CONNECTION_INIT.Equals(context.Message?.Type))
@@ -41,11 +48,13 @@
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public Task HandleAsync(MessageHandlingContext context)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public Task AfterHandleAsync(MessageHandlingContext context)
         {
             return Task.CompletedTask;

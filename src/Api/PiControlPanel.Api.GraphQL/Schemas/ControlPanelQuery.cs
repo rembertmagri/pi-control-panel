@@ -11,8 +11,16 @@
     using PiControlPanel.Domain.Models.Authentication;
     using PiControlPanel.Api.GraphQL.Types.Output.Authentication;
 
+    /// <summary>
+    /// The root query GraphQL type.
+    /// </summary>
     public class ControlPanelQuery : ObjectGraphType
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelQuery"/> class.
+        /// </summary>
+        /// <param name="securityService">The application layer SecurityService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public ControlPanelQuery(ISecurityService securityService, ILogger logger)
         {
             this.FieldAsync<LoginResponseType>(

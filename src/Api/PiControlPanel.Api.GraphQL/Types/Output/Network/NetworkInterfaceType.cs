@@ -6,8 +6,16 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Network;
 
+    /// <summary>
+    /// The NetworkInterface GraphQL output type.
+    /// </summary>
     public class NetworkInterfaceType : ObjectGraphType<NetworkInterface>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkInterfaceType"/> class.
+        /// </summary>
+        /// <param name="networkService">The application layer NetworkService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public NetworkInterfaceType(INetworkService networkService, ILogger logger)
         {
             this.Field(x => x.Name);
