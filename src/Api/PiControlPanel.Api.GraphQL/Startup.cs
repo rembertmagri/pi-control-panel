@@ -48,15 +48,6 @@
             this.logger = NLogBuilder.ConfigureNLog("Configuration/nlog.config").GetCurrentClassLogger();
         }
 
-        /// <value>Property <c>isRunningInContainer</c> represents if running the application inside a Docker container.</value>
-        private bool isRunningInContainer
-        {
-            get
-            {
-                return true.ToString().Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), StringComparison.InvariantCultureIgnoreCase);
-            }
-        }
-
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -131,7 +122,7 @@
                 options.AllowSynchronousIO = true;
             });
 
-            if (!this.isRunningInContainer)
+            if (!this.IsRunningInContainer())
             {
                 services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<CpuWorker>();
@@ -224,7 +215,16 @@
             {
                 spa.Options.SourcePath = "PiControlPanel.Ui.Angular";
             });
+        }
 
+        /// <summary>
+        /// Returns true if running the application inside a Docker container
+        /// </summary>
+        private bool IsRunningInContainer()
+        {
+            return true.ToString().Equals(
+                Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"),
+                StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
