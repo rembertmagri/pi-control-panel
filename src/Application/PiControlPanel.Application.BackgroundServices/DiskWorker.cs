@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
+    /// <inheritdoc/>
     public class DiskWorker : BaseWorker<Disk>
     {
         public DiskWorker(

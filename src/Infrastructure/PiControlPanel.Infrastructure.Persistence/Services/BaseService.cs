@@ -7,6 +7,7 @@
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Entities;
 
+    /// <inheritdoc/>
     public abstract class BaseService<T, U> : IBaseService<T> where U : BaseEntity
     {
         protected IRepositoryBase<U> repository;

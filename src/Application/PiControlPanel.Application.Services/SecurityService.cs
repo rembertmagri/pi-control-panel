@@ -15,6 +15,7 @@
     using PiControlPanel.Domain.Models;
     using PiControlPanel.Domain.Models.Authentication;
 
+    /// <inheritdoc/>
     public class SecurityService : ISecurityService
     {
         private readonly IUserAccountService userAccountService;

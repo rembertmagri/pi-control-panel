@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
+    /// <inheritdoc/>
     public class MemoryWorker<T, U> : BaseWorker<T>
         where T : Memory
         where U : MemoryStatus

@@ -9,6 +9,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class MemoryService<T, U> : BaseService<T>, IMemoryService<T, U>
         where T : Memory
         where U : MemoryStatus

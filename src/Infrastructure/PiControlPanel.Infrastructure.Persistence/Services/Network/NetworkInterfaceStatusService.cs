@@ -12,6 +12,7 @@
     using PiControlPanel.Domain.Models.Paging;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class NetworkInterfaceStatusService :
         BaseTimedService<NetworkInterfaceStatus, Entities.Network.NetworkInterfaceStatus>,
         INetworkInterfaceStatusService

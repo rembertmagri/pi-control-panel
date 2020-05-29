@@ -8,6 +8,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
 
+    /// <inheritdoc/>
     public class NetworkInterfaceStatusWorker : BackgroundService
     {
         protected readonly INetworkService networkService;

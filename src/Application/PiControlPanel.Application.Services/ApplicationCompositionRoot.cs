@@ -18,14 +18,14 @@
 
     /// <summary>
     ///     Implementation of LightInject's ICompositionRoot responsible for
-    ///     registering all services required for the Application layer
+    ///     registering all services required for the Application layer.
     /// </summary>
     public class ApplicationCompositionRoot : ICompositionRoot
     {
         /// <summary>
-        ///     Called after LightInject ServiceContainer RegisterFor method is called
+        ///     Called after LightInject ServiceContainer RegisterFor method is called.
         /// </summary>
-        /// <param name="serviceRegistry">LightInject's service registry</param>
+        /// <param name="serviceRegistry">LightInject's service registry.</param>
         public void Compose(IServiceRegistry serviceRegistry)
         {
             serviceRegistry.Register<IUnitOfWork, UnitOfWork>(new PerRequestLifeTime());

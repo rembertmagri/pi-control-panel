@@ -13,6 +13,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Network;
 
+    /// <inheritdoc/>
     public class NetworkService : BaseService<Network>, INetworkService
     {
         private readonly ISubject<IList<NetworkInterfaceStatus>> networkInterfacesStatusSubject;

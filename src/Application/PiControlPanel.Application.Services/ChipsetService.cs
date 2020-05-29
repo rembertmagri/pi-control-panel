@@ -7,6 +7,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class ChipsetService : BaseService<Chipset>, IChipsetService
     {
         public ChipsetService(

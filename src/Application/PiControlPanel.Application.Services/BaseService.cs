@@ -6,6 +6,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public abstract class BaseService<T> : IBaseService<T>
     {
         protected readonly Persistence.IBaseService<T> persistenceService;

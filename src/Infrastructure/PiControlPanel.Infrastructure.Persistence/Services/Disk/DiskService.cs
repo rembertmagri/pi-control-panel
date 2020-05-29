@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Models.Hardware.Disk;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class DiskService : BaseService<Disk, Entities.Disk.Disk>, IDiskService
     {
         public DiskService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)

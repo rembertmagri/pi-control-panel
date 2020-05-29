@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
+    /// <inheritdoc/>
     public class CpuWorker : BaseWorker<Cpu>
     {
         public CpuWorker(

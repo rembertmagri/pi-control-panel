@@ -6,6 +6,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class GpuService : BaseService<Gpu>, IGpuService
     {
         public GpuService(

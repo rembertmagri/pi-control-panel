@@ -7,6 +7,7 @@
     using NLog;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ControlPanelDbContext databaseContext;

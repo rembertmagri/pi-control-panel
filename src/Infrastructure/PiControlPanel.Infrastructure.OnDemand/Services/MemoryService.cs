@@ -12,6 +12,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
+    /// <inheritdoc/>
     public class MemoryService<T, U> : BaseService<T>, IMemoryService<T, U>
         where T : Memory, new()
         where U : MemoryStatus, new()

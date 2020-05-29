@@ -4,6 +4,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
 
+    /// <inheritdoc/>
     public abstract class BaseService<T> : IBaseService<T>
     {
         protected readonly ILogger logger;

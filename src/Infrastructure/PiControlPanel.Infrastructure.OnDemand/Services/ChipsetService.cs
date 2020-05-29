@@ -9,6 +9,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware;
 
+    /// <inheritdoc/>
     public class ChipsetService : BaseService<Chipset>, IChipsetService
     {
         public ChipsetService(ILogger logger)

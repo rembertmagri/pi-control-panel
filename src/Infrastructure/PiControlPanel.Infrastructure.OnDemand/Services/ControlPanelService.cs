@@ -11,6 +11,7 @@
     using PiControlPanel.Domain.Models;
     using PiControlPanel.Domain.Models.Enums;
 
+    /// <inheritdoc/>
     public class ControlPanelService : IControlPanelService
     {
         private readonly ILogger logger;

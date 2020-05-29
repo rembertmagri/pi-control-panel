@@ -6,6 +6,7 @@
     using PiControlPanel.Domain.Models.Hardware.Cpu;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class CpuTemperatureService :
         BaseTimedService<CpuTemperature, Entities.Cpu.CpuTemperature>,
         ICpuTemperatureService

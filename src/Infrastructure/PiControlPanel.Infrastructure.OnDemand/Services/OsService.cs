@@ -11,6 +11,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Os;
 
+    /// <inheritdoc/>
     public class OsService : BaseService<Os>, IOsService
     {
         private readonly ISubject<OsStatus> operatingSystemStatusSubject;

@@ -5,6 +5,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware;
 
+    /// <inheritdoc/>
     public class ChipsetWorker : BaseWorker<Chipset>
     {
         public ChipsetWorker(

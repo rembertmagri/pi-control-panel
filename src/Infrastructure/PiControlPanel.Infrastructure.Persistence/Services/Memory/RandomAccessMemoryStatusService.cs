@@ -6,6 +6,7 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class RandomAccessMemoryStatusService :
         BaseTimedService<RandomAccessMemoryStatus, Entities.Memory.RandomAccessMemoryStatus>,
         IMemoryStatusService<RandomAccessMemoryStatus>

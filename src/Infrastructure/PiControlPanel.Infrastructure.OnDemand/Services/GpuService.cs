@@ -9,6 +9,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware;
 
+    /// <inheritdoc/>
     public class GpuService : BaseService<Gpu>, IGpuService
     {
         public GpuService(ILogger logger)

@@ -3,6 +3,7 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
+    /// <inheritdoc/>
     public class ControlPanelDbContext : DbContext
     {
         private readonly IConfiguration configuration;

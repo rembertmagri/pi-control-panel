@@ -8,6 +8,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Authentication;
 
+    /// <inheritdoc/>
     public class UserAccountService : IUserAccountService
     {
         private readonly ILogger logger;

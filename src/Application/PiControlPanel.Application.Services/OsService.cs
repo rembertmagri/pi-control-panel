@@ -9,6 +9,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class OsService : BaseService<Os>, IOsService
     {
         private readonly Persistence.Os.IOsStatusService persistenceStatusService;

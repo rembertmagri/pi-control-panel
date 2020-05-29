@@ -10,6 +10,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class DiskService : BaseService<Disk>, IDiskService
     {
         private readonly Persistence.Disk.IFileSystemStatusService persistenceStatusService;

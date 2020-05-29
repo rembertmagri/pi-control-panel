@@ -14,6 +14,7 @@
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Entities;
 
+    /// <inheritdoc/>
     public abstract class BaseTimedService<T, U> : IBaseTimedObjectService<T>
         where T : BaseTimedObject
         where U : BaseTimedEntity
@@ -30,6 +31,7 @@
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         public async Task<T> GetLastAsync(LambdaExpression where = null)
         {
             var entity = await this.GetAll(where)
@@ -37,6 +39,7 @@
             return this.mapper.Map<T>(entity);
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<T>> GetAllAsync(LambdaExpression where = null)
         {
             var entities = await this.GetAll(where)
@@ -44,6 +47,7 @@
             return this.mapper.Map<List<T>>(entities);
         }
 
+        /// <inheritdoc/>
         public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput, LambdaExpression where = null)
         {
             IQueryable<U> entities = this.GetAll(where);
@@ -111,6 +115,7 @@
             };
         }
 
+        /// <inheritdoc/>
         public async Task AddAsync(T model)
         {
             var entity = this.mapper.Map<U>(model);
@@ -118,6 +123,7 @@
             await this.unitOfWork.CommitAsync();
         }
 
+        /// <inheritdoc/>
         protected virtual IQueryable<U> GetAll(LambdaExpression where = null)
         {
             if (where == null)

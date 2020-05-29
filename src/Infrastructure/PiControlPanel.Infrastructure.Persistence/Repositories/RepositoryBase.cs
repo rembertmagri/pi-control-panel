@@ -9,7 +9,9 @@
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Entities;
 
-    public class RepositoryBase<TObject> : IRepositoryBase<TObject> where TObject : BaseEntity
+    /// <inheritdoc/>
+    public class RepositoryBase<TObject> : IRepositoryBase<TObject>
+        where TObject : BaseEntity
     {
         private readonly ControlPanelDbContext context;
         private readonly ILogger logger;

@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Models.Hardware.Network;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class NetworkService : BaseService<Network, Entities.Network.Network>, INetworkService
     {
         public NetworkService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)

@@ -13,6 +13,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
+    /// <inheritdoc/>
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly ISubject<CpuFrequency> cpuFrequencySubject;

@@ -12,6 +12,7 @@
     using OnDemand = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
     using Persistence = PiControlPanel.Domain.Contracts.Infrastructure.Persistence;
 
+    /// <inheritdoc/>
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly Persistence.Cpu.ICpuFrequencyService persistenceFrequencyService;

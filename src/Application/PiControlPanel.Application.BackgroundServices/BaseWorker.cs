@@ -8,6 +8,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
 
+    /// <inheritdoc/>
     public abstract class BaseWorker<T> : BackgroundService
     {
         protected readonly IBaseService<T> service;

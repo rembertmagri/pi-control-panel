@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Models.Enums;
     using Infra = PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
 
+    /// <inheritdoc/>
     public class ControlPanelService : IControlPanelService
     {
         private readonly Infra.IControlPanelService onDemandService;

@@ -11,84 +11,86 @@
     /// Any entity-specific features have to be added to derived interface.
     /// </summary>
     /// <typeparam name="T">The entity for the repository</typeparam>
-    public interface IRepositoryBase<T> where T : BaseEntity
+    public interface IRepositoryBase<T>
+        where T : BaseEntity
     {
         /// <summary>
-        /// Returns all records
+        /// Returns all records.
         /// </summary>
-        /// <returns>returns IQueryable</returns>
+        /// <returns>returns IQueryable.</returns>
         IQueryable<T> GetAll();
 
         /// <summary>
-        /// Returns multiple records for the given where expression
+        /// Returns multiple records for the given where expression.
         /// </summary>
-        /// <param name="where">expression to filter the records</param>
-        /// <returns>returns IQueryable</returns>
+        /// <param name="where">expression to filter the records.</param>
+        /// <returns>returns IQueryable.</returns>
         IQueryable<T> GetMany(Expression<Func<T, bool>> where);
 
         /// <summary>
-        /// Returns true or false based on the where expression
+        /// Returns true or false based on the where expression.
         /// </summary>
-        /// <param name="where">expression to filter the records</param>
-        /// <returns>returns true or false</returns>
+        /// <param name="where">expression to filter the records.</param>
+        /// <returns>returns true or false.</returns>
         Task<bool> ExistsAsync(Expression<Func<T, bool>> where);
 
         /// <summary>
-        /// Returns single record. If not found then returns null
+        /// Returns single record. If not found then returns null.
         /// </summary>
-        /// <returns>returns object or null</returns>
+        /// <returns>returns object or null.</returns>
         Task<T> GetAsync();
 
         /// <summary>
-        /// Returns single record based on the where expression. If not found then returns null
+        /// Returns single record based on the where expression. If not found then returns null.
         /// </summary>
-        /// <param name="where">expression to filter the records</param>
-        /// <returns>returns object or null</returns>
+        /// <param name="where">expression to filter the records.</param>
+        /// <returns>returns object or null.</returns>
         Task<T> GetAsync(Expression<Func<T, bool>> where);
 
         /// <summary>
-        /// Returns single record and related include expression. if not found then returns null
+        /// Returns single record and related include expression. if not found then returns null.
         /// </summary>
-        /// <param name="include">expression to include the related tables data</param>
-        /// <returns>returns object or null</returns>
+        /// <param name="include">expression to include the related tables data.</param>
+        /// <returns>returns object or null.</returns>
         Task<T> GetAsync(Expression<Func<T, object>> include);
 
         /// <summary>
-        /// Returns single record based on the where expression and related include expression. if not found then returns null
+        /// Returns single record based on the where expression and related include expression. if not found then returns null.
         /// </summary>
-        /// <param name="where">expression to filter the records</param>
-        /// <param name="include">expression to include the related tables data</param>
-        /// <returns>returns object or null</returns>
+        /// <param name="where">expression to filter the records.</param>
+        /// <param name="include">expression to include the related tables data.</param>
+        /// <returns>returns object or null.</returns>
         Task<T> GetAsync(Expression<Func<T, bool>> where, Expression<Func<T, object>> include);
 
         /// <summary>
-        /// Updates the given entity in the database
+        /// Updates the given entity in the database.
         /// </summary>
-        /// <param name="entity">entity to be updated in the database</param>
+        /// <param name="entity">entity to be updated in the database.</param>
         void Update(T entity);
 
         /// <summary>
-        /// Creates many given entities in the database
+        /// Creates many given entities in the database.
         /// </summary>
-        /// <param name="entities">entities to be created in the database</param>
+        /// <param name="entities">entities to be created in the database.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task CreateManyAsync(T[] entities);
 
         /// <summary>
-        /// Creates the given entity in the database
+        /// Creates the given entity in the database.
         /// </summary>
-        /// <param name="entity">entity to be created in the database</param>
+        /// <param name="entity">entity to be created in the database.</param>
         void Create(T entity);
 
         /// <summary>
-        /// Deletes the given entities in the database
+        /// Deletes the given entities in the database.
         /// </summary>
-        /// <param name="entities">entities to be deleted in the database</param>
+        /// <param name="entities">entities to be deleted in the database.</param>
         void RemoveMany(T[] entities);
 
         /// <summary>
-        /// Deletes the given entity in the database
+        /// Deletes the given entity in the database.
         /// </summary>
-        /// <param name="entity">entity to be deleted in the database</param>
+        /// <param name="entity">entity to be deleted in the database.</param>
         void Remove(T entity);
     }
 }

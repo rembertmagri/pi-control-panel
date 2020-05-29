@@ -6,6 +6,7 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class SwapMemoryStatusService :
         BaseTimedService<SwapMemoryStatus, Entities.Memory.SwapMemoryStatus>,
         IMemoryStatusService<SwapMemoryStatus>

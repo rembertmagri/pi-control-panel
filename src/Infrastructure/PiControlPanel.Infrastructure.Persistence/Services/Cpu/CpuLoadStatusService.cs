@@ -13,6 +13,7 @@
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
     using PiControlPanel.Infrastructure.Persistence.Repositories;
 
+    /// <inheritdoc/>
     public class CpuLoadStatusService :
         BaseTimedService<Domain.Models.Hardware.Cpu.CpuLoadStatus, Entities.Cpu.CpuLoadStatus>,
         ICpuLoadStatusService

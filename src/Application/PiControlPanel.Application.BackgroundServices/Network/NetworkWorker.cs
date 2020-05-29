@@ -5,6 +5,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Network;
 
+    /// <inheritdoc/>
     public class NetworkWorker : BaseWorker<Network>
     {
         public NetworkWorker(

@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Models.Hardware;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class ChipsetService : BaseService<Chipset, Entities.Chipset>, IChipsetService
     {
         public ChipsetService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)

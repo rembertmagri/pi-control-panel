@@ -13,6 +13,7 @@
     using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Disk;
 
+    /// <inheritdoc/>
     public class DiskService : BaseService<Disk>, IDiskService
     {
         private readonly ISubject<IList<FileSystemStatus>> fileSystemsStatusSubject;

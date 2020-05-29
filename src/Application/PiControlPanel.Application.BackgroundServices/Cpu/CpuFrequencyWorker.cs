@@ -8,6 +8,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
 
+    /// <inheritdoc/>
     public class CpuFrequencyWorker : BackgroundService
     {
         protected readonly ICpuService cpuService;

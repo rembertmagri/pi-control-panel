@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Models.Hardware.Cpu;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class CpuService : BaseService<Cpu, Entities.Cpu.Cpu>, ICpuService
     {
         public CpuService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)

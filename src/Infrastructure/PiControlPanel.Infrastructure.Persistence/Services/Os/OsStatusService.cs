@@ -6,6 +6,7 @@
     using PiControlPanel.Domain.Models.Hardware.Os;
     using PiControlPanel.Infrastructure.Persistence.Contracts.Repositories;
 
+    /// <inheritdoc/>
     public class OsStatusService :
         BaseTimedService<OsStatus, Entities.Os.OsStatus>,
         IOsStatusService

@@ -7,6 +7,7 @@
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Os;
 
+    /// <inheritdoc/>
     public class OsWorker : BaseWorker<Os>
     {
         public OsWorker(
