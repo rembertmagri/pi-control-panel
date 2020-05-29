@@ -13,6 +13,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <Version>1.5.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
