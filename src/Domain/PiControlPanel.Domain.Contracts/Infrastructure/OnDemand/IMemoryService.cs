@@ -7,7 +7,7 @@
     /// <summary>
     /// Infrastructure layer service for on demand operations on Memory model.
     /// </summary>
-    /// /// <typeparam name="TMemory">The Memory generic type parameter.</typeparam>
+    /// <typeparam name="TMemory">The Memory generic type parameter.</typeparam>
     /// <typeparam name="TMemoryStatus">The MemoryStatus generic type parameter.</typeparam>
     public interface IMemoryService<TMemory, TMemoryStatus> : IBaseService<TMemory>
         where TMemory : Memory

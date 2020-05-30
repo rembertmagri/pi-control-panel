@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Application layer service that contains common logic for most services.
+    /// Application layer service that contains common logic for services.
     /// </summary>
     /// <typeparam name="T">The model generic type parameter.</typeparam>
     public interface IBaseService<T>

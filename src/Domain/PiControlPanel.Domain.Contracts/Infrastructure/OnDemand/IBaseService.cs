@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Infrastructure layer service that contains common logic for most on demand services.
+    /// Infrastructure layer service that contains common logic for on demand services.
     /// </summary>
     /// <typeparam name="T">The model generic type parameter.</typeparam>
     public interface IBaseService<T>
