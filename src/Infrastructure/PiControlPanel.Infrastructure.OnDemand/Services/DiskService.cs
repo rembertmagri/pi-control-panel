@@ -18,23 +18,30 @@
     {
         private readonly ISubject<IList<FileSystemStatus>> fileSystemsStatusSubject;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiskService"/> class.
+        /// </summary>
+        /// <param name="fileSystemsStatusSubject">The file system status subject.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public DiskService(ISubject<IList<FileSystemStatus>> fileSystemsStatusSubject, ILogger logger)
             : base(logger)
         {
             this.fileSystemsStatusSubject = fileSystemsStatusSubject;
         }
 
+        /// <inheritdoc/>
         public Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
         {
             this.logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
 
             var result = BashCommands.Df.Bash();
             this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             IList<FileSystemStatus> fileSystemsStatus = new List<FileSystemStatus>();
-            foreach(var fileSystemName in fileSystemNames)
+            foreach (var fileSystemName in fileSystemNames)
             {
                 var fileSystemInfo = lines.First(l => l.StartsWith($"{fileSystemName} "));
                 var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
@@ -51,6 +58,7 @@
             return Task.FromResult(fileSystemsStatus);
         }
 
+        /// <inheritdoc/>
         public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
             this.logger.Debug("Infra layer -> DiskService -> GetFileSystemStatusObservable");
@@ -59,12 +67,14 @@
                 .AsObservable();
         }
 
+        /// <inheritdoc/>
         public void PublishFileSystemsStatus(IList<FileSystemStatus> fileSystemsStatus)
         {
             this.logger.Debug("Infra layer -> DiskService -> PublishFileSystemsStatus");
             this.fileSystemsStatusSubject.OnNext(fileSystemsStatus);
         }
 
+        /// <inheritdoc/>
         protected override Disk GetModel()
         {
             var model = new Disk()
@@ -74,7 +84,8 @@
 
             var result = BashCommands.Df.Bash();
             this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
             var fileSystemsInfo = lines.Where(l => l.StartsWith("/dev/") && !l.EndsWith("/boot"));
             var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");

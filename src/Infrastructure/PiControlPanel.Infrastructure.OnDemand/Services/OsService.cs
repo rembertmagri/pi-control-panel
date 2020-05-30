@@ -16,12 +16,18 @@
     {
         private readonly ISubject<OsStatus> operatingSystemStatusSubject;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OsService"/> class.
+        /// </summary>
+        /// <param name="operatingSystemStatusSubject">The operating system status subject.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public OsService(ISubject<OsStatus> operatingSystemStatusSubject, ILogger logger)
             : base(logger)
         {
             this.operatingSystemStatusSubject = operatingSystemStatusSubject;
         }
 
+        /// <inheritdoc/>
         public Task<OsStatus> GetStatusAsync()
         {
             this.logger.Debug("Infra layer -> OsService -> GetStatusAsync");
@@ -29,18 +35,21 @@
             return Task.FromResult(operatingSystemStatus);
         }
 
+        /// <inheritdoc/>
         public IObservable<OsStatus> GetStatusObservable()
         {
             this.logger.Debug("Infra layer -> OsService -> GetStatusObservable");
             return this.operatingSystemStatusSubject.AsObservable();
         }
 
+        /// <inheritdoc/>
         public void PublishStatus(OsStatus status)
         {
             this.logger.Debug("Infra layer -> OsService -> PublishStatus");
             this.operatingSystemStatusSubject.OnNext(status);
         }
 
+        /// <inheritdoc/>
         protected override Os GetModel()
         {
             var result = BashCommands.Hostnamectl.Bash();

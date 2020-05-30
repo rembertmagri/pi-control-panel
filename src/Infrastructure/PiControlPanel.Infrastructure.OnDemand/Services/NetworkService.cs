@@ -18,13 +18,20 @@
     {
         private readonly ISubject<IList<NetworkInterfaceStatus>> networkInterfacesStatusSubject;
 
-        public NetworkService(ISubject<IList<NetworkInterfaceStatus>> networkInterfacesStatusSubject,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkService"/> class.
+        /// </summary>
+        /// <param name="networkInterfacesStatusSubject">The network interfaces status subject.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public NetworkService(
+            ISubject<IList<NetworkInterfaceStatus>> networkInterfacesStatusSubject,
             ILogger logger)
             : base(logger)
         {
             this.networkInterfacesStatusSubject = networkInterfacesStatusSubject;
         }
 
+        /// <inheritdoc/>
         public async Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusAsync(IList<string> networkInterfaceNames, int samplingInterval)
         {
             this.logger.Debug("Infra layer -> NetworkService -> GetNetworkInterfacesStatusAsync");
@@ -93,6 +100,7 @@
             return networkInterfacesStatuses.Values.ToList();
         }
 
+        /// <inheritdoc/>
         public IObservable<NetworkInterfaceStatus> GetNetworkInterfaceStatusObservable(string networkInterfaceName)
         {
             this.logger.Debug("Infra layer -> NetworkService -> GetNetworkInterfaceStatusObservable");
@@ -101,12 +109,14 @@
                 .AsObservable();
         }
 
+        /// <inheritdoc/>
         public void PublishNetworkInterfacesStatus(IList<NetworkInterfaceStatus> networkInterfacesStatus)
         {
             this.logger.Debug("Infra layer -> NetworkService -> PublishNetworkInterfacesStatus");
             this.networkInterfacesStatusSubject.OnNext(networkInterfacesStatus);
         }
 
+        /// <inheritdoc/>
         protected override Network GetModel()
         {
             var model = new Network()

@@ -13,11 +13,16 @@
     {
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserAccountService"/> class.
+        /// </summary>
+        /// <param name="logger">The NLog logger instance.</param>
         public UserAccountService(ILogger logger)
         {
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         public Task<bool> ValidateAsync(UserAccount userAccount)
         {
             this.logger.Debug("Infra layer -> UserAccountService -> ValidateAsync");
@@ -58,6 +63,7 @@
             return Task.FromResult(true);
         }
 
+        /// <inheritdoc/>
         public Task<bool> IsSuperUserAsync(UserAccount userAccount)
         {
             this.logger.Debug("Infra layer -> UserAccountService -> IsSuperUserAsync");

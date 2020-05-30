@@ -12,16 +12,22 @@
     /// <inheritdoc/>
     public class ChipsetService : BaseService<Chipset>, IChipsetService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChipsetService"/> class.
+        /// </summary>
+        /// <param name="logger">The NLog logger instance.</param>
         public ChipsetService(ILogger logger)
             : base(logger)
         {
         }
 
+        /// <inheritdoc/>
         protected override Chipset GetModel()
         {
             var result = BashCommands.CatProcCpuInfo.Bash();
             this.logger.Trace($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             var version = lines.Last(line => line.StartsWith("Hardware"))

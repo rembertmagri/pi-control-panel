@@ -13,65 +13,76 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
     /// <inheritdoc/>
-    public class MemoryService<T, U> : BaseService<T>, IMemoryService<T, U>
-        where T : Memory, new()
-        where U : MemoryStatus, new()
+    public class MemoryService<TMemory, TMemoryStatus> : BaseService<TMemory>, IMemoryService<TMemory, TMemoryStatus>
+        where TMemory : Memory, new()
+        where TMemoryStatus : MemoryStatus, new()
     {
-        private readonly ISubject<U> memoryStatusSubject;
+        private readonly ISubject<TMemoryStatus> memoryStatusSubject;
 
-        public MemoryService(ISubject<U> memoryStatusSubject, ILogger logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoryService{T, U}"/> class.
+        /// </summary>
+        /// <param name="memoryStatusSubject">The memory status subject.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public MemoryService(ISubject<TMemoryStatus> memoryStatusSubject, ILogger logger)
             : base(logger)
         {
             this.memoryStatusSubject = memoryStatusSubject;
         }
 
-        public Task<U> GetStatusAsync()
+        /// <inheritdoc/>
+        public Task<TMemoryStatus> GetStatusAsync()
         {
             this.logger.Debug("Infra layer -> MemoryService -> GetStatusAsync");
             var memoryStatus = this.GetMemoryStatus();
             return Task.FromResult(memoryStatus);
         }
 
-        public IObservable<U> GetStatusObservable()
+        /// <inheritdoc/>
+        public IObservable<TMemoryStatus> GetStatusObservable()
         {
             this.logger.Debug("Infra layer -> MemoryService -> GetStatusObservable");
             return this.memoryStatusSubject.AsObservable();
         }
 
-        public void PublishStatus(U status)
+        /// <inheritdoc/>
+        public void PublishStatus(TMemoryStatus status)
         {
             this.logger.Debug("Infra layer -> MemoryService -> PublishStatus");
             this.memoryStatusSubject.OnNext(status);
         }
 
-        protected override T GetModel()
+        /// <inheritdoc/>
+        protected override TMemory GetModel()
         {
             var result = BashCommands.Free.Bash();
             this.logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
-            var memoryTypeName = typeof(T) == typeof(RandomAccessMemory) ? "Mem:" : "Swap:";
+            var memoryTypeName = typeof(TMemoryStatus) == typeof(RandomAccessMemory) ? "Mem:" : "Swap:";
             var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
             var regex = new Regex(@"^\w*:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*(?<shared>\d*)\s*(?<buffcache>\d*)\s*.*$");
             var groups = regex.Match(memoryInfo).Groups;
             var total = int.Parse(groups["total"].Value);
             this.logger.Trace($"Total memory: '{total}'KB");
 
-            return new T()
+            return new TMemory()
             {
                 Total = total
             };
         }
 
-        private U GetMemoryStatus()
+        private TMemoryStatus GetMemoryStatus()
         {
             var result = BashCommands.Free.Bash();
             this.logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
-            var isRam = typeof(T) == typeof(RandomAccessMemory);
+            var isRam = typeof(TMemoryStatus) == typeof(RandomAccessMemory);
             var memoryTypeName = isRam ? "Mem:" : "Swap:";
             var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
             var regex = isRam ?
@@ -82,7 +93,7 @@
             var free = int.Parse(groups["free"].Value);
             this.logger.Trace($"Used memory: '{used}'KB, Free memory: '{free}'KB");
 
-            var memoryStatus = new U()
+            var memoryStatus = new TMemoryStatus()
             {
                 Used = used,
                 Free = free,

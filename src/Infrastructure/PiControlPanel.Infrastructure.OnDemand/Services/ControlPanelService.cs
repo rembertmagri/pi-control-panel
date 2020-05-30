@@ -16,11 +16,16 @@
     {
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelService"/> class.
+        /// </summary>
+        /// <param name="logger">The NLog logger instance.</param>
         public ControlPanelService(ILogger logger)
         {
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         public Task<bool> RebootAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> RebootAsync");
@@ -29,6 +34,7 @@
             return Task.FromResult(true);
         }
 
+        /// <inheritdoc/>
         public Task<bool> ShutdownAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> ShutdownAsync");
@@ -37,6 +43,7 @@
             return Task.FromResult(true);
         }
 
+        /// <inheritdoc/>
         public Task<bool> UpdateAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
@@ -64,6 +71,7 @@
             return this.RebootAsync();
         }
 
+        /// <inheritdoc/>
         public Task<bool> KillAsync(BusinessContext context, int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
@@ -81,6 +89,7 @@
             return Task.FromResult(true);
         }
 
+        /// <inheritdoc/>
         public Task<string> GetProcessOwnerUsernameAsync(int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
@@ -98,13 +107,15 @@
             return Task.FromResult(result);
         }
 
+        /// <inheritdoc/>
         public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> OverclockAsync");
 
             var result = BashCommands.CatBootConfig.Bash();
             this.logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
-            var lines = result.Split(new[] { Environment.NewLine },
+            var lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
             var frequencyLine = lines.FirstOrDefault(line => line.Contains("arm_freq="));
             var frequencyLineRegex = new Regex(@"^(?<commented>#?)\s*arm_freq=(?<frequency>\d+)$");
