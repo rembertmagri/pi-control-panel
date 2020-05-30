@@ -53,7 +53,6 @@
         {
             this.logger.Debug("Infra layer -> RepositoryBase -> ExistsAsync");
             return await this.DbSet.AnyAsync(where);
-
         }
 
         /// <inheritdoc/>

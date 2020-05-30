@@ -54,7 +54,8 @@
         {
             var result = BashCommands.Hostnamectl.Bash();
             this.logger.Trace($"Result of '{BashCommands.Hostnamectl}' command: '{result}'");
-            string[] lines = result.Split(new[] { Environment.NewLine },
+            string[] lines = result.Split(
+                new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             var hostnameInfo = lines.First(l => l.Contains("Static hostname:"));

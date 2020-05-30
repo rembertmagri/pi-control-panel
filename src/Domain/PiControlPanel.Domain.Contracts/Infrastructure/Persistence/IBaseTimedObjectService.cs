@@ -27,7 +27,6 @@
         /// <returns>A <see cref="Task{T}"/> representing the result of the asynchronous operation.</returns>
         Task<IEnumerable<T>> GetAllAsync(LambdaExpression where = null);
 
-
         /// <summary>
         /// Gets the paged values that satisfy a specific condition.
         /// </summary>

@@ -8,11 +8,11 @@
         /// <summary>
         /// User role.
         /// </summary>
-        public static string User = nameof(User);
+        public const string User = nameof(User);
 
         /// <summary>
         /// Super User role.
         /// </summary>
-        public static string SuperUser = nameof(SuperUser);
+        public const string SuperUser = nameof(SuperUser);
     }
 }

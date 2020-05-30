@@ -69,7 +69,11 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Retrieves and saves a new value for the CPU frequency.
+        /// </summary>
+        /// <param name="samplingInterval">The sampling interval in milliseconds to be used to calculate the frequency.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         protected async Task SaveRecurring(int samplingInterval)
         {
             await this.cpuService.SaveFrequencyAsync(samplingInterval);

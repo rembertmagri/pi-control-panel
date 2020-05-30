@@ -69,7 +69,11 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Retrieves and saves a new value for the network interface status.
+        /// </summary>
+        /// <param name="samplingInterval">The sampling interval in milliseconds to be used to calculate the status.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         protected async Task SaveRecurring(int samplingInterval)
         {
             await this.networkService.SaveNetworkInterfacesStatusAsync(samplingInterval);

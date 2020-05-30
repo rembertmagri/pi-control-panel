@@ -12,11 +12,6 @@
         where TEntity : BaseEntity
     {
         /// <summary>
-        /// The repository for the entity.
-        /// </summary>
-        protected IRepositoryBase<TEntity> repository;
-
-        /// <summary>
         /// The unit of work.
         /// </summary>
         protected readonly IUnitOfWork unitOfWork;
@@ -30,6 +25,11 @@
         /// The NLog logger instance.
         /// </summary>
         protected readonly ILogger logger;
+
+        /// <summary>
+        /// The repository for the entity.
+        /// </summary>
+        protected IRepositoryBase<TEntity> repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseService{TModel, TEntity}"/> class.
