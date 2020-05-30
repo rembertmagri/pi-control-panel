@@ -16,6 +16,7 @@
             this.repository = unitOfWork.ChipsetRepository;
         }
 
+        /// <inheritdoc/>
         public async Task<Chipset> GetAsync(string serial)
         {
             var entity = await this.repository.GetAsync(c => c.Serial == serial);

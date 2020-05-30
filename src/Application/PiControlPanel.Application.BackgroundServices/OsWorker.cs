@@ -10,6 +10,12 @@
     /// <inheritdoc/>
     public class OsWorker : BaseWorker<Os>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OsWorker"/> class.
+        /// </summary>
+        /// <param name="operatingSystemService">The application layer OsService.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public OsWorker(
             IOsService operatingSystemService,
             IConfiguration configuration,
@@ -18,6 +24,7 @@
         {
         }
 
+        /// <inheritdoc/>
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
             return ((IOsService)this.service).SaveStatusAsync();

@@ -11,10 +11,27 @@
     /// <inheritdoc/>
     public abstract class BaseWorker<T> : BackgroundService
     {
+        /// <summary>
+        /// The application layer service.
+        /// </summary>
         protected readonly IBaseService<T> service;
+
+        /// <summary>
+        /// The IConfiguration instance.
+        /// </summary>
         protected readonly IConfiguration configuration;
+
+        /// <summary>
+        /// The NLog logger instance.
+        /// </summary>
         protected readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseWorker{T}"/> class.
+        /// </summary>
+        /// <param name="service">The application layer service.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public BaseWorker(
             IBaseService<T> service,
             IConfiguration configuration,
@@ -25,6 +42,7 @@
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
@@ -64,11 +82,20 @@
             }
         }
 
+        /// <summary>
+        /// Retrieves and saves a new value for the model.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         protected virtual Task SaveAsync()
         {
             return this.service.SaveAsync();
         }
 
+        /// <summary>
+        /// Retrieves and saves a new value for the timed model.
+        /// </summary>
+        /// <param name="stoppingToken">The cancellation token.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         protected virtual Task SaveRecurring(CancellationToken stoppingToken)
         {
             this.logger.Debug($"{this.GetType().Name} has no recurring task, returning...");

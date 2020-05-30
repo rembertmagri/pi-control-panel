@@ -11,10 +11,16 @@
     /// <inheritdoc/>
     public class CpuFrequencyWorker : BackgroundService
     {
-        protected readonly ICpuService cpuService;
-        protected readonly IConfiguration configuration;
-        protected readonly ILogger logger;
+        private readonly ICpuService cpuService;
+        private readonly IConfiguration configuration;
+        private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CpuFrequencyWorker"/> class.
+        /// </summary>
+        /// <param name="cpuService">The application layer CpuService.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public CpuFrequencyWorker(
             ICpuService cpuService,
             IConfiguration configuration,
@@ -25,6 +31,7 @@
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
@@ -62,6 +69,7 @@
             }
         }
 
+        /// <inheritdoc/>
         protected async Task SaveRecurring(int samplingInterval)
         {
             await this.cpuService.SaveFrequencyAsync(samplingInterval);

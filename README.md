@@ -10,7 +10,7 @@ Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 1. Download the [latest release](https://github.com/rembertmagri/pi-control-panel/releases/latest)
 2. Install the package
 ````bash
-sudo apt install ./pi-control-panel_1.6_armhf.deb
+sudo apt install ./pi-control-panel_1.5_armhf.deb
 ````
 3. Access http://<<ip_of_raspberry_pi>>:8080/
 

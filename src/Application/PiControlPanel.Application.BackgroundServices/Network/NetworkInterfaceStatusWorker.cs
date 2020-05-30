@@ -11,10 +11,16 @@
     /// <inheritdoc/>
     public class NetworkInterfaceStatusWorker : BackgroundService
     {
-        protected readonly INetworkService networkService;
-        protected readonly IConfiguration configuration;
-        protected readonly ILogger logger;
+        private readonly INetworkService networkService;
+        private readonly IConfiguration configuration;
+        private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkInterfaceStatusWorker"/> class.
+        /// </summary>
+        /// <param name="networkService">The application layer NetworkService.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public NetworkInterfaceStatusWorker(
             INetworkService networkService,
             IConfiguration configuration,
@@ -25,6 +31,7 @@
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
@@ -62,6 +69,7 @@
             }
         }
 
+        /// <inheritdoc/>
         protected async Task SaveRecurring(int samplingInterval)
         {
             await this.networkService.SaveNetworkInterfacesStatusAsync(samplingInterval);

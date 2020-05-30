@@ -8,21 +8,28 @@
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
     /// <inheritdoc/>
-    public class MemoryWorker<T, U> : BaseWorker<T>
-        where T : Memory
-        where U : MemoryStatus
+    public class MemoryWorker<TMemory, TMemoryStatus> : BaseWorker<TMemory>
+        where TMemory : Memory
+        where TMemoryStatus : MemoryStatus
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoryWorker{TMemory, TMemoryStatus}"/> class.
+        /// </summary>
+        /// <param name="memoryService">The application layer MemoryService.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public MemoryWorker(
-            IMemoryService<T, U> memoryService,
+            IMemoryService<TMemory, TMemoryStatus> memoryService,
             IConfiguration configuration,
             ILogger logger)
             : base(memoryService, configuration, logger)
         {
         }
 
+        /// <inheritdoc/>
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IMemoryService<T, U>)this.service).SaveStatusAsync();
+            return ((IMemoryService<TMemory, TMemoryStatus>)this.service).SaveStatusAsync();
         }
     }
 }

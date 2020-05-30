@@ -14,6 +14,7 @@
         /// Gets the value of the network interface status for each network interface.
         /// </summary>
         /// <param name="networkInterfaceNames">The list of network interfaces.</param>
+        /// <param name="samplingInterval">The sampling interval in milliseconds to be used to calculate the status.</param>
         /// <returns>A list of NetworkInterfaceStatus objects.</returns>
         Task<IList<NetworkInterfaceStatus>> GetNetworkInterfacesStatusAsync(IList<string> networkInterfaceNames, int samplingInterval);
 

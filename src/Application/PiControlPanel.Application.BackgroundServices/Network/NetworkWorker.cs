@@ -8,6 +8,12 @@
     /// <inheritdoc/>
     public class NetworkWorker : BaseWorker<Network>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkWorker"/> class.
+        /// </summary>
+        /// <param name="networkService">The application layer NetworkService.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public NetworkWorker(
             INetworkService networkService,
             IConfiguration configuration,
