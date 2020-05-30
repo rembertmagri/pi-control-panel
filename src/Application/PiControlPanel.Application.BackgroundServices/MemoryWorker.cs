@@ -29,7 +29,7 @@
         /// <inheritdoc/>
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IMemoryService<TMemory, TMemoryStatus>)this.service).SaveStatusAsync();
+            return ((IMemoryService<TMemory, TMemoryStatus>)this.Service).SaveStatusAsync();
         }
     }
 }

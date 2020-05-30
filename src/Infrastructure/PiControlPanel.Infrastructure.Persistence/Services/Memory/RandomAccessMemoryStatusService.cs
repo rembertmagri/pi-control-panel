@@ -18,9 +18,8 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public RandomAccessMemoryStatusService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.RandomAccessMemoryStatusRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.RandomAccessMemoryStatusRepository;
         }
     }
 }

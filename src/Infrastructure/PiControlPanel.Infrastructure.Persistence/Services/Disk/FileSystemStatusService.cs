@@ -24,9 +24,8 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public FileSystemStatusService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.FileSystemStatusRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.FileSystemStatusRepository;
         }
 
         /// <inheritdoc/>
@@ -53,9 +52,9 @@
         /// <inheritdoc/>
         public async Task AddManyAsync(IEnumerable<FileSystemStatus> fileSystemsStatus)
         {
-            var entities = this.mapper.Map<IEnumerable<Entities.Disk.FileSystemStatus>>(fileSystemsStatus);
-            await this.repository.CreateManyAsync(entities.ToArray());
-            await this.unitOfWork.CommitAsync();
+            var entities = this.Mapper.Map<IEnumerable<Entities.Disk.FileSystemStatus>>(fileSystemsStatus);
+            await this.Repository.CreateManyAsync(entities.ToArray());
+            await this.UnitOfWork.CommitAsync();
         }
     }
 }

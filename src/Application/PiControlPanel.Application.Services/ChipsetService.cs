@@ -27,7 +27,7 @@
         /// <inheritdoc/>
         protected override async Task<Chipset> GetPersistedInfoAsync(Chipset onDemandInfo)
         {
-            return await ((Persistence.IChipsetService)this.persistenceService)
+            return await ((Persistence.IChipsetService)this.PersistenceService)
                 .GetAsync(onDemandInfo.Serial);
         }
     }

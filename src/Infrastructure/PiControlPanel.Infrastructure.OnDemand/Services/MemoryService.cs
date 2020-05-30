@@ -33,7 +33,7 @@
         /// <inheritdoc/>
         public Task<TMemoryStatus> GetStatusAsync()
         {
-            this.logger.Debug("Infra layer -> MemoryService -> GetStatusAsync");
+            this.Logger.Debug("Infra layer -> MemoryService -> GetStatusAsync");
             var memoryStatus = this.GetMemoryStatus();
             return Task.FromResult(memoryStatus);
         }
@@ -41,14 +41,14 @@
         /// <inheritdoc/>
         public IObservable<TMemoryStatus> GetStatusObservable()
         {
-            this.logger.Debug("Infra layer -> MemoryService -> GetStatusObservable");
+            this.Logger.Debug("Infra layer -> MemoryService -> GetStatusObservable");
             return this.memoryStatusSubject.AsObservable();
         }
 
         /// <inheritdoc/>
         public void PublishStatus(TMemoryStatus status)
         {
-            this.logger.Debug("Infra layer -> MemoryService -> PublishStatus");
+            this.Logger.Debug("Infra layer -> MemoryService -> PublishStatus");
             this.memoryStatusSubject.OnNext(status);
         }
 
@@ -56,7 +56,7 @@
         protected override TMemory GetModel()
         {
             var result = BashCommands.Free.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
@@ -66,7 +66,7 @@
             var regex = new Regex(@"^\w*:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*(?<shared>\d*)\s*(?<buffcache>\d*)\s*.*$");
             var groups = regex.Match(memoryInfo).Groups;
             var total = int.Parse(groups["total"].Value);
-            this.logger.Trace($"Total memory: '{total}'KB");
+            this.Logger.Trace($"Total memory: '{total}'KB");
 
             return new TMemory()
             {
@@ -77,7 +77,7 @@
         private TMemoryStatus GetMemoryStatus()
         {
             var result = BashCommands.Free.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
@@ -91,7 +91,7 @@
             var groups = regex.Match(memoryInfo).Groups;
             var used = int.Parse(groups["used"].Value);
             var free = int.Parse(groups["free"].Value);
-            this.logger.Trace($"Used memory: '{used}'KB, Free memory: '{free}'KB");
+            this.Logger.Trace($"Used memory: '{used}'KB, Free memory: '{free}'KB");
 
             var memoryStatus = new TMemoryStatus()
             {

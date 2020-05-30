@@ -35,41 +35,41 @@
         /// <inheritdoc/>
         public async Task<FileSystemStatus> GetLastFileSystemStatusAsync(string fileSystemName)
         {
-            this.logger.Debug("Application layer -> DiskService -> GetLastFileSystemStatusAsync");
+            this.Logger.Debug("Application layer -> DiskService -> GetLastFileSystemStatusAsync");
             return await this.persistenceStatusService.GetLastAsync(fileSystemName);
         }
 
         /// <inheritdoc/>
         public async Task<PagingOutput<FileSystemStatus>> GetFileSystemStatusesAsync(string fileSystemName, PagingInput pagingInput)
         {
-            this.logger.Debug("Application layer -> DiskService -> GetFileSystemStatusesAsync");
+            this.Logger.Debug("Application layer -> DiskService -> GetFileSystemStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(fileSystemName, pagingInput);
         }
 
         /// <inheritdoc/>
         public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            this.logger.Debug("Application layer -> DiskService -> GetFileSystemStatusObservable");
-            return ((OnDemand.IDiskService)this.onDemandService).GetFileSystemStatusObservable(fileSystemName);
+            this.Logger.Debug("Application layer -> DiskService -> GetFileSystemStatusObservable");
+            return ((OnDemand.IDiskService)this.OnDemandService).GetFileSystemStatusObservable(fileSystemName);
         }
 
         /// <inheritdoc/>
         public async Task SaveFileSystemStatusAsync()
         {
-            this.logger.Debug("Application layer -> DiskService -> SaveFileSystemStatusAsync");
+            this.Logger.Debug("Application layer -> DiskService -> SaveFileSystemStatusAsync");
 
-            var disk = await this.persistenceService.GetAsync();
+            var disk = await this.PersistenceService.GetAsync();
             if (disk == null)
             {
-                this.logger.Info("Disk information not available yet, returning...");
+                this.Logger.Info("Disk information not available yet, returning...");
                 return;
             }
 
             var fileSystemNames = disk.FileSystems.Select(i => i.Name).ToList();
-            var fileSystemsStatus = await ((OnDemand.IDiskService)this.onDemandService).GetFileSystemsStatusAsync(fileSystemNames);
+            var fileSystemsStatus = await ((OnDemand.IDiskService)this.OnDemandService).GetFileSystemsStatusAsync(fileSystemNames);
 
             await this.persistenceStatusService.AddManyAsync(fileSystemsStatus);
-            ((OnDemand.IDiskService)this.onDemandService).PublishFileSystemsStatus(fileSystemsStatus);
+            ((OnDemand.IDiskService)this.OnDemandService).PublishFileSystemsStatus(fileSystemsStatus);
         }
     }
 }

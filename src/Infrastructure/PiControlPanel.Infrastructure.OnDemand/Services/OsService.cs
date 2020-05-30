@@ -30,7 +30,7 @@
         /// <inheritdoc/>
         public Task<OsStatus> GetStatusAsync()
         {
-            this.logger.Debug("Infra layer -> OsService -> GetStatusAsync");
+            this.Logger.Debug("Infra layer -> OsService -> GetStatusAsync");
             var operatingSystemStatus = this.GetOsStatus();
             return Task.FromResult(operatingSystemStatus);
         }
@@ -38,14 +38,14 @@
         /// <inheritdoc/>
         public IObservable<OsStatus> GetStatusObservable()
         {
-            this.logger.Debug("Infra layer -> OsService -> GetStatusObservable");
+            this.Logger.Debug("Infra layer -> OsService -> GetStatusObservable");
             return this.operatingSystemStatusSubject.AsObservable();
         }
 
         /// <inheritdoc/>
         public void PublishStatus(OsStatus status)
         {
-            this.logger.Debug("Infra layer -> OsService -> PublishStatus");
+            this.Logger.Debug("Infra layer -> OsService -> PublishStatus");
             this.operatingSystemStatusSubject.OnNext(status);
         }
 
@@ -53,22 +53,22 @@
         protected override Os GetModel()
         {
             var result = BashCommands.Hostnamectl.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Hostnamectl}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Hostnamectl}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
             var hostnameInfo = lines.First(l => l.Contains("Static hostname:"));
             var hostname = hostnameInfo.Replace("Static hostname:", string.Empty).Trim();
-            this.logger.Trace($"Hostname: '{hostname}'");
+            this.Logger.Trace($"Hostname: '{hostname}'");
 
             var operatingSystemInfo = lines.First(l => l.Contains("Operating System:"));
             var os = operatingSystemInfo.Replace("Operating System:", string.Empty).Trim();
-            this.logger.Trace($"Operating System Name: '{os}'");
+            this.Logger.Trace($"Operating System Name: '{os}'");
 
             var kernelInfo = lines.First(l => l.Contains("Kernel:"));
             var kernel = kernelInfo.Replace("Kernel:", string.Empty).Trim();
-            this.logger.Trace($"Kernel: '{kernel}'");
+            this.Logger.Trace($"Kernel: '{kernel}'");
 
             return new Os()
             {
@@ -81,10 +81,10 @@
         private OsStatus GetOsStatus()
         {
             var result = BashCommands.Uptime.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
 
             var uptimeResult = result.Replace("up ", string.Empty);
-            this.logger.Trace($"Uptime substring: '{uptimeResult}'");
+            this.Logger.Trace($"Uptime substring: '{uptimeResult}'");
 
             return new OsStatus()
             {

@@ -32,10 +32,9 @@
             IUnitOfWork unitOfWork,
             IMapper mapper,
             ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.CpuLoadStatusRepository, unitOfWork, mapper, logger)
         {
             this.configuration = configuration;
-            this.repository = unitOfWork.CpuLoadStatusRepository;
         }
 
         /// <summary>
@@ -54,13 +53,11 @@
         public async Task<IDictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>> GetCpuLoadStatusesAsync(
             IEnumerable<DateTime> dateTimes)
         {
-            using (var unitOfWork = new UnitOfWork(this.configuration, this.logger))
-            {
-                var repository = unitOfWork.CpuLoadStatusRepository;
-                var entities = await repository.GetMany(l => dateTimes.Contains(l.DateTime))
-                    .ToDictionaryAsync(i => i.DateTime, i => i);
-                return this.mapper.Map<Dictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>>(entities);
-            }
+            using var unitOfWork = new UnitOfWork(this.configuration, this.Logger);
+            var repository = unitOfWork.CpuLoadStatusRepository;
+            var entities = await repository.GetMany(l => dateTimes.Contains(l.DateTime))
+                .ToDictionaryAsync(i => i.DateTime, i => i);
+            return this.Mapper.Map<Dictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>>(entities);
         }
 
         /// <inheritdoc/>

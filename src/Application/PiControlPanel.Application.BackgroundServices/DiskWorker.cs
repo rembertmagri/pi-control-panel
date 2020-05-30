@@ -27,7 +27,7 @@
         /// <inheritdoc/>
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IDiskService)this.service).SaveFileSystemStatusAsync();
+            return ((IDiskService)this.Service).SaveFileSystemStatusAsync();
         }
     }
 }

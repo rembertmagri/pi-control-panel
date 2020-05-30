@@ -36,32 +36,32 @@
         /// <inheritdoc/>
         public async Task<TMemoryStatus> GetLastStatusAsync()
         {
-            this.logger.Debug("Application layer -> MemoryService -> GetLastStatusAsync");
+            this.Logger.Debug("Application layer -> MemoryService -> GetLastStatusAsync");
             return await this.persistenceStatusService.GetLastAsync();
         }
 
         /// <inheritdoc/>
         public async Task<PagingOutput<TMemoryStatus>> GetStatusesAsync(PagingInput pagingInput)
         {
-            this.logger.Debug("Application layer -> MemoryService -> GetStatusesAsync");
+            this.Logger.Debug("Application layer -> MemoryService -> GetStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(pagingInput);
         }
 
         /// <inheritdoc/>
         public IObservable<TMemoryStatus> GetStatusObservable()
         {
-            this.logger.Debug("Application layer -> MemoryService -> GetStatusObservable");
-            return ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.onDemandService).GetStatusObservable();
+            this.Logger.Debug("Application layer -> MemoryService -> GetStatusObservable");
+            return ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.OnDemandService).GetStatusObservable();
         }
 
         /// <inheritdoc/>
         public async Task SaveStatusAsync()
         {
-            this.logger.Debug("Application layer -> MemoryService -> SaveStatusAsync");
-            var status = await ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.onDemandService).GetStatusAsync();
+            this.Logger.Debug("Application layer -> MemoryService -> SaveStatusAsync");
+            var status = await ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.OnDemandService).GetStatusAsync();
 
             await this.persistenceStatusService.AddAsync(status);
-            ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.onDemandService).PublishStatus(status);
+            ((OnDemand.IMemoryService<TMemory, TMemoryStatus>)this.OnDemandService).PublishStatus(status);
         }
     }
 }

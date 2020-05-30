@@ -27,8 +27,8 @@
         /// <inheritdoc/>
         protected override async Task SaveRecurring(CancellationToken stoppingToken)
         {
-            await ((ICpuService)this.service).SaveLoadStatusAsync();
-            await ((ICpuService)this.service).SaveTemperatureAsync();
+            await ((ICpuService)this.Service).SaveLoadStatusAsync();
+            await ((ICpuService)this.Service).SaveTemperatureAsync();
         }
     }
 }

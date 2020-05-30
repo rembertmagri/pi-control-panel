@@ -18,9 +18,8 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public CpuFrequencyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.CpuFrequencyRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.CpuFrequencyRepository;
         }
     }
 }

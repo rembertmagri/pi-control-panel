@@ -4,7 +4,7 @@
     <Description>Raspberry Pi control panel on-demand services</Description>
     <Authors>Rembert Magri</Authors>
     <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

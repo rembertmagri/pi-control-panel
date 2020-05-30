@@ -34,32 +34,32 @@
         /// <inheritdoc/>
         public async Task<OsStatus> GetLastStatusAsync()
         {
-            this.logger.Debug("Application layer -> OsService -> GetLastStatusAsync");
+            this.Logger.Debug("Application layer -> OsService -> GetLastStatusAsync");
             return await this.persistenceStatusService.GetLastAsync();
         }
 
         /// <inheritdoc/>
         public async Task<PagingOutput<OsStatus>> GetStatusesAsync(PagingInput pagingInput)
         {
-            this.logger.Debug("Application layer -> OsService -> GetStatusesAsync");
+            this.Logger.Debug("Application layer -> OsService -> GetStatusesAsync");
             return await this.persistenceStatusService.GetPageAsync(pagingInput);
         }
 
         /// <inheritdoc/>
         public IObservable<OsStatus> GetStatusObservable()
         {
-            this.logger.Debug("Application layer -> OsService -> GetStatusObservable");
-            return ((OnDemand.IOsService)this.onDemandService).GetStatusObservable();
+            this.Logger.Debug("Application layer -> OsService -> GetStatusObservable");
+            return ((OnDemand.IOsService)this.OnDemandService).GetStatusObservable();
         }
 
         /// <inheritdoc/>
         public async Task SaveStatusAsync()
         {
-            this.logger.Debug("Application layer -> OsService -> SaveStatusAsync");
-            var status = await ((OnDemand.IOsService)this.onDemandService).GetStatusAsync();
+            this.Logger.Debug("Application layer -> OsService -> SaveStatusAsync");
+            var status = await ((OnDemand.IOsService)this.OnDemandService).GetStatusAsync();
 
             await this.persistenceStatusService.AddAsync(status);
-            ((OnDemand.IOsService)this.onDemandService).PublishStatus(status);
+            ((OnDemand.IOsService)this.OnDemandService).PublishStatus(status);
         }
     }
 }

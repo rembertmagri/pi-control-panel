@@ -27,7 +27,7 @@
         /// <inheritdoc/>
         protected override Task SaveRecurring(CancellationToken stoppingToken)
         {
-            return ((IOsService)this.service).SaveStatusAsync();
+            return ((IOsService)this.Service).SaveStatusAsync();
         }
     }
 }

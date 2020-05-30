@@ -17,15 +17,14 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public DiskService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.DiskRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.DiskRepository;
         }
 
         /// <inheritdoc/>
         protected override Task<Entities.Disk.Disk> GetFromRepository()
         {
-            return this.repository.GetAsync(s => s.FileSystems);
+            return this.Repository.GetAsync(s => s.FileSystems);
         }
     }
 }

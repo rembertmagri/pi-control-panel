@@ -17,15 +17,14 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public NetworkService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.NetworkRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.NetworkRepository;
         }
 
         /// <inheritdoc/>
         protected override Task<Entities.Network.Network> GetFromRepository()
         {
-            return this.repository.GetAsync(s => s.NetworkInterfaces);
+            return this.Repository.GetAsync(s => s.NetworkInterfaces);
         }
     }
 }

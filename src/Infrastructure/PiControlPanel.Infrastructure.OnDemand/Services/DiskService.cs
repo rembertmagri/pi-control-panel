@@ -32,10 +32,10 @@
         /// <inheritdoc/>
         public Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
         {
-            this.logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
+            this.Logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
 
             var result = BashCommands.Df.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
@@ -61,7 +61,7 @@
         /// <inheritdoc/>
         public IObservable<FileSystemStatus> GetFileSystemStatusObservable(string fileSystemName)
         {
-            this.logger.Debug("Infra layer -> DiskService -> GetFileSystemStatusObservable");
+            this.Logger.Debug("Infra layer -> DiskService -> GetFileSystemStatusObservable");
             return this.fileSystemsStatusSubject
                 .Select(l => l.FirstOrDefault(i => i.FileSystemName == fileSystemName))
                 .AsObservable();
@@ -70,7 +70,7 @@
         /// <inheritdoc/>
         public void PublishFileSystemsStatus(IList<FileSystemStatus> fileSystemsStatus)
         {
-            this.logger.Debug("Infra layer -> DiskService -> PublishFileSystemsStatus");
+            this.Logger.Debug("Infra layer -> DiskService -> PublishFileSystemsStatus");
             this.fileSystemsStatusSubject.OnNext(fileSystemsStatus);
         }
 
@@ -83,7 +83,7 @@
             };
 
             var result = BashCommands.Df.Bash();
-            this.logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
+            this.Logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);

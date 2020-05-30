@@ -24,9 +24,8 @@
         /// <param name="mapper">The mapper configuration.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public NetworkInterfaceStatusService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
-            : base(unitOfWork, mapper, logger)
+            : base(unitOfWork.NetworkInterfaceStatusRepository, unitOfWork, mapper, logger)
         {
-            this.repository = unitOfWork.NetworkInterfaceStatusRepository;
         }
 
         /// <inheritdoc/>
@@ -53,9 +52,9 @@
         /// <inheritdoc/>
         public async Task AddManyAsync(IEnumerable<NetworkInterfaceStatus> networkInterfacesStatus)
         {
-            var entities = this.mapper.Map<IEnumerable<Entities.Network.NetworkInterfaceStatus>>(networkInterfacesStatus);
-            await this.repository.CreateManyAsync(entities.ToArray());
-            await this.unitOfWork.CommitAsync();
+            var entities = this.Mapper.Map<IEnumerable<Entities.Network.NetworkInterfaceStatus>>(networkInterfacesStatus);
+            await this.Repository.CreateManyAsync(entities.ToArray());
+            await this.UnitOfWork.CommitAsync();
         }
     }
 }
