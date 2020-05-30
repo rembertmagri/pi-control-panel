@@ -10,7 +10,7 @@
     /// Interface defining base data repository functionality.
     /// Any entity-specific features have to be added to derived interface.
     /// </summary>
-    /// <typeparam name="T">The entity for the repository</typeparam>
+    /// <typeparam name="T">The entity for the repository.</typeparam>
     public interface IRepositoryBase<T>
         where T : BaseEntity
     {

@@ -3,8 +3,15 @@
     using AutoMapper;
     using Models = PiControlPanel.Domain.Models.Hardware;
 
+    /// <summary>
+    /// Contains the AutoMapper configuration.
+    /// </summary>
     public class AutoMapperConfiguration
     {
+        /// <summary>
+        /// Creates the AutoMapper profiles.
+        /// </summary>
+        /// <returns>The AutoMapper configuration.</returns>
         public MapperConfiguration GetAutoMapperProfiles()
         {
             var config = new MapperConfiguration(
@@ -56,6 +63,10 @@
             return config;
         }
 
+        /// <summary>
+        /// Creates the IMapper instance.
+        /// </summary>
+        /// <returns>The configured IMapper.</returns>
         public IMapper GetIMapper()
         {
             IMapper mapper = new Mapper(this.GetAutoMapperProfiles());

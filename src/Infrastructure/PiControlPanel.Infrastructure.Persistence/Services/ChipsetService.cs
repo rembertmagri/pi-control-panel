@@ -10,6 +10,12 @@
     /// <inheritdoc/>
     public class ChipsetService : BaseService<Chipset, Entities.Chipset>, IChipsetService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChipsetService"/> class.
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work.</param>
+        /// <param name="mapper">The mapper configuration.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public ChipsetService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
             : base(unitOfWork, mapper, logger)
         {

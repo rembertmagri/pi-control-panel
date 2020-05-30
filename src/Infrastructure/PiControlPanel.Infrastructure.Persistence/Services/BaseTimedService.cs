@@ -15,15 +15,36 @@
     using PiControlPanel.Infrastructure.Persistence.Entities;
 
     /// <inheritdoc/>
-    public abstract class BaseTimedService<T, U> : IBaseTimedObjectService<T>
-        where T : BaseTimedObject
-        where U : BaseTimedEntity
+    public abstract class BaseTimedService<TModel, TEntity> : IBaseTimedObjectService<TModel>
+        where TModel : BaseTimedObject
+        where TEntity : BaseTimedEntity
     {
-        protected IRepositoryBase<U> repository;
+        /// <summary>
+        /// The repository for the entity.
+        /// </summary>
+        protected IRepositoryBase<TEntity> repository;
+
+        /// <summary>
+        /// The unit of work.
+        /// </summary>
         protected readonly IUnitOfWork unitOfWork;
+
+        /// <summary>
+        /// The mapper configuration.
+        /// </summary>
         protected readonly IMapper mapper;
+
+        /// <summary>
+        /// The NLog logger instance.
+        /// </summary>
         protected readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseTimedService{TModel, TEntity}"/> class.
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work.</param>
+        /// <param name="mapper">The mapper configuration.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public BaseTimedService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
         {
             this.unitOfWork = unitOfWork;
@@ -32,25 +53,25 @@
         }
 
         /// <inheritdoc/>
-        public async Task<T> GetLastAsync(LambdaExpression where = null)
+        public async Task<TModel> GetLastAsync(LambdaExpression where = null)
         {
             var entity = await this.GetAll(where)
                 .OrderByDescending(t => t.DateTime).FirstOrDefaultAsync();
-            return this.mapper.Map<T>(entity);
+            return this.mapper.Map<TModel>(entity);
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<T>> GetAllAsync(LambdaExpression where = null)
+        public async Task<IEnumerable<TModel>> GetAllAsync(LambdaExpression where = null)
         {
             var entities = await this.GetAll(where)
                 .OrderBy(t => t.DateTime).ToListAsync();
-            return this.mapper.Map<List<T>>(entities);
+            return this.mapper.Map<List<TModel>>(entities);
         }
 
         /// <inheritdoc/>
-        public async Task<PagingOutput<T>> GetPageAsync(PagingInput pagingInput, LambdaExpression where = null)
+        public async Task<PagingOutput<TModel>> GetPageAsync(PagingInput pagingInput, LambdaExpression where = null)
         {
-            IQueryable<U> entities = this.GetAll(where);
+            IQueryable<TEntity> entities = this.GetAll(where);
 
             var totalCount = entities.Count();
             var totalSkipped = 0;
@@ -106,32 +127,36 @@
             }
 
             var result = await entities.ToListAsync();
-            return new PagingOutput<T>()
+            return new PagingOutput<TModel>()
             {
                 TotalCount = totalCount,
-                Result = this.mapper.Map<List<T>>(result),
+                Result = this.mapper.Map<List<TModel>>(result),
                 HasNextPage = hasNextPage,
                 HasPreviousPage = hasPreviousPage
             };
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(T model)
+        public async Task AddAsync(TModel model)
         {
-            var entity = this.mapper.Map<U>(model);
+            var entity = this.mapper.Map<TEntity>(model);
             this.repository.Create(entity);
             await this.unitOfWork.CommitAsync();
         }
 
-        /// <inheritdoc/>
-        protected virtual IQueryable<U> GetAll(LambdaExpression where = null)
+        /// <summary>
+        /// Retrieves all entities that match the condition from the repository.
+        /// </summary>
+        /// <param name="where">The condition to be used to filter the results.</param>
+        /// <returns>An IQueryable of the entities.</returns>
+        protected virtual IQueryable<TEntity> GetAll(LambdaExpression where = null)
         {
             if (where == null)
             {
                 return this.repository.GetAll();
             }
 
-            return this.repository.GetMany(where as Expression<Func<U, bool>>);
+            return this.repository.GetMany(where as Expression<Func<TEntity, bool>>);
         }
     }
 }

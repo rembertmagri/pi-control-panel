@@ -20,6 +20,13 @@
     {
         private readonly IConfiguration configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CpuLoadStatusService"/> class.
+        /// </summary>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="unitOfWork">The unit of work.</param>
+        /// <param name="mapper">The mapper configuration.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public CpuLoadStatusService(
             IConfiguration configuration,
             IUnitOfWork unitOfWork,
@@ -32,7 +39,7 @@
         }
 
         /// <summary>
-        ///     Gets the RealTimeLoads from the list of datetimes
+        ///     Gets the RealTimeLoads from the list of datetimes.
         /// </summary>
         /// <remarks>
         ///     The unit of work is being created manually instead of relying on the dependency injection
@@ -40,10 +47,10 @@
         ///     https://github.com/graphql-dotnet/graphql-dotnet/pull/1511
         ///     https://github.com/graphql-dotnet/graphql-dotnet/issues/1310
         ///     Once they are addressed, this can be changed to get the unit of work directly in the
-        ///     constructor via dependency injection
+        ///     constructor via dependency injection.
         /// </remarks>
-        /// <param name="dateTimes">List of datetimes for which to fetch the RealTimeLoads</param>
-        /// <returns>A dictionary containg the datetimes as keys and the RealTimeLoads as values</returns>
+        /// <param name="dateTimes">List of datetimes for which to fetch the RealTimeLoads.</param>
+        /// <returns>A dictionary containg the datetimes as keys and the RealTimeLoads as values.</returns>
         public async Task<IDictionary<DateTime, Domain.Models.Hardware.Cpu.CpuLoadStatus>> GetCpuLoadStatusesAsync(
             IEnumerable<DateTime> dateTimes)
         {
@@ -56,6 +63,7 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override IQueryable<Entities.Cpu.CpuLoadStatus> GetAll(LambdaExpression where = null)
         {
             return base.GetAll().Include(s => s.CpuProcesses);

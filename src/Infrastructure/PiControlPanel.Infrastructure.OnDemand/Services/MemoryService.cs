@@ -61,7 +61,7 @@
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
-            var memoryTypeName = typeof(TMemoryStatus) == typeof(RandomAccessMemory) ? "Mem:" : "Swap:";
+            var memoryTypeName = typeof(TMemory) == typeof(RandomAccessMemory) ? "Mem:" : "Swap:";
             var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
             var regex = new Regex(@"^\w*:\s*(?<total>\d*)\s*(?<used>\d*)\s*(?<free>\d*)\s*(?<shared>\d*)\s*(?<buffcache>\d*)\s*.*$");
             var groups = regex.Match(memoryInfo).Groups;
@@ -82,7 +82,7 @@
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
 
-            var isRam = typeof(TMemoryStatus) == typeof(RandomAccessMemory);
+            var isRam = typeof(TMemory) == typeof(RandomAccessMemory);
             var memoryTypeName = isRam ? "Mem:" : "Swap:";
             var memoryInfo = lines.First(l => l.StartsWith(memoryTypeName));
             var regex = isRam ?
