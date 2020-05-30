@@ -22,6 +22,12 @@
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecurityService"/> class.
+        /// </summary>
+        /// <param name="userAccountService">The infrastructure layer persistence service.</param>
+        /// <param name="configuration">The IConfiguration instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
         public SecurityService(
             IUserAccountService userAccountService,
             IConfiguration configuration,
@@ -32,6 +38,7 @@
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
         public async Task<LoginResponse> LoginAsync(UserAccount userAccount)
         {
             this.logger.Debug("Application layer -> SecurityService -> LoginAsync");
@@ -52,6 +59,7 @@
             return await this.GetLoginResponseAsync(userAccount);
         }
 
+        /// <inheritdoc/>
         public async Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount)
         {
             this.logger.Debug("Application layer -> SecurityService -> GetLoginResponseAsync");
@@ -75,7 +83,8 @@
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsIdentity = await this.CreateClaimsIdentityAsync(userAccount);
 
-            return new JwtSecurityToken(this.configuration["Jwt:Issuer"],
+            return new JwtSecurityToken(
+                this.configuration["Jwt:Issuer"],
                 this.configuration["Jwt:Audience"],
                 claimsIdentity.Claims,
                 expires: DateTime.Now.AddMinutes(60),
