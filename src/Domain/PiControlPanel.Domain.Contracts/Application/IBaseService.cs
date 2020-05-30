@@ -8,7 +8,6 @@
     /// <typeparam name="T">The model generic type parameter.</typeparam>
     public interface IBaseService<T>
     {
-
         /// <summary>
         /// Gets the model.
         /// </summary>

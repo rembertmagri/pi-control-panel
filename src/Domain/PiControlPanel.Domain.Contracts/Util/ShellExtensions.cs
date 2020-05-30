@@ -3,8 +3,16 @@
     using System;
     using System.Diagnostics;
 
+    /// <summary>
+    /// Utility class that extends string to execute bash commands.
+    /// </summary>
     public static class ShellExtensions
     {
+        /// <summary>
+        /// Executes a bash command and returns the result.
+        /// </summary>
+        /// <param name="cmd">The command to be executed.</param>
+        /// <returns>The result of the bash command.</returns>
         public static string Bash(this string cmd)
         {
             var escapedArgs = cmd.Replace("\"", "\\\"");

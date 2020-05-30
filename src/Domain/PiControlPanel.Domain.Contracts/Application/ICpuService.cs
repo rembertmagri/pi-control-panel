@@ -8,7 +8,7 @@
     using PiControlPanel.Domain.Models.Paging;
 
     /// <summary>
-    /// Application layer service for operations on Cpu model.
+    /// Application layer service for operations on CPU model.
     /// </summary>
     public interface ICpuService : IBaseService<Cpu>
     {
