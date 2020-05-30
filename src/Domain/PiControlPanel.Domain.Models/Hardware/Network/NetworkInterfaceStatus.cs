@@ -14,7 +14,7 @@
         public long TotalReceived { get; set; }
 
         /// <summary>
-        /// Gets or sets the total number of bytes seny.
+        /// Gets or sets the total number of bytes sent.
         /// </summary>
         public long TotalSent { get; set; }
 
