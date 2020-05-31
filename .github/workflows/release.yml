@@ -1,4 +1,4 @@
-name: Release Debian Package
+name: Release Debian Package - armhf
 
 on:
   push:
@@ -33,23 +33,26 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: package
-      - shell: bash
+      - name: Get package version
+        id: debian_package_version
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(grep 'Version:' package/control | awk -F  ": " '{print $2}')"
+      - name: Create Debian package
+        shell: bash
         run: |
           cd package
           chmod +x pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/p*
-          dpkg-deb --build pi-control-panel_VERSION.SUBVERSION_armhf
-      - name: Create Release
+          mv pi-control-panel_VERSION.SUBVERSION_armhf pi-control-panel_${{steps.debian_package_version.outputs.version}}_armhf
+          dpkg-deb --build pi-control-panel_${{steps.debian_package_version.outputs.version}}_armhf
+      - name: Create Release ${{steps.debian_package_version.outputs.version}}
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: VERSION.SUBVERSION
-          release_name: Release VERSION.SUBVERSION
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          tag_name: ${{steps.debian_package_version.outputs.version}}
+          release_name: Release ${{steps.debian_package_version.outputs.version}}
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -58,7 +61,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./package/pi-control-panel_VERSION.SUBVERSION_armhf.deb
-          asset_name: pi-control-panel_VERSION.SUBVERSION_armhf.deb
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./package/pi-control-panel_${{steps.debian_package_version.outputs.version}}_armhf.deb
+          asset_name: pi-control-panel_${{steps.debian_package_version.outputs.version}}_armhf.deb
           asset_content_type: application/vnd.debian.binary-package
