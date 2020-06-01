@@ -6,34 +6,34 @@
     using PiControlPanel.Domain.Models;
 
     /// <summary>
-    /// Contains extension methods to retrieve the business context from GraphQL user context.
+    /// Contains extension methods to retrieve the business user context from GraphQL user context.
     /// </summary>
     public static class GraphQLUserContextExtensions
     {
         /// <summary>
-        /// Creates the BusinessContext from the GraphQLUserContext.
+        /// Creates the UserContext from the GraphQLUserContext.
         /// </summary>
         /// <param name="graphQLUserContext">The GraphQL user context.</param>
-        /// <returns>The business context created from the GraphQL user context.</returns>
-        public static BusinessContext GetBusinessContext(this GraphQLUserContext graphQLUserContext)
+        /// <returns>The business user context created from the GraphQL user context.</returns>
+        public static UserContext GetUserContext(this GraphQLUserContext graphQLUserContext)
         {
-            var businessContext = new BusinessContext();
+            var userContext = new UserContext();
 
             var isAnonymousClaim = graphQLUserContext.User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IsAnonymous);
             if (isAnonymousClaim != null && bool.TryParse(isAnonymousClaim.Value, out bool isAnonymous))
             {
-                businessContext.IsAnonymous = isAnonymous;
+                userContext.IsAnonymous = isAnonymous;
             }
 
             var usernameClaim = graphQLUserContext.User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Username);
             if (usernameClaim != null)
             {
-                businessContext.Username = usernameClaim.Value ?? string.Empty;
+                userContext.Username = usernameClaim.Value ?? string.Empty;
             }
 
-            businessContext.IsSuperUser = graphQLUserContext.User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Roles.SuperUser);
+            userContext.IsSuperUser = graphQLUserContext.User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Roles.SuperUser);
 
-            return businessContext;
+            return userContext;
         }
     }
 }

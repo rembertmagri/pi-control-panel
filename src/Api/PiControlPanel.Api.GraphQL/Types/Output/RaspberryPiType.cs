@@ -39,8 +39,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Chipset field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await chipsetService.GetAsync();
                 });
@@ -50,8 +48,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Cpu field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await cpuService.GetAsync();
                 });
@@ -61,8 +57,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Ram field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await randomAccessMemoryService.GetAsync();
                 });
@@ -72,8 +66,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Swap Memory field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await swapMemoryService.GetAsync();
                 });
@@ -83,8 +75,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Gpu field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await gpuService.GetAsync();
                 });
@@ -94,8 +84,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Disk field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await diskService.GetAsync();
                 });
@@ -105,8 +93,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Os field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await operatingSystemService.GetAsync();
                 });
@@ -116,8 +102,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Network field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await networkService.GetAsync();
                 });

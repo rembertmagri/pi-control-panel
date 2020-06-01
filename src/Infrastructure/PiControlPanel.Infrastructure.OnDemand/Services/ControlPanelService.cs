@@ -72,7 +72,7 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> KillAsync(BusinessContext context, int processId)
+        public Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
 

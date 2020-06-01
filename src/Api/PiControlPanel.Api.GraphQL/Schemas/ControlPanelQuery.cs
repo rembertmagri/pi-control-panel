@@ -30,6 +30,7 @@
                 resolve: async context =>
                 {
                     logger.Info("Login query");
+
                     var userAccount = context.GetArgument<UserAccount>("userAccount");
 
                     return await securityService.LoginAsync(userAccount);
@@ -40,12 +41,13 @@
                 resolve: async context =>
                 {
                     logger.Info("RefreshToken query");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     var userAccount = new UserAccount()
                     {
-                        Username = businessContext.Username
+                        Username = userContext.Username
                     };
 
                     return await securityService.GetLoginResponseAsync(userAccount);
@@ -57,8 +59,6 @@
                 resolve: context =>
                 {
                     logger.Info("RaspberryPi query");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     // Retuning empty object to make GraphQL resolve the RaspberryPiType fields
                     // https://graphql-dotnet.github.io/docs/getting-started/query-organization/

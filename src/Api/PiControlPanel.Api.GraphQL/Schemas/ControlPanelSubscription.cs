@@ -46,9 +46,10 @@
                 subscribe: context =>
                 {
                     logger.Info("CpuAverageLoad subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return cpuService.GetLoadStatusObservable();
                 });
@@ -62,9 +63,10 @@
                 subscribe: context =>
                 {
                     logger.Info("CpuTemperature subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return cpuService.GetTemperatureObservable();
                 });
@@ -78,9 +80,10 @@
                 subscribe: context =>
                 {
                     logger.Info("CpuFrequency subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return cpuService.GetFrequencyObservable();
                 });
@@ -94,9 +97,10 @@
                 subscribe: context =>
                 {
                     logger.Info("RamStatus subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return randomAccessMemoryService.GetStatusObservable();
                 });
@@ -110,9 +114,10 @@
                 subscribe: context =>
                 {
                     logger.Info("SwapMemoryStatus subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return swapMemoryService.GetStatusObservable();
                 });
@@ -128,9 +133,10 @@
                 subscribe: context =>
                 {
                     logger.Info("FileSystemStatus subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     var fileSystemName = context.GetArgument<string>("fileSystemName");
 
@@ -146,9 +152,10 @@
                 subscribe: context =>
                 {
                     logger.Info("OsStatus subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     return operatingSystemService.GetStatusObservable();
                 });
@@ -164,9 +171,10 @@
                 subscribe: context =>
                 {
                     logger.Info("NetworkInterfaceStatus subscription");
-                    MessageHandlingContext messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
-                    GraphQLUserContext graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
+                    var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     var networkInterfaceName = context.GetArgument<string>("networkInterfaceName");
 

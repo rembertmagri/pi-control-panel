@@ -27,8 +27,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("LoadStatus field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await cpuService.GetLastLoadStatusAsync();
                 });
@@ -39,8 +37,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("LoadStatuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var averageLoads = await cpuService.GetLoadStatusesAsync(pagingInput);
@@ -53,8 +49,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Temperature field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await cpuService.GetLastTemperatureAsync();
                 });
@@ -65,8 +59,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Temperatures connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var temperatures = await cpuService.GetTemperaturesAsync(pagingInput);
@@ -79,8 +71,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Frequency field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await cpuService.GetLastFrequencyAsync();
                 });
@@ -91,8 +81,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Frequencies connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var frequencies = await cpuService.GetFrequenciesAsync(pagingInput);

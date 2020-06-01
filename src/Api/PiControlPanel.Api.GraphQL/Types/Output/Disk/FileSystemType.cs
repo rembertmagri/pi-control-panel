@@ -27,8 +27,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("File System status field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await fileSystemService.GetLastFileSystemStatusAsync(context.Source.Name);
                 });
@@ -39,8 +37,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("File System statuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var statuses = await fileSystemService.GetFileSystemStatusesAsync(context.Source.Name, pagingInput);

@@ -29,8 +29,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Memory status field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await memoryService.GetLastStatusAsync();
                 });
@@ -41,8 +39,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Memory statuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var statuses = await memoryService.GetStatusesAsync(pagingInput);

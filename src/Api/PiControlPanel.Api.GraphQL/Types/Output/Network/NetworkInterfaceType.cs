@@ -28,8 +28,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Network interface status field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await networkService.GetLastNetworkInterfaceStatusAsync(context.Source.Name);
                 });
@@ -40,8 +38,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Network Interface statuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var networkInterfaceStatuses = await networkService.GetNetworkInterfaceStatusesAsync(context.Source.Name, pagingInput);

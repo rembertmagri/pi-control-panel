@@ -27,8 +27,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Os status field");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await operatingSystemService.GetLastStatusAsync();
                 });
@@ -39,8 +37,6 @@
                 .ResolveAsync(async context =>
                 {
                     logger.Debug("Os statuses connection");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var pagingInput = context.GetPagingInput();
                     var statuses = await operatingSystemService.GetStatusesAsync(pagingInput);

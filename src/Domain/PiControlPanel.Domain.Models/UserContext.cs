@@ -1,9 +1,9 @@
 ﻿namespace PiControlPanel.Domain.Models
 {
     /// <summary>
-    /// Business context containing data required for any business flow.
+    /// User context containing data required for any business logic flow.
     /// </summary>
-    public class BusinessContext
+    public class UserContext
     {
         /// <summary>
         /// Gets or sets the username of the currently logged in user.

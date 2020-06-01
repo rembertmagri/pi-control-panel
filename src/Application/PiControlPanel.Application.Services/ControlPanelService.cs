@@ -46,7 +46,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> KillAsync(BusinessContext context, int processId)
+        public async Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Application layer -> ControlPanelService -> KillAsync");
 
@@ -61,7 +61,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> IsAuthorizedToKillAsync(BusinessContext context, int processId)
+        public async Task<bool> IsAuthorizedToKillAsync(UserContext context, int processId)
         {
             if (context.IsSuperUser)
             {

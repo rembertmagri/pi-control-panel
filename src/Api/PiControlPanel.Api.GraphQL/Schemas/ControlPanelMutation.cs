@@ -28,8 +28,6 @@
                 resolve: async context =>
                 {
                     logger.Info("Reboot mutation");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await controlPanelService.RebootAsync();
                 })
@@ -40,8 +38,6 @@
                 resolve: async context =>
                 {
                     logger.Info("Shutdown mutation");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await controlPanelService.ShutdownAsync();
                 })
@@ -52,8 +48,6 @@
                 resolve: async context =>
                 {
                     logger.Info("Update mutation");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     return await controlPanelService.UpdateAsync();
                 })
@@ -66,12 +60,13 @@
                 resolve: async context =>
                 {
                     logger.Info("Kill mutation");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
+
+                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     var processId = context.GetArgument<int>("processId");
 
-                    return await controlPanelService.KillAsync(businessContext, processId);
+                    return await controlPanelService.KillAsync(userContext, processId);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
@@ -82,8 +77,6 @@
                 resolve: async context =>
                 {
                     logger.Info("Overclock mutation");
-                    GraphQLUserContext graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var businessContext = graphQLUserContext.GetBusinessContext();
 
                     var cpuMaxFrequencyLevel = context.GetArgument<CpuMaxFrequencyLevel>("cpuMaxFrequencyLevel");
 

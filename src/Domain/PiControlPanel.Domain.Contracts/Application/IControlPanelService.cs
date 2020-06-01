@@ -30,18 +30,18 @@
         /// <summary>
         /// Kills a specific process.
         /// </summary>
-        /// <param name="context">The business context.</param>
+        /// <param name="context">The user context.</param>
         /// <param name="processId">The process identifier.</param>
         /// <returns>Whether the operation was successful.</returns>
-        Task<bool> KillAsync(BusinessContext context, int processId);
+        Task<bool> KillAsync(UserContext context, int processId);
 
         /// <summary>
         /// Checks is the logged in user can kill a process.
         /// </summary>
-        /// <param name="context">The business context.</param>
+        /// <param name="context">The user context.</param>
         /// <param name="processId">The process identifier.</param>
         /// <returns>Whether the user can kill the process.</returns>
-        Task<bool> IsAuthorizedToKillAsync(BusinessContext context, int processId);
+        Task<bool> IsAuthorizedToKillAsync(UserContext context, int processId);
 
         /// <summary>
         /// Changes the clock configuration of the board.
