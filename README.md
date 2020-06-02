@@ -10,7 +10,11 @@ Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 1. Download the [latest release](https://github.com/rembertmagri/pi-control-panel/releases/latest)
 2. Install the package
 ````bash
-sudo apt install ./pi-control-panel_VERSION.SUBVERSION_armhf.deb
+sudo apt install ./pi-control-panel_VERSION_armhf.deb
+````
+or (if running on Raspberry Pi OS 64)
+````bash
+sudo apt install ./pi-control-panel_VERSION_arm64.deb
 ````
 3. Access http://<<ip_of_raspberry_pi>>:8080/
 
@@ -22,7 +26,7 @@ sudo apt remove pi-control-panel
 
 ## Creating the Debian Package
 
-1. Update the package version in package/pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/control
+1. Update the package version in package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
 2. Merge the changes into master branch
 3. [GitHub Actions](https://github.com/rembertmagri/pi-control-panel/actions) will generate the [release](https://github.com/rembertmagri/pi-control-panel/releases)
 
@@ -39,8 +43,8 @@ sudo usermod -aG video picontrolpanel
 sudo mkdir /var/log/picontrolpanel
 sudo chown picontrolpanel /var/log/picontrolpanel
 ````
-2. Publish PiControlPanel.Api.GraphQL project targeting ARM and copy the files to /opt/picontrolpanel
-3. Copy pi-control-panel/package/pi-control-panel_VERSION.SUBVERSION_armhf/usr/lib/systemd/system/picontrolpanel.service to /etc/systemd/system/picontrolpanel.service
+2. Publish PiControlPanel.Api.GraphQL project targeting ARM 32 or 64 and copy the files to /opt/picontrolpanel
+3. Copy pi-control-panel/package/pi-control-panel_VERSION_ARCHITECTURE/usr/lib/systemd/system/picontrolpanel.service to /etc/systemd/system/picontrolpanel.service
 4. Login as picontrolpanel
 ````bash
 su - picontrolpanel

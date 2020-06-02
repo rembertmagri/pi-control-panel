@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
     paths: 
-      - 'package/pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/control'
+      - 'package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control'
 
 jobs:
   release_version:
@@ -16,26 +16,26 @@ jobs:
       id: get_debian_package_version
       shell: bash
       run: |
-        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/control | awk -F  ": " '{print $2}')"
+        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
     - name: Set package version
       shell: bash
       run: |
         sed -i 's/<Version>1.0.0<\/Version>/<Version>${{ steps.get_debian_package_version.outputs.version }}.0<\/Version>/g' src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj
         sed -i 's/"version": "1.0.0",/"version": "${{ steps.get_debian_package_version.outputs.version }}.0",/g' src/Ui/PiControlPanel.Ui.Angular/package.json
     - name: Upload results for job dotnet_build
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: checkout
         path: .
         
-  dotnet_build:
-    name: .NET Core Build
+  dotnet_build_linux-arm:
+    name: .NET Core Build linux-arm
     needs: [release_version]
     runs-on: ubuntu-latest
 
     steps:
     - name: Download result from job release_version
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v2
       with:
         name: checkout
     - name: Setup .NET Core
@@ -43,35 +43,71 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build
-      run: dotnet build checkout/src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi
+      run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm
     - name: Upload results for job debian_package
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
-        name: package
-        path: checkout/package
+        name: package_linux-arm
+        path: package
 
-  debian_package:
-    name: Debian Package Build
-    needs: [dotnet_build]
+  dotnet_build_linux-arm64:
+    name: .NET Core Build linux-arm64
+    needs: [release_version]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download result from job release_version
+      uses: actions/download-artifact@v2
+      with:
+        name: checkout
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Build
+      run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm64
+    - name: Upload results for job debian_package
+      uses: actions/upload-artifact@v2
+      with:
+        name: package_linux-arm64
+        path: package
+
+  debian_packages:
+    name: Debian Packages Build
+    needs: [dotnet_build_linux-arm, dotnet_build_linux-arm64]
     runs-on: ubuntu-latest
     
     steps:
-      - name: Download result from job dotnet_build
-        uses: actions/download-artifact@v1
+      - name: Download result from job dotnet_build_linux-arm
+        uses: actions/download-artifact@v2
         with:
-          name: package
+          name: package_linux-arm
+          path: package_linux-arm
+      - name: Download result from job dotnet_build_linux-arm64
+        uses: actions/download-artifact@v2
+        with:
+          name: package_linux-arm64
+          path: package_linux-arm64
       - name: Get package version
         id: get_debian_package_version
         shell: bash
         run: |
-          echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION.SUBVERSION_armhf/DEBIAN/control | awk -F  ": " '{print $2}')"
-      - name: Create Debian package
+          echo "::set-output name=version::$(grep 'Version:' package_linux-arm/package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+      - name: Create Debian package (linux-arm)
         shell: bash
         run: |
-          cd package
-          mv pi-control-panel_VERSION.SUBVERSION_armhf pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
+          cd package_linux-arm/package
+          mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
           chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/DEBIAN/p*
           dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
+      - name: Create Debian package (linux-arm64)
+        shell: bash
+        run: |
+          cd package_linux-arm64/package
+          sed -i 's/Architecture: armhf/Architecture: arm64/g' pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
+          mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
+          chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/DEBIAN/p*
+          dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -86,13 +122,21 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset 
+      - name: Upload Release Asset (armhf)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
+          asset_path: ./package_linux-arm/package/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
           asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
+          asset_content_type: application/vnd.debian.binary-package
+      - name: Upload Release Asset (arm64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./package_linux-arm64/package/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
+          asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
           asset_content_type: application/vnd.debian.binary-package
