@@ -1,4 +1,4 @@
-name: Release Debian Package - armhf
+name: Release Debian Packages
 
 on:
   push:
@@ -92,18 +92,18 @@ jobs:
         id: get_debian_package_version
         shell: bash
         run: |
-          echo "::set-output name=version::$(grep 'Version:' package_linux-arm/package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+          echo "::set-output name=version::$(grep 'Version:' package_linux-arm/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
       - name: Create Debian package (linux-arm)
         shell: bash
         run: |
-          cd package_linux-arm/package
+          cd package_linux-arm
           mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
           chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/DEBIAN/p*
           dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
       - name: Create Debian package (linux-arm64)
         shell: bash
         run: |
-          cd package_linux-arm64/package
+          cd package_linux-arm64
           sed -i 's/Architecture: armhf/Architecture: arm64/g' pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
           mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
           chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/DEBIAN/p*
@@ -128,7 +128,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package_linux-arm/package/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
+          asset_path: ./package_linux-arm/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
           asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
           asset_content_type: application/vnd.debian.binary-package
       - name: Upload Release Asset (arm64)
@@ -137,6 +137,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package_linux-arm64/package/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
+          asset_path: ./package_linux-arm64/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
           asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
           asset_content_type: application/vnd.debian.binary-package
