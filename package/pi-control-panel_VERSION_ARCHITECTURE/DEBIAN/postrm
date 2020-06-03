@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # postrm script for pi-control-panel
 #
 # see: dh_installdeb(1)
