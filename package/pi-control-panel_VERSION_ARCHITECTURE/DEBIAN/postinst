@@ -1,117 +1,135 @@
-#!/bin/bash
+#!/bin/sh
+# postinst script for pi-control-panel
+#
+# see: dh_installdeb(1)
+
+set -e
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see https://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+#
+# quoting from the policy:
+#     Any necessary prompting should almost always be confined to the
+#     post-installation script, and should be protected with a conditional
+#     so that unnecessary prompting doesn't happen if a package's
+#     installation fails and the `postinst' is called with `abort-upgrade',
+#     `abort-remove' or `abort-deconfigure'.
 
 echo 'Executing post installation steps...'
 
-if [ ! $(getent passwd picontrolpanel) ]; then
-	echo 'Creating user...'
-	useradd -M picontrolpanel
-	echo picontrolpanel:v!p4S#hM | chpasswd
-	usermod -aG sudo picontrolpanel
-	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
-	usermod -aG video picontrolpanel
-fi
+case "$1" in
+    configure)
 
-if [ ! -d '/var/log/picontrolpanel' ]; then
-	echo 'Creating log directory...'
-	mkdir /var/log/picontrolpanel
-	chown picontrolpanel /var/log/picontrolpanel
-fi
+        # Enabling supported workers
+        cat /proc/cpuinfo &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e '\nChipsetWorker \033[0;32menabled\033[0m'
+        else
+        	echo -e '\nChipsetWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Chipset": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        top -bc -n 1 &> /dev/null && vcgencmd measure_temp &> /dev/null && cat /proc/cpuinfo &> /dev/null && cat /boot/config.txt &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'CpuWorker \033[0;32menabled\033[0m'
+        	cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state &> /dev/null
+        	if [ $? -eq 0 ]; then
+        		echo -e 'CpuFrequencyWorker \033[0;32menabled\033[0m'
+        	else
+        		echo -e 'CpuFrequencyWorker \033[0;31mdisabled\033[0m'
+        		sed --in-place '/    "CpuFrequency": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        	fi
+        else
+        	echo -e 'CpuWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Cpu": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        	echo -e 'CpuFrequencyWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "CpuFrequency": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        vcgencmd get_mem gpu &> /dev/null && cat /boot/config.txt &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'GpuWorker \033[0;32menabled\033[0m'
+        else
+        	echo -e 'GpuWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Gpu": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        hostnamectl &> /dev/null && uptime -p &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'OsWorker \033[0;32menabled\033[0m'
+        else
+        	echo -e 'OsWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Os": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        ifconfig &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'NetworkWorker \033[0;32menabled\033[0m'
+        	cat /proc/net/dev &> /dev/null
+        	if [ $? -eq 0 ]; then
+        		echo -e 'NetworkInterfaceStatusWorker \033[0;32menabled\033[0m'
+        	else
+        		echo -e 'NetworkInterfaceStatusWorker \033[0;31mdisabled\033[0m'
+        		sed --in-place '/    "NetworkInterfaceStatus": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        	fi
+        else
+        	echo -e 'NetworkWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Network": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        	echo -e 'NetworkInterfaceStatusWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "NetworkInterfaceStatus": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        df -T &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'DiskWorker \033[0;32menabled\033[0m'
+        else
+        	echo -e 'DiskWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "Disk": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        
+        free --mega &> /dev/null
+        if [ $? -eq 0 ]; then
+        	echo -e 'RandomAccessMemoryWorker \033[0;32menabled\033[0m'
+        	echo -e 'SwapMemoryWorker \033[0;32menabled\033[0m'
+        else
+        	echo -e 'RandomAccessMemoryWorker \033[0;31mdisabled\033[0m'
+        	echo -e 'SwapMemoryWorker \033[0;31mdisabled\033[0m'
+        	sed --in-place '/    "RandomAccessMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        	sed --in-place '/    "SwapMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
+        fi
+        # End of Enabling supported workers
+        
+        chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
+        systemctl enable picontrolpanel
+        systemctl start picontrolpanel
+        
+        echo -e '\n\033[0;32mThe installation of PiControlPanel is complete!\033[0m'
+        
+        raspberryPiIp=$(hostname -I | cut -d' ' -f1)
+        echo -e 'Login @ \033[0;36mhttp://localhost:8080\033[0m from Raspberry Pi or \033[0;36mhttp://$raspberryPiIp:8080\033[0m from another machine\n'
+        
+    ;;
 
-if [ ! -d '/var/db' ]; then
-	echo 'Creating /var/db directory...'
-	mkdir /var/db
-fi
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
 
-if [ ! -d '/var/db/picontrolpanel' ]; then
-	echo 'Creating db directory...'
-	mkdir /var/db/picontrolpanel
-	chown picontrolpanel /var/db/picontrolpanel
-fi
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
 
-# Enabling supported workers
-cat /proc/cpuinfo &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'ChipsetWorker \033[0;32menabled\033[0m'
-else
-	echo -e 'ChipsetWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Chipset": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
 
-top -bc -n 1 &> /dev/null && vcgencmd measure_temp &> /dev/null && cat /proc/cpuinfo &> /dev/null && cat /boot/config.txt &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'CpuWorker \033[0;32menabled\033[0m'
-	cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state &> /dev/null
-	if [ $? -eq 0 ]; then
-		echo -e 'CpuFrequencyWorker \033[0;32menabled\033[0m'
-	else
-		echo -e 'CpuFrequencyWorker \033[0;31mdisabled\033[0m'
-		sed --in-place '/    "CpuFrequency": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-	fi
-else
-	echo -e 'CpuWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Cpu": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-	echo -e 'CpuFrequencyWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "CpuFrequency": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
+#DEBHELPER#
 
-vcgencmd get_mem gpu &> /dev/null && cat /boot/config.txt &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'GpuWorker \033[0;32menabled\033[0m'
-else
-	echo -e 'GpuWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Gpu": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
-
-hostnamectl &> /dev/null && uptime -p &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'OsWorker \033[0;32menabled\033[0m'
-else
-	echo -e 'OsWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Os": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
-
-ifconfig &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'NetworkWorker \033[0;32menabled\033[0m'
-	cat /proc/net/dev &> /dev/null
-	if [ $? -eq 0 ]; then
-		echo -e 'NetworkInterfaceStatusWorker \033[0;32menabled\033[0m'
-	else
-		echo -e 'NetworkInterfaceStatusWorker \033[0;31mdisabled\033[0m'
-		sed --in-place '/    "NetworkInterfaceStatus": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-	fi
-else
-	echo -e 'NetworkWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Network": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-	echo -e 'NetworkInterfaceStatusWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "NetworkInterfaceStatus": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
-
-df -T &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'DiskWorker \033[0;32menabled\033[0m'
-else
-	echo -e 'DiskWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "Disk": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
-
-free --mega &> /dev/null
-if [ $? -eq 0 ]; then
-	echo -e 'RandomAccessMemoryWorker \033[0;32menabled\033[0m'
-	echo -e 'SwapMemoryWorker \033[0;32menabled\033[0m'
-else
-	echo -e 'RandomAccessMemoryWorker \033[0;31mdisabled\033[0m'
-	echo -e 'SwapMemoryWorker \033[0;31mdisabled\033[0m'
-	sed --in-place '/    "RandomAccessMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-	sed --in-place '/    "SwapMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
-fi
-# End of Enabling supported workers
-
-chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
-systemctl enable picontrolpanel
-systemctl start picontrolpanel
-
-echo -e '\n\033[0;32mThe installation of PiControlPanel is complete!\033[0m'
-
-raspberryPiIp=$(hostname -I | cut -d' ' -f1)
-echo -e 'Login @ \033[0;36mhttp://localhost:8080\033[0m from Raspberry Pi or \033[0;36mhttp://$raspberryPiIp:8080\033[0m from another machine\n'
+exit 0
