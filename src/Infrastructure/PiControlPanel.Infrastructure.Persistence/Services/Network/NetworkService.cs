@@ -38,10 +38,7 @@
                 }
                 else
                 {
-                    existingNetworkInterface.IpAddress = networkInterface.IpAddress;
-                    existingNetworkInterface.SubnetMask = networkInterface.SubnetMask;
-                    existingNetworkInterface.DefaultGateway = networkInterface.DefaultGateway;
-                    this.networkInterfaceRepository.Update(existingNetworkInterface);
+                    this.networkInterfaceRepository.Update(networkInterface);
                 }
             }
 

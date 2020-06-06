@@ -37,9 +37,7 @@
                 }
                 else
                 {
-                    existingFileSystem.Type = fileSystem.Type;
-                    existingFileSystem.Total = fileSystem.Total;
-                    this.fileSystemRepository.Update(existingFileSystem);
+                    this.fileSystemRepository.Update(fileSystem);
                 }
             }
 
