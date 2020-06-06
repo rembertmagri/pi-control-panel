@@ -44,34 +44,6 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync()
-        {
-            this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
-            var result = BashCommands.SudoAptgetUpdade.Bash();
-            this.logger.Trace($"Result of '{BashCommands.SudoAptgetUpdade}' command: '{result}'");
-            result = BashCommands.SudoAptgetUpgrade.Bash();
-            this.logger.Trace($"Result of '{BashCommands.SudoAptgetUpgrade}' command: '{result}'");
-
-            string lastLine = result
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                .LastOrDefault();
-            this.logger.Info($"Firmware update summary: '{lastLine}'");
-            if ("0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded."
-                .Equals(lastLine))
-            {
-                this.logger.Info("Firmware already up-to-date, no need to update.");
-                return Task.FromResult(false);
-            }
-
-            result = BashCommands.SudoAptgetAutoremove.Bash();
-            this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoremove}' command: '{result}'");
-            result = BashCommands.SudoAptgetAutoclean.Bash();
-            this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
-
-            return Task.FromResult(true);
-        }
-
-        /// <inheritdoc/>
         public Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");

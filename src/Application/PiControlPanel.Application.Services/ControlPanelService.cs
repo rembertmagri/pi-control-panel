@@ -39,13 +39,6 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync()
-        {
-            this.logger.Debug("Application layer -> ControlPanelService -> UpdateAsync");
-            return this.onDemandService.UpdateAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Application layer -> ControlPanelService -> KillAsync");

@@ -174,20 +174,6 @@ export class RaspberryPiService {
     );
   }
 
-  updateRaspberryPi(): Observable<boolean> {
-    this.showSpinner();
-    return this.apollo.mutate({
-      mutation: gql`
-        mutation update {
-          update
-        }`
-    }).pipe(
-      map(result => get(result.data, 'update')),
-      catchError(this.errorHandlingService.handleError),
-      finalize(() => this.stopSpinner())
-    );
-  }
-
   killProcess(processId: number): Observable<boolean> {
     return this.apollo.mutate({
       mutation: gql`

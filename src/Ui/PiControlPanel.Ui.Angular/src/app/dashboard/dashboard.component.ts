@@ -493,22 +493,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  update() {
-    this.raspberryPiService.updateRaspberryPi()
-      .pipe(take(1))
-      .subscribe(
-      result => {
-        if (result) {
-          alert('Raspberry Pi firmware updated');
-        }
-        else {
-          alert('Raspberry Pi firmware already up-to-date');
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
-  }
-
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

@@ -26,26 +26,6 @@
         public const string SudoShutdown = "sudo shutdown -h now";
 
         /// <summary>
-        /// Updates the package lists.
-        /// </summary>
-        public const string SudoAptgetUpdade = "sudo apt-get update";
-
-        /// <summary>
-        /// Installs newer versions of packages.
-        /// </summary>
-        public const string SudoAptgetUpgrade = "sudo apt-get upgrade -y";
-
-        /// <summary>
-        /// Removes not used dependencies.
-        /// </summary>
-        public const string SudoAptgetAutoremove = "sudo apt-get autoremove -y";
-
-        /// <summary>
-        /// Clears the local repository of retrieved package files.
-        /// </summary>
-        public const string SudoAptgetAutoclean = "sudo apt-get autoclean";
-
-        /// <summary>
         /// Concatenates shadow file to standard output.
         /// </summary>
         public const string SudoCatEtcShadow = "sudo cat /etc/shadow | grep {0}";
