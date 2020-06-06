@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  version: 'development mode',
   graphqlEndpoint: '192.168.2.10:8080' // IP address of Raspberry Pi in the network
 };
 

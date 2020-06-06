@@ -45,6 +45,7 @@ import { NetworkInterfaceStatusService } from '../shared/services/network-interf
 import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
 import { ChartData } from '../shared/constants/chart-data';
 import { MAX_CHART_VISIBLE_ITEMS } from '../shared/constants/consts';
+import { environment } from '../../environments/environment';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -89,6 +90,8 @@ export class DashboardComponent implements OnInit {
   readonly MAX_CHART_VISIBLE_ITEMS = MAX_CHART_VISIBLE_ITEMS;
   selectedChartItems: string [];
   unselectedChartItems: string [];
+
+  version = environment.version;
 
   constructor(private _route: ActivatedRoute,
     private router: Router,
@@ -496,8 +499,7 @@ export class DashboardComponent implements OnInit {
       .subscribe(
       result => {
         if (result) {
-          alert('Raspberry Pi firmware updated, rebooting...');
-          this.logout();
+          alert('Raspberry Pi firmware updated');
         }
         else {
           alert('Raspberry Pi firmware already up-to-date');

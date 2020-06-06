@@ -68,7 +68,7 @@
             result = BashCommands.SudoAptgetAutoclean.Bash();
             this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
 
-            return this.RebootAsync();
+            return Task.FromResult(true);
         }
 
         /// <inheritdoc/>
