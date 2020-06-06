@@ -30,14 +30,14 @@
             var entity = this.Mapper.Map<Entities.Disk.Disk>(model);
             foreach (var fileSystem in entity.FileSystems)
             {
-                var existingFileSystem = await this.fileSystemRepository.GetAsync(f => f.Name == fileSystem.Name);
-                if (existingFileSystem == null)
+                var fileSystemExists = await this.fileSystemRepository.ExistsAsync(f => f.Name == fileSystem.Name);
+                if (fileSystemExists)
                 {
-                    this.fileSystemRepository.Create(fileSystem);
+                    this.fileSystemRepository.Update(fileSystem);
                 }
                 else
                 {
-                    this.fileSystemRepository.Update(fileSystem);
+                    this.fileSystemRepository.Create(fileSystem);
                 }
             }
 

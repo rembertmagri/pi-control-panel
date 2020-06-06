@@ -30,15 +30,15 @@
             var entity = this.Mapper.Map<Entities.Network.Network>(model);
             foreach (var networkInterface in entity.NetworkInterfaces)
             {
-                var existingNetworkInterface =
-                    await this.networkInterfaceRepository.GetAsync(n => n.Name == networkInterface.Name);
-                if (existingNetworkInterface == null)
+                var networkInterfaceExists =
+                    await this.networkInterfaceRepository.ExistsAsync(n => n.Name == networkInterface.Name);
+                if (networkInterfaceExists)
                 {
-                    this.networkInterfaceRepository.Create(networkInterface);
+                    this.networkInterfaceRepository.Update(networkInterface);
                 }
                 else
                 {
-                    this.networkInterfaceRepository.Update(networkInterface);
+                    this.networkInterfaceRepository.Create(networkInterface);
                 }
             }
 
