@@ -51,6 +51,11 @@
         IRepositoryBase<Entities.Disk.Disk> DiskRepository { get; }
 
         /// <summary>
+        /// Gets the repository for the FileSystem entity.
+        /// </summary>
+        IRepositoryBase<Entities.Disk.FileSystem> FileSystemRepository { get; }
+
+        /// <summary>
         /// Gets the repository for the FileSystemStatus entity.
         /// </summary>
         IRepositoryBase<Entities.Disk.FileSystemStatus> FileSystemStatusRepository { get; }
@@ -79,6 +84,11 @@
         /// Gets the repository for the Network entity.
         /// </summary>
         IRepositoryBase<Entities.Network.Network> NetworkRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for the NetworkInterface entity.
+        /// </summary>
+        IRepositoryBase<Entities.Network.NetworkInterface> NetworkInterfaceRepository { get; }
 
         /// <summary>
         /// Gets the repository for the NetworkInterfaceStatus entity.

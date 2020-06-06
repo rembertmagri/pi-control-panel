@@ -50,20 +50,27 @@
             {
                 var networkInterfaceLine = lines
                     .SingleOrDefault(l => l.StartsWith($"{networkInterfaceName}:"));
-                var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
+                if (networkInterfaceLine != null)
+                {
+                    var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
 
-                long.TryParse(networkInterfaceInfo[1], out var received);
-                long.TryParse(networkInterfaceInfo[9], out var sent);
+                    long.TryParse(networkInterfaceInfo[1], out var received);
+                    long.TryParse(networkInterfaceInfo[9], out var sent);
 
-                networkInterfacesStatuses.Add(
-                    networkInterfaceName,
-                    new NetworkInterfaceStatus()
-                    {
-                        NetworkInterfaceName = networkInterfaceName,
-                        DateTime = now,
-                        TotalReceived = received,
-                        TotalSent = sent
-                    });
+                    networkInterfacesStatuses.Add(
+                        networkInterfaceName,
+                        new NetworkInterfaceStatus()
+                        {
+                            NetworkInterfaceName = networkInterfaceName,
+                            DateTime = now,
+                            TotalReceived = received,
+                            TotalSent = sent
+                        });
+                }
+                else
+                {
+                    this.Logger.Trace($"No status information available for network interface '{networkInterfaceName}'");
+                }
             }
 
             await Task.Delay(samplingInterval);
@@ -77,24 +84,31 @@
                     StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => l.TrimStart());
 
-            foreach (var networkInterfaceName in networkInterfaceNames)
+            foreach (var networkInterfaceName in networkInterfacesStatuses.Keys)
             {
                 var networkInterfaceLine = lines
                     .SingleOrDefault(l => l.StartsWith($"{networkInterfaceName}:"));
-                var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
-                long.TryParse(networkInterfaceInfo[1], out var received);
-                long.TryParse(networkInterfaceInfo[9], out var sent);
+                if (networkInterfaceLine != null)
+                {
+                    var networkInterfaceInfo = Regex.Split(networkInterfaceLine, @"\s+");
+                    long.TryParse(networkInterfaceInfo[1], out var received);
+                    long.TryParse(networkInterfaceInfo[9], out var sent);
 
-                var networkInterfacesStatus = networkInterfacesStatuses[networkInterfaceName];
-                var elapsedSpan = new TimeSpan(now.Ticks - networkInterfacesStatus.DateTime.Ticks);
+                    var networkInterfacesStatus = networkInterfacesStatuses[networkInterfaceName];
+                    var elapsedSpan = new TimeSpan(now.Ticks - networkInterfacesStatus.DateTime.Ticks);
 
-                networkInterfacesStatus.ReceiveSpeed =
-                    (received - networkInterfacesStatus.TotalReceived) / elapsedSpan.TotalSeconds;
-                networkInterfacesStatus.SendSpeed =
-                    (sent - networkInterfacesStatus.TotalSent) / elapsedSpan.TotalSeconds;
-                networkInterfacesStatus.TotalReceived = received;
-                networkInterfacesStatus.TotalSent = sent;
-                networkInterfacesStatus.DateTime = now;
+                    networkInterfacesStatus.ReceiveSpeed =
+                        (received - networkInterfacesStatus.TotalReceived) / elapsedSpan.TotalSeconds;
+                    networkInterfacesStatus.SendSpeed =
+                        (sent - networkInterfacesStatus.TotalSent) / elapsedSpan.TotalSeconds;
+                    networkInterfacesStatus.TotalReceived = received;
+                    networkInterfacesStatus.TotalSent = sent;
+                    networkInterfacesStatus.DateTime = now;
+                }
+                else
+                {
+                    this.Logger.Trace($"No status information available for network interface '{networkInterfaceName}'");
+                }
             }
 
             return networkInterfacesStatuses.Values.ToList();

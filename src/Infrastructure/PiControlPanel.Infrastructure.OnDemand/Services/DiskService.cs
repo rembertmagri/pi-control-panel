@@ -43,16 +43,23 @@
             IList<FileSystemStatus> fileSystemsStatus = new List<FileSystemStatus>();
             foreach (var fileSystemName in fileSystemNames)
             {
-                var fileSystemInfo = lines.First(l => l.StartsWith($"{fileSystemName} "));
-                var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
-                var groups = regex.Match(fileSystemInfo).Groups;
-                fileSystemsStatus.Add(new FileSystemStatus()
+                var fileSystemInfo = lines.SingleOrDefault(l => l.StartsWith($"{fileSystemName} "));
+                if (fileSystemInfo != null)
                 {
-                    FileSystemName = groups["name"].Value,
-                    Used = int.Parse(groups["used"].Value),
-                    Available = int.Parse(groups["free"].Value),
-                    DateTime = DateTime.Now
-                });
+                    var regex = new Regex(@"^(?<name>\S*)\s*(?<type>\S*)\s*(?<total>\S*)\s*(?<used>\S*)\s*(?<free>\S*).*$");
+                    var groups = regex.Match(fileSystemInfo).Groups;
+                    fileSystemsStatus.Add(new FileSystemStatus()
+                    {
+                        FileSystemName = groups["name"].Value,
+                        Used = int.Parse(groups["used"].Value),
+                        Available = int.Parse(groups["free"].Value),
+                        DateTime = DateTime.Now
+                    });
+                }
+                else
+                {
+                    this.Logger.Trace($"No status information available for file system '{fileSystemName}'");
+                }
             }
 
             return Task.FromResult(fileSystemsStatus);

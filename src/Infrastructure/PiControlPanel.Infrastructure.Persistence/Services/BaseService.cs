@@ -66,7 +66,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(TModel model)
+        public virtual async Task UpdateAsync(TModel model)
         {
             var entity = this.Mapper.Map<TEntity>(model);
             this.Repository.Update(entity);

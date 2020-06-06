@@ -10,6 +10,8 @@
     /// <inheritdoc/>
     public class DiskService : BaseService<Disk, Entities.Disk.Disk>, IDiskService
     {
+        private readonly IRepositoryBase<Entities.Disk.FileSystem> fileSystemRepository;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DiskService"/> class.
         /// </summary>
@@ -19,6 +21,30 @@
         public DiskService(IUnitOfWork unitOfWork, IMapper mapper, ILogger logger)
             : base(unitOfWork.DiskRepository, unitOfWork, mapper, logger)
         {
+            this.fileSystemRepository = unitOfWork.FileSystemRepository;
+        }
+
+        /// <inheritdoc/>
+        public override async Task UpdateAsync(Disk model)
+        {
+            var entity = this.Mapper.Map<Entities.Disk.Disk>(model);
+            foreach (var fileSystem in entity.FileSystems)
+            {
+                var existingFileSystem = await this.fileSystemRepository.GetAsync(f => f.Name == fileSystem.Name);
+                if (existingFileSystem == null)
+                {
+                    this.fileSystemRepository.Create(fileSystem);
+                }
+                else
+                {
+                    existingFileSystem.Type = fileSystem.Type;
+                    existingFileSystem.Total = fileSystem.Total;
+                    this.fileSystemRepository.Update(existingFileSystem);
+                }
+            }
+
+            this.Repository.Update(entity);
+            await this.UnitOfWork.CommitAsync();
         }
 
         /// <inheritdoc/>

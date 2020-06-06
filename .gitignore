@@ -353,4 +353,4 @@ MigrationBackup/
 *.db
 
 # Published files
-/package/pi-control-panel_*_armhf/opt/picontrolpanel/**
+/package/pi-control-panel_VERSION_ARCHITECTURE/opt/picontrolpanel/**

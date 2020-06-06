@@ -52,6 +52,9 @@
         public IRepositoryBase<Entities.Disk.Disk> DiskRepository => new RepositoryBase<Entities.Disk.Disk>(this.databaseContext, this.logger);
 
         /// <inheritdoc/>
+        public IRepositoryBase<Entities.Disk.FileSystem> FileSystemRepository => new RepositoryBase<Entities.Disk.FileSystem>(this.databaseContext, this.logger);
+
+        /// <inheritdoc/>
         public IRepositoryBase<Entities.Disk.FileSystemStatus> FileSystemStatusRepository => new RepositoryBase<Entities.Disk.FileSystemStatus>(this.databaseContext, this.logger);
 
         /// <inheritdoc/>
@@ -68,6 +71,9 @@
 
         /// <inheritdoc/>
         public IRepositoryBase<Entities.Network.Network> NetworkRepository => new RepositoryBase<Entities.Network.Network>(this.databaseContext, this.logger);
+
+        /// <inheritdoc/>
+        public IRepositoryBase<Entities.Network.NetworkInterface> NetworkInterfaceRepository => new RepositoryBase<Entities.Network.NetworkInterface>(this.databaseContext, this.logger);
 
         /// <inheritdoc/>
         public IRepositoryBase<Entities.Network.NetworkInterfaceStatus> NetworkInterfaceStatusRepository => new RepositoryBase<Entities.Network.NetworkInterfaceStatus>(this.databaseContext, this.logger);
