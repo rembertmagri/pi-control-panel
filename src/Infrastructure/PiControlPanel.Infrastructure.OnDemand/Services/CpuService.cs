@@ -218,8 +218,9 @@
 
             var cores = lines.Count(line => line.StartsWith("processor"));
             this.Logger.Trace($"Number of cores: '{cores}'");
-            var model = lines.Last(line => line.StartsWith("model name"))
-                .Split(':')[1].Trim();
+            var model = lines.Last(line => line.StartsWith("model name"));
+            model = string.IsNullOrWhiteSpace(model) ? "N/A" :
+                model.Split(':')[1].Trim();
             this.Logger.Trace($"Cpu model: '{model}'");
 
             result = BashCommands.CatBootConfig.Bash();
