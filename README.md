@@ -6,14 +6,14 @@ Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 ------------ | ------------- | ------------- | -------------
 ![login](https://user-images.githubusercontent.com/30979154/82757722-630fb480-9db0-11ea-81f4-a88b3de05270.png) | ![dashboard](https://user-images.githubusercontent.com/30979154/82757721-630fb480-9db0-11ea-96e4-cdf52010dba8.png) | ![real-time chart](https://user-images.githubusercontent.com/30979154/82757720-62771e00-9db0-11ea-954d-35db3058d4ef.png) | ![overclocking results](https://user-images.githubusercontent.com/30979154/82757723-630fb480-9db0-11ea-8589-08743053dee1.png)
 
-## Installing on Raspberry Pi
+## Installing on Raspberry Pi 
 
 ### From the private Debian Package Repository
 1. Add the private Debian package repository to the list
 ````bash
 wget -qO - https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo/PUBLIC.KEY | sudo apt-key add -
 echo 'deb https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo buster main' | sudo tee -a /etc/apt/sources.list
-sudo apt-get update 
+sudo apt-get update  
 ````
 2. Install the package
 ````bash
