@@ -5,8 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  dotnet_build_and_test_pr:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +15,28 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
-      run: dotnet restore
+      working-directory: src/Api/PiControlPanel.Api.GraphQL
+      run: dotnet restore PiControlPanel.Api.GraphQL.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      working-directory: src/Api/PiControlPanel.Api.GraphQL
+      run: dotnet build PiControlPanel.Api.GraphQL.csproj --configuration Release --no-restore
+    #- name: Test
+    #  run: dotnet test --no-restore --verbosity normal
+
+  nodejs_build_and_test_pr:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '13.10.1'
+    - run: npm install
+      working-directory: src/Ui/PiControlPanel.Ui.Angular
+    - run: npm run build --if-present
+      working-directory: src/Ui/PiControlPanel.Ui.Angular
+    #- run: npm test
+    #  working-directory: src/Ui/PiControlPanel.Ui.Angular
+    #  env:
+    #    CI: true
