@@ -14,12 +14,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-    - name: Install dependencies
+    - name: Restore
       run: dotnet restore src/PiControlPanel.sln
     - name: Build
       run: dotnet build src/PiControlPanel.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test src/PiControlPanel.sln --no-restore --verbosity normal
+      run: dotnet test src/PiControlPanel.sln --no-build --verbosity normal
 
   nodejs_build_and_test_pr:
     runs-on: ubuntu-latest
