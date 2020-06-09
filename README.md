@@ -28,7 +28,7 @@ sudo apt install ./pi-control-panel_VERSION_armhf.deb
 ````
 or (if running on Raspberry Pi OS 64)
 ````bash
-sudo apt install ./pi-control-panel_VERSION_arm64.deb
+sudo apt install ./pi-control-panel_VERSION_arm64.deb 
 ````
 
 ## Running on Raspberry Pi
