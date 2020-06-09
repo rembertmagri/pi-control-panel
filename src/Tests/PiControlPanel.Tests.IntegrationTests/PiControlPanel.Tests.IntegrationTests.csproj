@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Raspberry Pi control panel unit tests</Description>
+    <Description>Raspberry Pi control panel integration tests</Description>
     <Authors>Rembert Magri</Authors>
     <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
     <TargetFramework>netcoreapp3.1</TargetFramework>
