@@ -15,6 +15,18 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
+        /// This constructor signature exists for integration tests purposes only.
+        /// </summary>
+        /// <param name="databaseContext">The ControlPanelDbContext instance.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public UnitOfWork(ControlPanelDbContext databaseContext, ILogger logger)
+        {
+            this.databaseContext = databaseContext;
+            this.logger = logger;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
         /// </summary>
         /// <param name="configuration">The IConfiguration instance.</param>
         /// <param name="logger">The NLog logger instance.</param>

@@ -10,6 +10,16 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlPanelDbContext"/> class.
+        /// This constructor signature exists for integration tests purposes only.
+        /// </summary>
+        /// <param name="options">The DbContextOptions instance.</param>
+        public ControlPanelDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelDbContext"/> class.
         /// </summary>
         /// <param name="configuration">The IConfiguration instance.</param>
         public ControlPanelDbContext(IConfiguration configuration)
