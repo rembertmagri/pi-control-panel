@@ -36,7 +36,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardResolve } from './dashboard/dashboard.resolve';
 import { RealTimeModalComponent } from './dashboard/modal/real-time-modal.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: LoginComponent },
