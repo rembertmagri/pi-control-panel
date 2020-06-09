@@ -34,7 +34,5 @@ jobs:
       working-directory: src/Ui/PiControlPanel.Ui.Angular
     - run: npm run build --if-present
       working-directory: src/Ui/PiControlPanel.Ui.Angular
-    #- run: npm test
-    #  working-directory: src/Ui/PiControlPanel.Ui.Angular
-    #  env:
-    #    CI: true
+    - run: CI=true npm test
+      working-directory: src/Ui/PiControlPanel.Ui.Angular
