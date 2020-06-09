@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Infrastructure.Persistence.Contracts", "Infrastructure\PiControlPanel.Infrastructure.Persistence.Contracts\PiControlPanel.Infrastructure.Persistence.Contracts.csproj", "{9A486103-437A-4630-B2C8-C80AC1A871F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F3F2B27-7342-4A5C-B480-7A9ADF3634F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiControlPanel.Tests.UnitTests", "Tests\PiControlPanel.Tests.UnitTests\PiControlPanel.Tests.UnitTests.csproj", "{172EBF48-4C4B-432F-8DF4-A37F53C2374A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,10 @@ Global
 		{9A486103-437A-4630-B2C8-C80AC1A871F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A486103-437A-4630-B2C8-C80AC1A871F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A486103-437A-4630-B2C8-C80AC1A871F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{172EBF48-4C4B-432F-8DF4-A37F53C2374A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{172EBF48-4C4B-432F-8DF4-A37F53C2374A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{172EBF48-4C4B-432F-8DF4-A37F53C2374A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{172EBF48-4C4B-432F-8DF4-A37F53C2374A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +105,7 @@ Global
 		{6AC5DEF7-EB06-449D-861D-23D4AC201479} = {394BF366-1BFB-4BC9-BE9A-61DFB1E98EEB}
 		{75BA719A-D861-47E2-AC8F-E6C839B1D689} = {A9C7A4A7-6C4E-4F75-98E4-F3F89D766073}
 		{9A486103-437A-4630-B2C8-C80AC1A871F2} = {A9C7A4A7-6C4E-4F75-98E4-F3F89D766073}
+		{172EBF48-4C4B-432F-8DF4-A37F53C2374A} = {5F3F2B27-7342-4A5C-B480-7A9ADF3634F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98CB8066-E593-4DFF-9EA8-9BB8DB364288}
