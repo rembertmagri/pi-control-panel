@@ -13,7 +13,7 @@ Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 ````bash
 wget -qO - https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo/PUBLIC.KEY | sudo apt-key add -
 echo 'deb https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo buster main' | sudo tee -a /etc/apt/sources.list
-sudo apt-get update
+sudo apt-get update 
 ````
 2. Install the package
 ````bash
