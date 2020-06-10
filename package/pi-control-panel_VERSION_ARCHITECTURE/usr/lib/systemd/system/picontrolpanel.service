@@ -9,7 +9,6 @@ Restart=always
 RestartSec=1
 WorkingDirectory=/opt/picontrolpanel
 User=picontrolpanel
-Environment=ASPNETCORE_URLS=http://+:8080
 Environment=ASPNETCORE_ENVIRONMENT=Production
 ExecStart=/opt/picontrolpanel/PiControlPanel.Api.GraphQL
 
