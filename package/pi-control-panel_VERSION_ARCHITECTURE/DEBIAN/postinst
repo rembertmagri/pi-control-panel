@@ -94,11 +94,11 @@ case "$1" in
 		socketStats=$(ss -tunlp)
         while [ $port -lt 10000 ]; do
             port=$(($port + 1))
-        #    portInUseResult=$(echo "$socketStats" | grep ':'"$port"' ')
-        #    if [ "$portInUseResult" == "" ]; then
-        #        sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/appsettings.json
-        #        break
-        #    fi
+            portInUseResult=$(grep ":$port " <<< "$socketStats")
+            if [ "$portInUseResult" == "" ]; then
+                sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/appsettings.json
+                break
+            fi
         done
         
         if [ $port -eq 10000 ]; then
