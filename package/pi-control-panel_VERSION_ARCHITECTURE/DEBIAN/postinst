@@ -106,22 +106,22 @@ case "$1" in
         # End of Enabling supported workers
         
         # Configuring port
-        echo -e '\nConfiguring port for the application...'
-        port=8079
-        while [ $port -lt 10000 ]
-        do
-            port=$[$port + 1]
-            result=$(sudo ss -tunlp | grep ':'"$port"' ')
-            if [ "$result" == "" ]; then
-                sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/app$
-                break
-            fi
-        done
+        #echo -e '\nConfiguring port for the application...'
+        #port=8079
+        #while [ $port -lt 10000 ]
+        #do
+        #    port=$[$port + 1]
+        #    result=$(sudo ss -tunlp | grep ':'"$port"' ')
+        #    if [ "$result" == "" ]; then
+        #        sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/app$
+        #        break
+        #    fi
+        #done
         
-        if [ "$port" -eq 10000 ]; then
-            echo -e '\033[0;31mCould not find an available port to run the application\033[0m\n'
-            exit 1
-        fi
+        #if [ "$port" -eq 10000 ]; then
+        #    echo -e '\033[0;31mCould not find an available port to run the application\033[0m\n'
+        #    exit 1
+        #fi
         # End of Configuring port
         
         chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
