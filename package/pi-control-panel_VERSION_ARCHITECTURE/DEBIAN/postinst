@@ -28,20 +28,15 @@ case "$1" in
 
         # Enabling supported workers
         cat /proc/cpuinfo &> /dev/null
-        if [ $? -eq 0 ]; then
-        	echo -e '\nChipsetWorker \033[0;32menabled\033[0m'
-        else
+        if [ $? -ne 0 ]; then
         	echo -e '\nChipsetWorker \033[0;31mdisabled\033[0m'
         	sed --in-place '/    "Chipset": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         fi
         
         top -bc -n 1 &> /dev/null && vcgencmd measure_temp &> /dev/null && cat /proc/cpuinfo &> /dev/null && cat /boot/config.txt &> /dev/null
         if [ $? -eq 0 ]; then
-        	echo -e 'CpuWorker \033[0;32menabled\033[0m'
         	cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state &> /dev/null
-        	if [ $? -eq 0 ]; then
-        		echo -e 'CpuFrequencyWorker \033[0;32menabled\033[0m'
-        	else
+        	if [ $? -ne 0 ]; then
         		echo -e 'CpuFrequencyWorker \033[0;31mdisabled\033[0m'
         		sed --in-place '/    "CpuFrequency": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         	fi
@@ -53,28 +48,21 @@ case "$1" in
         fi
         
         vcgencmd get_mem gpu &> /dev/null && cat /boot/config.txt &> /dev/null
-        if [ $? -eq 0 ]; then
-        	echo -e 'GpuWorker \033[0;32menabled\033[0m'
-        else
+        if [ $? -ne 0 ]; then
         	echo -e 'GpuWorker \033[0;31mdisabled\033[0m'
         	sed --in-place '/    "Gpu": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         fi
         
         hostnamectl &> /dev/null && uptime -p &> /dev/null
-        if [ $? -eq 0 ]; then
-        	echo -e 'OsWorker \033[0;32menabled\033[0m'
-        else
+        if [ $? -ne 0 ]; then
         	echo -e 'OsWorker \033[0;31mdisabled\033[0m'
         	sed --in-place '/    "Os": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         fi
         
         ifconfig &> /dev/null
         if [ $? -eq 0 ]; then
-        	echo -e 'NetworkWorker \033[0;32menabled\033[0m'
         	cat /proc/net/dev &> /dev/null
-        	if [ $? -eq 0 ]; then
-        		echo -e 'NetworkInterfaceStatusWorker \033[0;32menabled\033[0m'
-        	else
+        	if [ $? -ne 0 ]; then
         		echo -e 'NetworkInterfaceStatusWorker \033[0;31mdisabled\033[0m'
         		sed --in-place '/    "NetworkInterfaceStatus": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         	fi
@@ -86,18 +74,13 @@ case "$1" in
         fi
         
         df -T &> /dev/null
-        if [ $? -eq 0 ]; then
-        	echo -e 'DiskWorker \033[0;32menabled\033[0m'
-        else
+        if [ $? -ne 0 ]; then
         	echo -e 'DiskWorker \033[0;31mdisabled\033[0m'
         	sed --in-place '/    "Disk": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         fi
         
         free --mega &> /dev/null
-        if [ $? -eq 0 ]; then
-        	echo -e 'RandomAccessMemoryWorker \033[0;32menabled\033[0m'
-        	echo -e 'SwapMemoryWorker \033[0;32menabled\033[0m'
-        else
+        if [ $? -ne 0 ]; then
         	echo -e 'RandomAccessMemoryWorker \033[0;31mdisabled\033[0m'
         	echo -e 'SwapMemoryWorker \033[0;31mdisabled\033[0m'
         	sed --in-place '/    "RandomAccessMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
@@ -110,17 +93,17 @@ case "$1" in
         port=8079
         while [ $port -lt 10000 ]; do
             port=$(($port + 1))
-            result=$(sudo ss -tunlp | grep ':'"$port"' ')
-            if [ "$result" == "" ]; then
-                sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/app$
-                break
-            fi
+        #    result=$(sudo ss -tunlp | grep ':'"$port"' ')
+        #    if [ "$result" == "" ]; then
+        #        sed --in-place "/    \"Http\": {/!b;n;c        \"Url\": \"http://+:"$port"\"" /opt/picontrolpanel/Configuration/app$
+        #        break
+        #    fi
         done
         
-        if [ $port -eq 10000 ]; then
-            echo -e '\033[0;31mCould not find an available port to run the application\033[0m\n'
-            exit 1
-        fi
+        #if [ $port -eq 10000 ]; then
+        #    echo -e '\033[0;31mCould not find an available port to run the application\033[0m\n'
+        #    exit 1
+        #fi
         # End of Configuring port
         
         chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
@@ -130,7 +113,8 @@ case "$1" in
         echo -e '\033[0;32mThe installation of PiControlPanel is complete!\033[0m'
         
         raspberryPiIp=$(hostname -I | cut -d' ' -f1)
-        echo -e 'Login @ \033[0;36mhttp://localhost:'"$port"'\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':'"$port"'\033[0m from another machine\n'
+		echo -e 'Login @ \033[0;36mhttp://localhost:8080\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':8080\033[0m from another machine\n'
+        #echo -e 'Login @ \033[0;36mhttp://localhost:'"$port"'\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':'"$port"'\033[0m from another machine\n'
         
     ;;
 
