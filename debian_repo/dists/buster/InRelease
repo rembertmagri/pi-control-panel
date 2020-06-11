@@ -5,44 +5,44 @@ Origin: Rembert Magri
 Label: Rembert Magri
 Suite: stable
 Codename: buster
-Date: Thu, 11 Jun 2020 12:17:40 UTC
+Date: Thu, 11 Jun 2020 22:36:17 UTC
 Architectures: armhf arm64
 Components: main
 Description: Debian packages hosted on rembertmagri/pi-control-panel github repository
 MD5Sum:
- 607ecbe31eeaec3e8e16c4ab32c90c21 446 main/binary-armhf/Packages
- 581ee0280373868ded2482d872fedc67 333 main/binary-armhf/Packages.gz
+ dafb53a9a07b14019385d54bcfeb9394 446 main/binary-armhf/Packages
+ 555a662d1817c619f1cf34f8f00e43a8 333 main/binary-armhf/Packages.gz
  e1e36a3de182f38329e75bd123f78419 182 main/binary-armhf/Release
- e154c32db0a9e2ff064e9268f1651850 446 main/binary-arm64/Packages
- 4cc81fa1071cdb8773b3514f5459a37c 335 main/binary-arm64/Packages.gz
+ 9b8e85880de88481134f807a61b2dca5 446 main/binary-arm64/Packages
+ 4493c2e9d0e31b99561b19777d48cc23 333 main/binary-arm64/Packages.gz
  75efb98399e2479b7d88a9e42443a9e9 182 main/binary-arm64/Release
 SHA1:
- e0e0a1e2a0c0750f93f6f728031e627269e39fb4 446 main/binary-armhf/Packages
- 57fa0bc3c7642cf6d675e22f59bd6f7d86954b1a 333 main/binary-armhf/Packages.gz
+ 05559b9a97ab4027925517c42191d4853b54b6df 446 main/binary-armhf/Packages
+ 13a026464ecbe0ae62a657db45138e637b8e5b3a 333 main/binary-armhf/Packages.gz
  8675769074a42c4ceba8252af6b9a47fd2be6079 182 main/binary-armhf/Release
- 65be4318697e9e28ce40862f1eb1280825c860ff 446 main/binary-arm64/Packages
- f3783ebc9ae9d4e7b86dc47597880c6d898caceb 335 main/binary-arm64/Packages.gz
+ de4299629ca9393e56b35944128be858c4d7e92f 446 main/binary-arm64/Packages
+ 33bddbae495fb50eaedc1b3256cee3563ccc1da5 333 main/binary-arm64/Packages.gz
  9b0ee21c355b7948e34a49b1f019d1bd31ae098f 182 main/binary-arm64/Release
 SHA256:
- 6ffd60d6f7aa32fa014faba772f7666b66dfdf69fd5e0416be70ebe6d5cb23d9 446 main/binary-armhf/Packages
- 5e7066497d6e8b01b565b9715b51afbf667ac9004d69a0be0cc5de632a873106 333 main/binary-armhf/Packages.gz
+ fc6847489bce0f6fb63db07aa82d404f59aef9e3570f131243c6e05191e6280b 446 main/binary-armhf/Packages
+ ff7e8a6d2c59914657c4f69485412fc3edb14fbdda995ad17d30f5b885c3d647 333 main/binary-armhf/Packages.gz
  c5b822c1b00b8ae4e4ebf61523f30712068241f5e07dbfbac477e58126f75c27 182 main/binary-armhf/Release
- 51d0ee3d4dc71e783cb8b169d3c96e7e3b224931fa818cff3139892520a65858 446 main/binary-arm64/Packages
- 4c623dda30660de0675523ef8b292f371ff14f9595500132992cb792aec4083c 335 main/binary-arm64/Packages.gz
+ e6b96f53fcaaa4949b7f96e2de13c634aa5ee414a8e35250a2f2f76c8e0f85ec 446 main/binary-arm64/Packages
+ e5dc40cd14f02af325137e38730cb38fe11fbf93593460977bd0b2d3f6e7ab3f 333 main/binary-arm64/Packages.gz
  4d99d1bfd4620153c7b7b3d94d3c7da0da28f94a328c55ac7b951db720364901 182 main/binary-arm64/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEELRB2AnVz/p4LlBMc9BCfiN2NzWAFAl7iIOQACgkQ9BCfiN2N
-zWAMfQ//fVH2BBoo/IJMuHAcXdnqGJLYMUjOB78QDlQTKaF9X/yHFaylZjmX+Ja/
-D/ntqj/YKoYyHJVVVzisiy42io7ePwwFAiKVDcj2O9MMeaUrMCIofvyw55gXFmao
-/RBT8zlypnlOEn6w6w34APiYp1mBRnw/rTjmdrftLNxAI7KfBSPw/8BZ5SpQrM35
-YMNQte02nIjRFUDjmWImU+re57kvsnGmJ7S53znx5bJj4EBVeDBHvC5SKrExWnb6
-DjCaqGpiTDRWqScewH3M+aU7cqUVJhW4Oy2Cc725Qqg2tvpKxyDRV8q+wewSX2sp
-QXzGfOjCFwnrt11d9ykmDzTX0Ay2j04ypEEHy2G2I8lgHQm70XohTg9ZNfQ9ao6J
-u554LXhmlZW18xwuB/2GdMBX8XQJMQy+Z3Jfi65v9ShLwIGlP0j3KZm+LhvkUb11
-OFbzwllIA5IZH64eWQDd5mDeLLytBWxuHiAHA/dvG9vINwZOHdDDoQZl0+41QSmV
-x1zynUCP7xOA6lLITZXTBtTDvOUXADkNuTMAlAnqis1oBI8kUztjvVW9FnEw2KZF
-0kQnOpyv7l1yWPuyI881oTMntS71gSjrdwbIrzHvvfP00oVH6ioya1u023RXZH+e
-JbkX+kpRUOOJVA9mmkpjJMB0EcxVNNRA13uieujpbcBPSyaSRV4=
-=AGqi
+iQIzBAEBCgAdFiEELRB2AnVz/p4LlBMc9BCfiN2NzWAFAl7iseIACgkQ9BCfiN2N
+zWB1Qw//Xf05YW9egyjpeSoFxqvdPy0F8uBnwhwQIjbwJrdjU1rxOhkAeqxwmGmW
+F+mYdNMrgT+dUokaUSE8WUpR6iJObEf6Obr7PZE3I4QHtbZbPNmoFUQ9DBl1d3K8
+vRdvTh8Li+fx6m5A2rv6dK0QbNuy2pSKrl6VMfdNJFPk3wr3qdWlLYB9PPZreWKN
+zi6UKOb1tgbt2+3PdOBUH2Cb8T50nexc43hoadV+nbf73vrZ1i3BDSpTtzdvEBg0
+hPSmNlKM+0XFKkWEkMwiaZ6zuX4R2FL9NGJOd9TdsGLKu0+ieMgRFC4SQDTUPwPu
+ydW1Di5lQc5u1BIRTYILj7Ks6xz/nGSIMlj7jbqazOhpoxBnm6du4duewAd7aU8Y
+fpGbn7GduthMrFFHhVLqKiIxWZFpDmRpXH8M13xp64ncxGx7N2HvKDpt2MEkI6x/
+u//DZNtLvjw3g2YPcxTdBnmnb7FN0RyNbHpq5wPIttS9nH1dmhDOr9g8hMU2zqAO
+2XwA45kaCtLmyHtr2ynHYT5g32CV2bnzqAlyvzmehTl07BA3fQn4n5pc/wAyNFHf
+9BBISfSqEXHZtm5PDDbYwqm7hXNQUdMuz6vSpBVgAoBQbKAEHfOEwPSwccZoJjqx
+cmFbC/u5iMmJ7XTYLC9WqmbGktabT7mDn48DDrh+KxdIFalMfeY=
+=y2b1
 -----END PGP SIGNATURE-----
