@@ -107,7 +107,7 @@ case "$1" in
         
         # Configuring port
         #echo -e '\nConfiguring port for the application...'
-        #port=8079
+        port=8079
         #while [ $port -lt 10000 ]
         #do
         #    port=$[$port + 1]
@@ -131,7 +131,7 @@ case "$1" in
         echo -e '\033[0;32mThe installation of PiControlPanel is complete!\033[0m'
         
         raspberryPiIp=$(hostname -I | cut -d' ' -f1)
-        echo -e 'Login @ \033[0;36mhttp://localhost:'"$port"'\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':'"$port"'\033[0m from another machine\n'
+        echo -e 'Login @ \033[0;36mhttp://localhost:8080\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':8080\033[0m from another machine\n'
         
     ;;
 
