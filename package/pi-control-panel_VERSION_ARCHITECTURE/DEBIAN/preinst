@@ -21,7 +21,6 @@ case "$1" in
         	useradd -M picontrolpanel
         	echo picontrolpanel:v!p4S#hM | chpasswd
         	usermod -aG sudo picontrolpanel
-        	echo 'picontrolpanel ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
         	usermod -aG video picontrolpanel
         fi
         
