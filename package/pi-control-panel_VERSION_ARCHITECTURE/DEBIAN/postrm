@@ -23,7 +23,6 @@ case "$1" in
     
         rm -fr /var/log/picontrolpanel
         rm -fr /var/db/picontrolpanel
-        sed --in-place '/picontrolpanel ALL=(ALL) NOPASSWD: ALL/d' /etc/sudoers
         killall -9 -u picontrolpanel || true
         userdel picontrolpanel
 

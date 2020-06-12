@@ -16,9 +16,9 @@
         public const string CatCpuFreqStats = "cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state";
 
         /// <summary>
-        /// Reboots the system, equivalent to shutdown -r now.
+        /// Reboots the system, equivalent to reboot.
         /// </summary>
-        public const string SudoReboot = "sudo reboot";
+        public const string SudoReboot = "sudo shutdown -r now";
 
         /// <summary>
         /// Shutdown linux.

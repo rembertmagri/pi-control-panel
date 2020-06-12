@@ -107,7 +107,6 @@ case "$1" in
         fi
         # End of Configuring port
         
-        chmod +x /opt/picontrolpanel/PiControlPanel.Api.GraphQL
         systemctl enable picontrolpanel
         systemctl start picontrolpanel
         
