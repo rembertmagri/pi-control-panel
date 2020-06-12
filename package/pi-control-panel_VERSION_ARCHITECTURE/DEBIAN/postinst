@@ -94,16 +94,16 @@ case "$1" in
 		socketStats=$(ss -tunlp)
         while [ $port -lt 10000 ]; do
             port=$(($port + 1))
-            if [ "`grep ":$port " <<< "$socketStats"`" = "" ]; then
-				echo -e 'Updating config file...'
-                sed --in-place '/    "Http": {/!b;n;c        "Url": "http://+:'"$port"'"' /opt/picontrolpanel/Configuration/appsettings.json
+            if [ -z "`grep ":$port " <<< "$socketStats"`" ]; then
                 break
             fi
         done
         
-        if [ $port -eq 10000 ]; then
+        if [ $port -ge 10000 ]; then
             echo -e '\033[0;31mCould not find an available port to run the application\033[0m\n'
             exit 1
+        elif [ $port -ne 8080 ]; then
+            sed --in-place '/    "Http": {/!b;n;c        "Url": "http://+:'"$port"'"' /opt/picontrolpanel/Configuration/appsettings.json
         fi
         # End of Configuring port
         
@@ -115,7 +115,6 @@ case "$1" in
         
         raspberryPiIp=$(hostname -I | cut -d' ' -f1)
 		echo -e 'Login @ \033[0;36mhttp://localhost:'"$port"'\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':'"$port"'\033[0m from another machine\n'
-        #echo -e 'Login @ \033[0;36mhttp://localhost:8080\033[0m from Raspberry Pi or \033[0;36mhttp://'"$raspberryPiIp"':8080\033[0m from another machine\n'
 		
     ;;
 
