@@ -98,6 +98,8 @@ jobs:
       run: |
         cd package_linux-arm
         mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
+        chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/etc/sudoers.d/010_picontrolpanel-nopasswd
+        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/opt/picontrolpanel/PiControlPanel.Api.GraphQL
         chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/DEBIAN/p*
         dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
     - name: Create Debian package (linux-arm64)
@@ -106,6 +108,8 @@ jobs:
         cd package_linux-arm64
         sed -i 's/Architecture: armhf/Architecture: arm64/g' pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
         mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
+        chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/etc/sudoers.d/010_picontrolpanel-nopasswd
+        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/opt/picontrolpanel/PiControlPanel.Api.GraphQL
         chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/DEBIAN/p*
         dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
     - name: Create Release
