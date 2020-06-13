@@ -349,8 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# SQLite Databases
-*.db
-
 # Published files
 /package/pi-control-panel_VERSION_ARCHITECTURE/opt/picontrolpanel/**

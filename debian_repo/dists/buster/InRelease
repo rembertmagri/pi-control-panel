@@ -5,44 +5,44 @@ Origin: Rembert Magri
 Label: Rembert Magri
 Suite: stable
 Codename: buster
-Date: Sat, 13 Jun 2020 13:51:53 UTC
+Date: Sat, 13 Jun 2020 17:11:50 UTC
 Architectures: armhf arm64
 Components: main
 Description: Debian packages hosted on rembertmagri/pi-control-panel github repository
 MD5Sum:
- 2edbdf150217d395b09bcc89207958ce 446 main/binary-armhf/Packages
- e8b2cc0ab13748cfd30fe4d0b6a8f44d 334 main/binary-armhf/Packages.gz
+ 0ebd5ea23397012d6d80d40e1519bd38 446 main/binary-armhf/Packages
+ 68211ec416acdc7efa6169aca11d0edd 334 main/binary-armhf/Packages.gz
  e1e36a3de182f38329e75bd123f78419 182 main/binary-armhf/Release
- a3d625ffa14a341b10cfcfa6f5987975 446 main/binary-arm64/Packages
- 949004f6d2232927816891ecf0c68eb3 329 main/binary-arm64/Packages.gz
+ 57fc2b1e9e831d1c8bd6654342d60c50 446 main/binary-arm64/Packages
+ b9dcad66af83ada78971df3b9d4128ff 332 main/binary-arm64/Packages.gz
  75efb98399e2479b7d88a9e42443a9e9 182 main/binary-arm64/Release
 SHA1:
- 938e80e86df5d39998efbb206b99e6163a007241 446 main/binary-armhf/Packages
- ae8f7cdba9536e92ace88c35b1023e2c4764708f 334 main/binary-armhf/Packages.gz
+ 623e421653034c93ba4d3e1bfe4f66ddcc67e9cd 446 main/binary-armhf/Packages
+ 341cad350682408f27cff34eb29acb7309c4b5a7 334 main/binary-armhf/Packages.gz
  8675769074a42c4ceba8252af6b9a47fd2be6079 182 main/binary-armhf/Release
- d14abcf9dae7edddb0106324639fe781d7730333 446 main/binary-arm64/Packages
- f14efb8ca6cbd96900058e4f1ab7131327342fc6 329 main/binary-arm64/Packages.gz
+ f4fab7c143cbebe5efd9870c83effcbb8b897d0f 446 main/binary-arm64/Packages
+ 5cd3e64fc1d300e1718df729466f1e6fdb68d99a 332 main/binary-arm64/Packages.gz
  9b0ee21c355b7948e34a49b1f019d1bd31ae098f 182 main/binary-arm64/Release
 SHA256:
- 9fabf5f9e6ce2c77f5e12aa4fe2c6fca04693830dba5f7241c0ac3cecf995943 446 main/binary-armhf/Packages
- 4c0854b458580fb16393e073b6d9eda467d0341d900a9ebb9b279d2049cf40a0 334 main/binary-armhf/Packages.gz
+ 7e1533991095148146e37b21760e0d2b19db63d3c60a941d8c73e18e267f49ca 446 main/binary-armhf/Packages
+ d308263f5ad2f8bcc86bdf42463e616804b180a4f952cc9f4c73afcf24cd801d 334 main/binary-armhf/Packages.gz
  c5b822c1b00b8ae4e4ebf61523f30712068241f5e07dbfbac477e58126f75c27 182 main/binary-armhf/Release
- fded08519dd36bf69e0f7988ba26e279c32b1471ad0deee90d42bdf48793b2fb 446 main/binary-arm64/Packages
- 89fbb76205cb94429e18b730903eff8253189d80ab1cd007e952172e9c4a07e2 329 main/binary-arm64/Packages.gz
+ a1bd6989c8a063ad96334467bd87bfd69047ac328f8f98a1942ffd574d19bb25 446 main/binary-arm64/Packages
+ c1c379fbc3444973466966e24758619ad9c1ee16b1ac2bcc8759978ea69e3bc5 332 main/binary-arm64/Packages.gz
  4d99d1bfd4620153c7b7b3d94d3c7da0da28f94a328c55ac7b951db720364901 182 main/binary-arm64/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEELRB2AnVz/p4LlBMc9BCfiN2NzWAFAl7k2foACgkQ9BCfiN2N
-zWCxVg/9HwEGlUc1/7UPEvvroJ74WPyWp7XroVirrX7Ve6RroEW33w5y7N6Qy01p
-yhjyBIpZVnLuBWGC2tfHJXeIPqjHteRLys3GIu2TPsULbBld4i84hXSeCO5WbnzS
-S5oIZ/jSNVzwvMLOaufWFT663QA/z8jpM+ObMOQsEaLbugoCnUmkGqw9rHfzugp7
-Ek0VOzdXreCGwglgP2X0Pgy/aaYlb9f/rLiOkPXeVBKa5X1xihCMSBxXBj7Gr/kb
-q6rP95C3uPdJyqtcFHaxMkXYypoKaNR9yZS/GZzA410e8ELAtwh8ZMarP09Ni6lS
-z/VNu4JrWC6B/TkJiXvQh1WzGiF6ooJtzaZnGNu03zaeJRaDrl2V71qvWGXKk7jV
-cwUObSVWq91+KZnleLLJ0dNDfJwyywWUYFUmk0gN2aXj2ncJXBjOsNqeUNXUUb0/
-SvtDPUeqBGBXv027/tdZhiuGC1ZSjIMRq8Afk87LbL5sQWHrMbQxlAfje2L80djK
-nuJCo0ftuQ7qhZDJ4p219Ny0uWpi5r7puco5WuE01UVj4jPPzR1IS+OsjatOgi/S
-gaHiLa01kiHpNABUEaX+77cl4Y6LgmbxwU7aQduJABEGVY+xFYZ0U1OOyrvbicrb
-EOHw3mT5C+YZbvvai0rQ4HRCknW2CjdZVE7EQ7vCE5xvKuCjbjk=
-=kcy0
+iQIzBAEBCgAdFiEELRB2AnVz/p4LlBMc9BCfiN2NzWAFAl7lCNYACgkQ9BCfiN2N
+zWBwJhAAmMA5R816xmDFTMk4kgkEK6uDb4mDchCQEu4wb9RA/wVeCIb2dM/QoylP
+WsoOoekUSYTjrIJeoFszlSqL+AoQbdGMsvHd5JNHHmXHbetlgGYcULfIewsUT+x/
+7rDrT7XMHbOK4C1zGc2WjuzFs4djtNfvPbDJsGORBgimoT6a5v1FaswSO563Rjli
+7x2B1bEc166Rl3tIgU3VDvkiQ48pxE0aTgAT/gg0ZFdvvf60FP0vy7uGUektJji7
+aXb5FcX9Wfe1hQrdzNn7KlW19dhkPeIq1uFLty5H1/HZ+Tk0SBFAoTxL1o9LfcAX
+H0icol0Y0xbbe2E2169mFFErkkE+JUhSNflWCBr0kW89tttyxfhnsjjiWlLLrK3w
+71WZM0x24HmCv9UtJn7F1R7mDLCj9GE/6JuOkMHQKO8B7JFnnjh1KgjQvZOW+VWQ
+0AiK4S8U5Vt1EtQfjtPzj17Ar0BnF1TYrZjQEmLFAlWyfQUdhN9b+Nw6PNdTFYLW
+bxa2Lx4ujhSlR3HplMeUsCDyMNz72Wh60FEXNB3J1J7pPECddHcKJHrLZwrirZy6
+YcrojcDm3tDObqJqAHnse1vidj1/ISHaje+8fJUyS40nn9HxM0T8dLurRvexk3Yc
+zUt+uERUYzDUqXDPt3/BcSfsmk6Fueeg0uSR6n1lbklhCsOBIBM=
+=Lutw
 -----END PGP SIGNATURE-----

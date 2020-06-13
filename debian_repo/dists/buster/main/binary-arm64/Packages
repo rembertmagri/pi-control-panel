@@ -8,8 +8,8 @@ Priority: optional
 Section: utils
 Filename: pool/main/p/pi-control-panel/pi-control-panel_1.38_arm64.deb
 Size: 16745384
-SHA256: 3ae8af61a8cb8cfdeb794e92a5c5dc9125231009888dbc9e15f27d76df1537f6
-SHA1: fd7d867657e649a9b374b3a7750862aa4ed64a44
-MD5sum: fbf96baa320032dab71eb74915bd2b48
+SHA256: 1ac8463d3321f691784b46d148be8e453cb84283d4de969dae58a67cd10ebf01
+SHA1: 8a817ca8f624000313bcb59c189726cb314433cd
+MD5sum: 4830c9eed87f7d1c19177de3ff5a73d4
 Description: Raspberry Pi Control Panel
 
