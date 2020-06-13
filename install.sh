@@ -9,4 +9,3 @@ if [ $? -ne 0 ]; then
 else
     echo 'Pi Control Panel is already installed. Run "apt-get update" and "apt-get upgrade" to get the latest version.'
 fi
-rm -- "$0"
