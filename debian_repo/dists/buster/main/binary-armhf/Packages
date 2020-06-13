@@ -8,8 +8,8 @@ Priority: optional
 Section: utils
 Filename: pool/main/p/pi-control-panel/pi-control-panel_1.38_armhf.deb
 Size: 17165936
-SHA256: 340d9d2736c9be909ae2c8e5929c6d75f2ccd100e3857a51d853e0c94950cfa4
-SHA1: fc9922e44e8fb817d7ce77c6ee93d0d425b72110
-MD5sum: a625fd5b2a4ed96a6e101dce61b3b439
+SHA256: 337157fd2519fdfedf8b425659ad3484f78b9714fcebd066245f04fb1a0e3b2c
+SHA1: 7bf5c55516e085189a865302a0c1dbdf69d39b6c
+MD5sum: da0ccc0d0f0f44ba31174c084a2c74ee
 Description: Raspberry Pi Control Panel
 
