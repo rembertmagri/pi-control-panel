@@ -1,12 +1,12 @@
 # Base Stage
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm32v7 AS base
-RUN apt-get update && apt-get -yq install sudo procps sqlite3
+RUN apt-get update && apt-get -yq install sudo procps sqlite3 net-tools
 	# Create pi user
 RUN useradd -m pi
 RUN echo pi:raspberry | chpasswd
 RUN usermod -aG sudo pi
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
 
 # Build Stage
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster-arm32v7 AS build-api
@@ -23,11 +23,11 @@ COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiContr
 RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj"
 COPY . .
 WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
-RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release -o /app/build
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/build
 
 # Publish Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/publish
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage
@@ -44,5 +44,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish-api /app/publish .
 COPY --from=build-ui /app/dist ./PiControlPanel.Ui.Angular/dist
+RUN mkdir -p /var/db/picontrolpanel
+RUN mkdir -p /var/log/picontrolpanel
 ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
-HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:80/healthcheck || exit 1
+HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:8080/healthcheck || exit 1

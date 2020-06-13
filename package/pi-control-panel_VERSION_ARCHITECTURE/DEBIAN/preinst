@@ -25,16 +25,12 @@ case "$1" in
         fi
         
         if [ ! -d '/var/log/picontrolpanel' ]; then
-        	mkdir /var/log/picontrolpanel
+        	mkdir -p /var/log/picontrolpanel
         	chown picontrolpanel /var/log/picontrolpanel
         fi
         
-        if [ ! -d '/var/db' ]; then
-        	mkdir /var/db
-        fi
-        
         if [ ! -d '/var/db/picontrolpanel' ]; then
-        	mkdir /var/db/picontrolpanel
+        	mkdir -p /var/db/picontrolpanel
         	chown picontrolpanel /var/db/picontrolpanel
         fi
 

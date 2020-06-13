@@ -11,4 +11,4 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
-      - '8081:80'
+      - '8081:8080'
