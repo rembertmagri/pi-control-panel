@@ -9,16 +9,11 @@ Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 ## Installing on Raspberry Pi
 
 ### From the private Debian Package Repository
-1. Add the private Debian package repository to the list
+Run the following command:
 ````bash
-wget -qO - https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo/PUBLIC.KEY | sudo apt-key add -
-echo 'deb https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo buster main' | sudo tee -a /etc/apt/sources.list
-sudo apt-get update
+sh <(wget -qO- https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/install.sh)
 ````
-2. Install the package
-````bash
-sudo apt-get install pi-control-panel
-````
+It will add the private Debian package repository to the list and install the package.
 
 ### Manually from the Debian Package
 1. Download the [latest release](https://github.com/rembertmagri/pi-control-panel/releases/latest)
