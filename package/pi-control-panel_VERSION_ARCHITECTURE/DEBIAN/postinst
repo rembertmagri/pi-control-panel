@@ -107,6 +107,7 @@ case "$1" in
         fi
         # End of Configuring port
         
+		chown root:root /etc/sudoers.d/picontrolpanel-nopasswd
         systemctl enable picontrolpanel
         systemctl start picontrolpanel
         

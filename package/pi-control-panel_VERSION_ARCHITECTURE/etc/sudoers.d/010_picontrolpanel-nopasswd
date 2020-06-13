@@ -1,1 +1,0 @@
-picontrolpanel ALL=(ALL) NOPASSWD: /bin/sed, /bin/kill, /bin/cat, /sbin/shutdown
