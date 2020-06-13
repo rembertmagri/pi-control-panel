@@ -39,4 +39,4 @@ If port 8080 is already in use during installation, the application will run on 
 
 ## Development
 
-Check the [Wiki](https://github.com/rembertmagri/pi-control-panel/wiki/Development) for documentation for developers
+Check the [Wiki](https://github.com/rembertmagri/pi-control-panel/wiki) for documentation for developers
