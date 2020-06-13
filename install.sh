@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gpg --list-keys F4109F88DD8DCD60 &> /dev/null
+gpg --list-keys F4109F88DD8DCD60 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     wget -qO - https://raw.githubusercontent.com/rembertmagri/pi-control-panel/master/debian_repo/PUBLIC.KEY | sudo apt-key add -
 fi
