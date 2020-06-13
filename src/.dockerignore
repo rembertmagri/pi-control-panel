@@ -18,6 +18,7 @@
 **/Dockerfile*
 **/node_modules
 **/dist
+**/coverage
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml

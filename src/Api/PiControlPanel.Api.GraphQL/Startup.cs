@@ -131,8 +131,6 @@
                 services.AddHostedService<CpuFrequencyWorker>();
                 services.AddHostedService<GpuWorker>();
                 services.AddHostedService<OsWorker>();
-                services.AddHostedService<NetworkWorker>();
-                services.AddHostedService<NetworkInterfaceStatusWorker>();
             }
             else
             {
@@ -142,6 +140,8 @@
             services.AddHostedService<DiskWorker>();
             services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
             services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
+            services.AddHostedService<NetworkWorker>();
+            services.AddHostedService<NetworkInterfaceStatusWorker>();
 
             // Configuring SPA Path
             services.AddSpaStaticFiles(configuration =>
