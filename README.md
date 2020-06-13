@@ -35,7 +35,7 @@ sudo apt install ./pi-control-panel_VERSION_arm64.deb
 After installing, access http://localhost:8080 from the Pi or http://<<ip_of_raspberry_pi>>:8080 from another machine.
 
 ### Changing the default port
-If port 8080 is already in use during installation, the application will run on the next available port. The port also be changed manually at any time by editing /opt/picontrolpanel/Configuration/appsettings.json .
+If port 8080 is already in use during installation, the application will run on the next available port. The port can also be changed manually at any time by editing /opt/picontrolpanel/Configuration/appsettings.json .
 
 ## Development
 
