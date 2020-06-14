@@ -2,28 +2,28 @@ Origin: Rembert Magri
 Label: Rembert Magri
 Suite: stable
 Codename: buster
-Date: Sun, 14 Jun 2020 20:35:50 UTC
+Date: Sun, 14 Jun 2020 21:00:02 UTC
 Architectures: armhf arm64
 Components: main
 Description: Debian packages hosted on rembertmagri/pi-control-panel github repository
 MD5Sum:
- df62449771d2c0f5819a03f5af06fedd 446 main/binary-armhf/Packages
- 912b7f78aac203bb45814ead6ae1d9b8 334 main/binary-armhf/Packages.gz
+ 20c95a91bed994f41fbe96018054c61a 446 main/binary-armhf/Packages
+ 8b7c529127b7cd0b0db65d8c28e56b00 332 main/binary-armhf/Packages.gz
  e1e36a3de182f38329e75bd123f78419 182 main/binary-armhf/Release
- 5fa260386f0c4d5b2d5ef6a8d1d12af7 446 main/binary-arm64/Packages
- aa2a0bb3bd8a4d9f33435a2704b4b702 333 main/binary-arm64/Packages.gz
+ 3da07311e49fea0af1aa5f2052f12c95 446 main/binary-arm64/Packages
+ 834f13e0fa65016d20655c5b0916cd53 332 main/binary-arm64/Packages.gz
  75efb98399e2479b7d88a9e42443a9e9 182 main/binary-arm64/Release
 SHA1:
- 0ad0ce47129942c6653cc6aea85ab533d7ca766f 446 main/binary-armhf/Packages
- 920fdd59db47258aaf402e2d17d1bdde5b1fd027 334 main/binary-armhf/Packages.gz
+ ff60d455b4db032728cc4605bafb140e4c9c5404 446 main/binary-armhf/Packages
+ 4f08cd69609d0bc5dffbfc00057622421756a66b 332 main/binary-armhf/Packages.gz
  8675769074a42c4ceba8252af6b9a47fd2be6079 182 main/binary-armhf/Release
- e0a441f055f0e16c60d4ea1bee50c874332a3018 446 main/binary-arm64/Packages
- bbdf8c1d2d410d3d62d9716a8a7701c77990314e 333 main/binary-arm64/Packages.gz
+ 54015ae2507e438a64483d642718bf044e5897da 446 main/binary-arm64/Packages
+ 6c3052e4c328160ab4b84743c1257e843ae51b39 332 main/binary-arm64/Packages.gz
  9b0ee21c355b7948e34a49b1f019d1bd31ae098f 182 main/binary-arm64/Release
 SHA256:
- 4ed215f55958819a363096e579dcea7cd1ee03a505d33f7e38e6126b74dce612 446 main/binary-armhf/Packages
- d1cc98398f065bed2dbf12a1daa3f3af64fedd7a4fc13c2a09b904b578c975a0 334 main/binary-armhf/Packages.gz
+ 75f886481c1c4ac2ab6339811cdeb4f457ba07af5b5b3f49e67699d1d6071703 446 main/binary-armhf/Packages
+ 61b7699b4f4c2b76da85e518bde10436d5d11c57f3fb4a31dd71ee1b519a7170 332 main/binary-armhf/Packages.gz
  c5b822c1b00b8ae4e4ebf61523f30712068241f5e07dbfbac477e58126f75c27 182 main/binary-armhf/Release
- b0c4a34e8b8e0a2ac6ce7994164f8c42850b2101bff40ed185db2496f779de34 446 main/binary-arm64/Packages
- cdb843c91b1163a393317dcaad56a310fcdfe8073e0ef89b78a02bf105d7035f 333 main/binary-arm64/Packages.gz
+ 36fa49def400e4e579c590aab02a67b8a7e95bd78124694dbc1dfe5c40bbedff 446 main/binary-arm64/Packages
+ 066ecb98bffd0c88de2c0fac6367e3b280811397daa68be1e810ccf9005b4ee0 332 main/binary-arm64/Packages.gz
  4d99d1bfd4620153c7b7b3d94d3c7da0da28f94a328c55ac7b951db720364901 182 main/binary-arm64/Release
