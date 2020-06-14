@@ -12,9 +12,8 @@
         /// <summary>
         /// Gets the value of the CPU load status.
         /// </summary>
-        /// <param name="cores">The number of cores of the CPU.</param>
         /// <returns>The CpuLoadStatus object.</returns>
-        Task<CpuLoadStatus> GetLoadStatusAsync(int cores);
+        Task<CpuLoadStatus> GetLoadStatusAsync();
 
         /// <summary>
         /// Gets an observable of the CPU load status.
