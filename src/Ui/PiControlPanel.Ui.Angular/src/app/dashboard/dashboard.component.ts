@@ -554,7 +554,7 @@ export class DashboardComponent implements OnInit {
     const minFrequency = min(map(this.raspberryPi.cpu.frequencies, 'value'));
     const frequencyData = map(this.raspberryPi.cpu.frequencies, (frequency: ICpuFrequency) => {
       return {
-        value: 100 * ((frequency.value - minFrequency) / (maxFrequency - minFrequency)),
+        value: maxFrequency === minFrequency ? 100 : 100 * ((frequency.value - minFrequency) / (maxFrequency - minFrequency)),
         name: new Date(frequency.dateTime),
         absoluteValue: frequency.value
       };
@@ -629,7 +629,7 @@ export class DashboardComponent implements OnInit {
     const minReceiveSpeed = min(map(networkInterface.statuses, 'receiveSpeed'));
     const receiveSpeedData = map(networkInterface.statuses, (status: INetworkInterfaceStatus) => {
       return {
-        value: 100 * ((status.receiveSpeed - minReceiveSpeed) / (maxReceiveSpeed - minReceiveSpeed)),
+        value: maxReceiveSpeed === minReceiveSpeed ? 100 : 100 * ((status.receiveSpeed - minReceiveSpeed) / (maxReceiveSpeed - minReceiveSpeed)),
         name: new Date(status.dateTime),
         absoluteValue: status.receiveSpeed
       };
@@ -646,7 +646,7 @@ export class DashboardComponent implements OnInit {
     const minSendSpeed = min(map(networkInterface.statuses, 'sendSpeed'));
     const sendSpeedData = map(networkInterface.statuses, (status: INetworkInterfaceStatus) => {
       return {
-        value: 100 * ((status.sendSpeed - minSendSpeed) / (maxSendSpeed - minSendSpeed)),
+        value: maxSendSpeed === minSendSpeed ? 100 : 100 * ((status.sendSpeed - minSendSpeed) / (maxSendSpeed - minSendSpeed)),
         name: new Date(status.dateTime),
         absoluteValue: status.sendSpeed
       };
