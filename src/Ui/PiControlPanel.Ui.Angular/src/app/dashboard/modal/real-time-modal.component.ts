@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
-import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
-import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
-import { RamStatusService } from 'src/app/shared/services/ram-status.service';
-import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
-import { NetworkInterfaceStatusService } from 'src/app/shared/services/network-interface-status.service';
+import { CpuFrequencyService } from '@services/cpu-frequency.service';
+import { CpuTemperatureService } from '@services/cpu-temperature.service';
+import { CpuLoadStatusService } from '@services/cpu-load-status.service';
+import { RamStatusService } from '@services/ram-status.service';
+import { SwapMemoryStatusService } from '@services/swap-memory-status.service';
+import { NetworkInterfaceStatusService } from '@services/network-interface-status.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { isNil, get } from 'lodash';
 

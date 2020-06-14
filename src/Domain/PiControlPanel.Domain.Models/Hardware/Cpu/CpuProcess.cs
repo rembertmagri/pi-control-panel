@@ -31,12 +31,12 @@
         /// <summary>
         /// Gets or sets the process used RAM.
         /// </summary>
-        public int Ram { get; set; }
+        public string Ram { get; set; }
 
         /// <summary>
         /// Gets or sets the process used shared memory.
         /// </summary>
-        public int SharedMemory { get; set; }
+        public string SharedMemory { get; set; }
 
         /// <summary>
         /// Gets or sets the process state.

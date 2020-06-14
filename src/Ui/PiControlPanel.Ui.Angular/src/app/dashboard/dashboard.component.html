@@ -2,6 +2,7 @@
   <div class="card-header">
     <div class="container">
       <div class="row d-flex justify-content-between">
+        <img src="../assets/raspberry.gif">
         <h3>Raspberry Pi Control Panel</h3>
         <div class="btn-group" role="group" aria-label="Actions">
           <button type="button" class="btn btn-danger" (click)="reboot()" [disabled]="!isSuperUser">
@@ -88,21 +89,17 @@
             <h4 class="card-header">OS</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-sm-9">{{raspberryPi.os.name}}</dd>
-                <dt class="col-sm-3">Kernel</dt>
-                <dd class="col-sm-9">{{raspberryPi.os.kernel}}</dd>
-                <dt class="col-sm-3">Hostname</dt>
-                <dd class="col-sm-9">{{raspberryPi.os.hostname}}</dd>
-                <dt class="col-sm-3">Status</dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Uptime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.os.status.uptime}}</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.os.status.dateTime | date:'medium'}}</dd>
-                  </dl>
-                </dd>
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">{{raspberryPi.os.name}}</dd>
+                <dt class="col-sm-4">Kernel</dt>
+                <dd class="col-sm-8">{{raspberryPi.os.kernel}}</dd>
+                <dt class="col-sm-4">Hostname</dt>
+                <dd class="col-sm-8">{{raspberryPi.os.hostname}}</dd>
+                <dt class="col-sm-4">
+                  Uptime
+                  <span style="font-size:8px;color:white">{{raspberryPi.os.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
+                <dd class="col-sm-8">{{raspberryPi.os.status.uptime}}</dd>
               </dl>
             </div>
           </div>
@@ -137,31 +134,31 @@
                 <dd class="col-sm-9">{{raspberryPi.cpu.model}}</dd>
                 <dt class="col-sm-3">Number of Cores</dt>
                 <dd class="col-sm-9">{{raspberryPi.cpu.cores}}</dd>
+                <dt class="col-sm-3">Scaling Governor</dt>
+                <dd class="col-sm-9">{{raspberryPi.cpu.scalingGovernor}}</dd>
                 <dt class="col-sm-3">Maximum Frequency</dt>
                 <dd class="col-sm-9">{{raspberryPi.cpu.maxFrequency}} MHz</dd>
-                <dt class="col-sm-3">Frequency</dt>
+                <dt class="col-sm-3">
+                  Frequency
+                  <span style="font-size:8px;color:white">{{raspberryPi.cpu.frequency.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
+                <dd class="col-sm-9">{{raspberryPi.cpu.frequency.value}} MHz</dd>
+                <dt class="col-sm-3">
+                  Sensors
+                  <span style="font-size:8px;color:white">{{raspberryPi.cpu.temperature.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Value</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.frequency.value}} MHz</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.frequency.dateTime | date:'medium'}}</dd>
-                  </dl>
-                </dd>
-                <dt class="col-sm-3">Temperature</dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Value</dt>
+                    <dt class="col-sm-4">Temperature</dt>
                     <dd class="col-sm-8">{{raspberryPi.cpu.temperature.value}} &#8451;</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.temperature.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
-                <dt class="col-sm-3">Load Status</dt>
+                <dt class="col-sm-3">
+                  Load Status
+                  <span style="font-size:8px;color:white">{{raspberryPi.cpu.loadStatus.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.dateTime | date:'medium'}}</dd>
                     <dt class="col-sm-4">Last minute average</dt>
                     <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}}</dd>
                     <dt class="col-sm-4">Last 5 minutes average</dt>
@@ -233,7 +230,10 @@
               <dl class="row">
                 <dt class="col-sm-3">Total</dt>
                 <dd class="col-sm-9">{{raspberryPi.ram.total}} MB</dd>
-                <dt class="col-sm-3">Status</dt>
+                <dt class="col-sm-3">
+                  Status
+                  <span style="font-size:8px;color:white">{{raspberryPi.ram.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Used</dt>
@@ -242,8 +242,6 @@
                     <dd class="col-sm-8">{{raspberryPi.ram.status.free}} MB ({{100 * raspberryPi.ram.status.free / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Disk Cache</dt>
                     <dd class="col-sm-8">{{raspberryPi.ram.status.diskCache}} MB ({{100 * raspberryPi.ram.status.diskCache / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.ram.status.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
               </dl>
@@ -256,15 +254,16 @@
               <dl class="row">
                 <dt class="col-sm-3">Total</dt>
                 <dd class="col-sm-9">{{raspberryPi.swapMemory.total}} MB</dd>
-                <dt class="col-sm-3">Status</dt>
+                <dt class="col-sm-3">
+                  Status
+                  <span style="font-size:8px;color:white">{{raspberryPi.swapMemory.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Used</dt>
                     <dd class="col-sm-8">{{raspberryPi.swapMemory.status.used}} MB ({{100 * raspberryPi.swapMemory.status.used / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
                     <dt class="col-sm-4">Free</dt>
                     <dd class="col-sm-8">{{raspberryPi.swapMemory.status.free}} MB ({{100 * raspberryPi.swapMemory.status.free / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Datetime</dt>
-                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.dateTime | date:'medium'}}</dd>
                   </dl>
                 </dd>
               </dl>
@@ -285,15 +284,16 @@
                       <dd class="col-sm-9">{{fileSystem.type}}</dd>
                       <dt class="col-sm-3">Total</dt>
                       <dd class="col-sm-9">{{fileSystem.total}} KB</dd>
-                      <dt class="col-sm-3">Status</dt>
+                      <dt class="col-sm-3">
+                        Status
+                        <span style="font-size:8px;color:white">{{fileSystem.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                      </dt>
                       <dd class="col-sm-9">
                         <dl class="row">
                           <dt class="col-sm-4">Used</dt>
                           <dd class="col-sm-8">{{fileSystem.status.used}} KB ({{100 * fileSystem.status.used / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
                           <dt class="col-sm-4">Available</dt>
                           <dd class="col-sm-8">{{fileSystem.status.available}} KB ({{100 * fileSystem.status.available / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
-                          <dt class="col-sm-4">Datetime</dt>
-                          <dd class="col-sm-8">{{fileSystem.status.dateTime | date:'medium'}}</dd>
                         </dl>
                       </dd>
                     </dl>
@@ -318,7 +318,10 @@
                       <dd class="col-sm-9">{{networkInterface.subnetMask}}</dd>
                       <dt class="col-sm-3">Default Gateway</dt>
                       <dd class="col-sm-9">{{networkInterface.defaultGateway}}</dd>
-                      <dt class="col-sm-3">Status</dt>
+                      <dt class="col-sm-3">
+                        Status
+                        <span style="font-size:8px;color:white">{{networkInterface.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                      </dt>
                       <dd class="col-sm-9">
                         <dl class="row">
                           <dt class="col-sm-4">Total Received</dt>
@@ -329,8 +332,6 @@
                           <dd class="col-sm-8">{{networkInterface.status.totalSent | bytes}}</dd>
                           <dt class="col-sm-4">Send Speed</dt>
                           <dd class="col-sm-8">{{networkInterface.status.sendSpeed | bytes}}/s</dd>
-                          <dt class="col-sm-4">Datetime</dt>
-                          <dd class="col-sm-8">{{networkInterface.status.dateTime | date:'medium'}}</dd>
                         </dl>
                       </dd>
                     </dl>

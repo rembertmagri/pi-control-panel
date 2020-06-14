@@ -4,8 +4,8 @@ import { catchError, map } from 'rxjs/operators';
 import { get } from 'lodash';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { IUserAccount } from '../interfaces/userAccount';
-import { ILoginResponse } from '../interfaces/loginResponse';
+import { IUserAccount } from '@interfaces/userAccount';
+import { ILoginResponse } from '@interfaces/loginResponse';
 
 @Injectable({
   providedIn: 'root',

@@ -16,6 +16,11 @@
         public string Model { get; set; }
 
         /// <summary>
+        /// Gets or sets the CPU frequency scaling governor.
+        /// </summary>
+        public string ScalingGovernor { get; set; }
+
+        /// <summary>
         /// Gets or sets the maximum frequency.
         /// </summary>
         public int MaximumFrequency { get; set; }

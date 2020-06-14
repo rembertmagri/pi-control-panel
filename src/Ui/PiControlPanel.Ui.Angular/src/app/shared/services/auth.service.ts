@@ -3,9 +3,9 @@ import { Observable, timer } from 'rxjs';
 import { tap, map, switchMap } from 'rxjs/operators';
 import { isNil, isEmpty } from 'lodash';
 import { LoginService } from './login.service';
-import { IUserAccount } from '../interfaces/userAccount';
-import { Role } from '../constants/role';
-import { TOKEN_REFRESH_DUE_TIME, TOKEN_REFRESH_PERIOD } from '../constants/consts';
+import { IUserAccount } from '@interfaces/userAccount';
+import { Role } from '@constants/role';
+import { TOKEN_REFRESH_DUE_TIME, TOKEN_REFRESH_PERIOD } from '@constants/consts';
 
 @Injectable({
   providedIn: 'root',

@@ -41,6 +41,11 @@
         public const string CatProcCpuInfo = "cat /proc/cpuinfo";
 
         /// <summary>
+        /// Concatenates CPU scaling governor to standard output.
+        /// </summary>
+        public const string CatScalingGovernor = "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
+
+        /// <summary>
         /// Concatenates config.txt file to standard output.
         /// </summary>
         public const string CatBootConfig = "cat /boot/config.txt";

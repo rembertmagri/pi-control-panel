@@ -4,9 +4,9 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { unionBy, isNil } from 'lodash';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { IOsStatus } from '../interfaces/raspberry-pi';
-import { Connection } from '../interfaces/connection';
-import { DEFAULT_PAGE_SIZE, QUERY_REFETCH_DUE_TIME, QUERY_REFETCH_PERIOD } from '../constants/consts';
+import { IOsStatus } from '@interfaces/raspberry-pi';
+import { Connection } from '@interfaces/connection';
+import { DEFAULT_PAGE_SIZE, QUERY_REFETCH_DUE_TIME, QUERY_REFETCH_PERIOD } from '@constants/consts';
 import { ErrorHandlingService } from './error-handling.service';
 
 @Injectable({

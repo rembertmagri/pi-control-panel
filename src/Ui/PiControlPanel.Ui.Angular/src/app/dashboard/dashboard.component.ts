@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RaspberryPiService } from '../shared/services/raspberry-pi.service';
+import { RaspberryPiService } from '@services/raspberry-pi.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { 
   IRaspberryPi,
@@ -9,8 +9,8 @@ import {
   ICpuLoadStatus,
   IMemoryStatus, 
   IRandomAccessMemoryStatus, 
-  INetworkInterfaceStatus} from '../shared/interfaces/raspberry-pi';
-import { AuthService } from '../shared/services/auth.service';
+  INetworkInterfaceStatus} from '@interfaces/raspberry-pi';
+import { AuthService } from '@services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
@@ -34,18 +34,18 @@ import {
   isEmpty,
   find } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
-import { CpuFrequencyService } from 'src/app/shared/services/cpu-frequency.service';
-import { CpuTemperatureService } from 'src/app/shared/services/cpu-temperature.service';
-import { CpuLoadStatusService } from 'src/app/shared/services/cpu-load-status.service';
-import { RamStatusService } from 'src/app/shared/services/ram-status.service';
-import { SwapMemoryStatusService } from 'src/app/shared/services/swap-memory-status.service';
-import { FileSystemStatusService } from '../shared/services/disk-file-system-status.service';
-import { OsStatusService } from '../shared/services/os-status.service';
-import { NetworkInterfaceStatusService } from '../shared/services/network-interface-status.service';
-import { CpuMaxFrequencyLevel } from '../shared/constants/cpu-max-frequency-level';
-import { ChartData } from '../shared/constants/chart-data';
-import { MAX_CHART_VISIBLE_ITEMS } from '../shared/constants/consts';
-import { environment } from '../../environments/environment';
+import { CpuFrequencyService } from '@services/cpu-frequency.service';
+import { CpuTemperatureService } from '@services/cpu-temperature.service';
+import { CpuLoadStatusService } from '@services/cpu-load-status.service';
+import { RamStatusService } from '@services/ram-status.service';
+import { SwapMemoryStatusService } from '@services/swap-memory-status.service';
+import { FileSystemStatusService } from '@services/disk-file-system-status.service';
+import { OsStatusService } from '@services/os-status.service';
+import { NetworkInterfaceStatusService } from '@services/network-interface-status.service';
+import { CpuMaxFrequencyLevel } from '@constants/cpu-max-frequency-level';
+import { ChartData } from '@constants/chart-data';
+import { MAX_CHART_VISIBLE_ITEMS } from '@constants/consts';
+import { environment } from '@environments/environment';
 
 @Component({
   templateUrl: './dashboard.component.html',

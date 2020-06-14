@@ -25,8 +25,18 @@ set -e
 
 case "$1" in
     configure)
+        
+        # Apply database changes
+        if [ ! -z "$2" ] && [ -f '/var/db/picontrolpanel/picontrolpanel.db' ]; then
+            dpkg --compare-versions "$2" lt 1.40
+            if [ $? -eq 0 ]; then
+                echo -e 'Applying db change: creating Cpu.ScalingGovernor column'
+                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Cpu" ADD COLUMN "ScalingGovernor" TEXT;'
+            fi
+        fi
+        # End of Apply database changes
 
-        # Enabling supported workers
+        # Enable supported workers
         cat /proc/cpuinfo &> /dev/null
         if [ $? -ne 0 ]; then
         	echo -e '\nChipsetWorker \033[0;31mdisabled\033[0m'
@@ -86,9 +96,9 @@ case "$1" in
         	sed --in-place '/    "RandomAccessMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         	sed --in-place '/    "SwapMemory": {/!b;n;c      "Enabled": false,' /opt/picontrolpanel/Configuration/appsettings.json
         fi
-        # End of Enabling supported workers
-        
-        # Configuring port
+        # End of Enable supported workers
+
+        # Configure port
         echo -e 'Configuring port for the application...'
         port=8079
 		socketStats=$(ss -tunlp)
@@ -105,8 +115,8 @@ case "$1" in
         elif [ $port -ne 8080 ]; then
             sed --in-place '/    "Http": {/!b;n;c        "Url": "http://+:'"$port"'"' /opt/picontrolpanel/Configuration/appsettings.json
         fi
-        # End of Configuring port
-        
+        # End of Configure port
+
         chown root:root /etc/sudoers.d/picontrolpanel-nopasswd
         systemctl enable picontrolpanel
         systemctl start picontrolpanel
