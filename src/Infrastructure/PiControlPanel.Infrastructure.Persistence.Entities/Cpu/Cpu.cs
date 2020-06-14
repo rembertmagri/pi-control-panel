@@ -19,6 +19,13 @@
         public int Cores { get; set; }
 
         /// <summary>
+        /// Gets or sets the CPU frequency scaling governor.
+        /// </summary>
+        [Required]
+        [StringLength(50, MinimumLength = 3)]
+        public string ScalingGovernor { get; set; }
+
+        /// <summary>
         /// Gets or sets the CPU maximum frequency.
         /// </summary>
         [Required]

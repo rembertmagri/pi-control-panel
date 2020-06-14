@@ -19,6 +19,7 @@ export interface IChipset {
 export interface ICpu {
   cores: number;
   model: string;
+  scalingGovernor: string;
   maxFrequency: number;
   frequency: ICpuFrequency;
   frequencies: ICpuFrequency[];

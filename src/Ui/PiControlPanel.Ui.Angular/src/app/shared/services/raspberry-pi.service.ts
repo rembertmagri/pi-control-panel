@@ -39,6 +39,7 @@ export class RaspberryPiService {
             cpu {
               cores
               model
+              scalingGovernor
               maxFrequency
               frequency {
                 value

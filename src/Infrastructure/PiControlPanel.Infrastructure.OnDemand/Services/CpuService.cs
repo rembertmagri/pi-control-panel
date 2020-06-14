@@ -223,6 +223,10 @@
                 model.Split(':')[1].Trim();
             this.Logger.Trace($"Cpu model: '{model}'");
 
+            result = BashCommands.CatScalingGovernor.Bash();
+            this.Logger.Trace($"Result of '{BashCommands.CatScalingGovernor}' command: '{result}'");
+            var scalingGovernor = result;
+
             result = BashCommands.CatBootConfig.Bash();
             this.Logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
             lines = result.Split(
@@ -239,7 +243,8 @@
             {
                 Cores = cores,
                 Model = model,
-                MaximumFrequency = frequency
+                MaximumFrequency = frequency,
+                ScalingGovernor = scalingGovernor
             };
         }
 
