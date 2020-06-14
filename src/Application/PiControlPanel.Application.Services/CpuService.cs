@@ -118,14 +118,7 @@
         public async Task SaveLoadStatusAsync()
         {
             this.Logger.Debug("Application layer -> CpuService -> SaveLoadStatusAsync");
-            var cpu = await this.PersistenceService.GetAsync();
-            if (cpu == null)
-            {
-                this.Logger.Warn("Cpu info not available yet, can't calculate average load");
-                return;
-            }
-
-            var averageLoad = await ((OnDemand.ICpuService)this.OnDemandService).GetLoadStatusAsync(cpu.Cores);
+            var averageLoad = await ((OnDemand.ICpuService)this.OnDemandService).GetLoadStatusAsync();
 
             await this.persistenceLoadStatusService.AddAsync(averageLoad);
             ((OnDemand.ICpuService)this.OnDemandService).PublishLoadStatus(averageLoad);

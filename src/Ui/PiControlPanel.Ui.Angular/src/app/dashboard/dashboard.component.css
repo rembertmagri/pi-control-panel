@@ -5,3 +5,11 @@
 .btn-top-processes {
     float: right;
 }
+
+.progress {
+    height: 24px;
+}
+
+.loadAverage {
+    font-size: 1.4em;
+}

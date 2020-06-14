@@ -40,7 +40,7 @@
         }
 
         /// <inheritdoc/>
-        public Task<CpuLoadStatus> GetLoadStatusAsync(int cores)
+        public Task<CpuLoadStatus> GetLoadStatusAsync()
         {
             this.Logger.Debug("Infra layer -> CpuService -> GetLoadStatusAsync");
 
@@ -65,9 +65,9 @@
 
             return Task.FromResult(new CpuLoadStatus()
             {
-                LastMinuteAverage = (100 * double.Parse(averageLoadGroups["lastMinute"].Value)) / cores,
-                Last5MinutesAverage = (100 * double.Parse(averageLoadGroups["last5Minutes"].Value)) / cores,
-                Last15MinutesAverage = (100 * double.Parse(averageLoadGroups["last15Minutes"].Value)) / cores,
+                LastMinuteAverage = double.Parse(averageLoadGroups["lastMinute"].Value),
+                Last5MinutesAverage = double.Parse(averageLoadGroups["last5Minutes"].Value),
+                Last15MinutesAverage = double.Parse(averageLoadGroups["last15Minutes"].Value),
                 UserRealTime = double.Parse(realTimeLoadGroups["user"].Value),
                 KernelRealTime = double.Parse(realTimeLoadGroups["kernel"].Value),
                 Processes = this.GetProcesses(processLines, dateTime),

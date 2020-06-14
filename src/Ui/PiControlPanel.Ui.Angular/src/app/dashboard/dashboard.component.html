@@ -142,7 +142,18 @@
                   Frequency
                   <span style="font-size:8px;color:white">{{raspberryPi.cpu.frequency.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
-                <dd class="col-sm-9">{{raspberryPi.cpu.frequency.value}} MHz</dd>
+                <dd class="col-sm-9">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                      [class.bg-warning]="raspberryPi.cpu.frequency.value >= 0.9*raspberryPi.cpu.maxFrequency && raspberryPi.cpu.temperature.value < raspberryPi.cpu.maxFrequency"
+                      [class.bg-danger]="raspberryPi.cpu.frequency.value >= raspberryPi.cpu.maxFrequency"
+                      [style.width.%]="100*raspberryPi.cpu.frequency.value/raspberryPi.cpu.maxFrequency"
+                      aria-valuenow="raspberryPi.cpu.frequency.value"
+                      aria-valuemin="0" aria-valuemax="raspberryPi.cpu.maxFrequency">
+                      {{raspberryPi.cpu.frequency.value}} MHz
+                    </div>
+                  </div>
+                </dd>
                 <dt class="col-sm-3">
                   Sensors
                   <span style="font-size:8px;color:white">{{raspberryPi.cpu.temperature.dateTime | date:'M/d/yy h:mm:ss'}}</span>
@@ -150,7 +161,18 @@
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Temperature</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.temperature.value}} &#8451;</dd>
+                    <dd class="col-sm-8">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                          [class.bg-warning]="raspberryPi.cpu.temperature.value >= 55 && raspberryPi.cpu.temperature.value < 70"
+                          [class.bg-danger]="raspberryPi.cpu.temperature.value >= 70"
+                          [style.width.%]="raspberryPi.cpu.temperature.value"
+                          aria-valuenow="raspberryPi.cpu.temperature.value"
+                          aria-valuemin="0" aria-valuemax="100">
+                          {{raspberryPi.cpu.temperature.value}} &#8451;
+                        </div>
+                      </div>
+                    </dd>
                   </dl>
                 </dd>
                 <dt class="col-sm-3">
@@ -159,18 +181,73 @@
                 </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Last minute average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}}</dd>
-                    <dt class="col-sm-4">Last 5 minutes average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}}</dd>
-                    <dt class="col-sm-4">Last 15 minutes average</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}</dd>
+                    <dt class="col-sm-4">Load average</dt>
+                    <dd class="col-sm-8 loadAverage" title="last min: {{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}} # 5 min: {{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}} # 15 min: {{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}">
+                      <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.cores"
+                        class="bi bi-emoji-sunglasses" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path fill-rule="evenodd" d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM6.5 6.497V6.5h-1c0-.568.447-.947.862-1.154C6.807 5.123 7.387 5 8 5s1.193.123 1.638.346c.415.207.862.586.862 1.154h-1v-.003l-.003-.01a.213.213 0 0 0-.036-.053.86.86 0 0 0-.27-.194C8.91 6.1 8.49 6 8 6c-.491 0-.912.1-1.19.24a.86.86 0 0 0-.271.194.213.213 0 0 0-.036.054l-.003.01z"/>
+                        <path d="M2.31 5.243A1 1 0 0 1 3.28 4H6a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-.438a2 2 0 0 1-1.94-1.515L2.31 5.243zM9 5a1 1 0 0 1 1-1h2.72a1 1 0 0 1 .97 1.243l-.311 1.242A2 2 0 0 1 11.439 8H11a2 2 0 0 1-2-2V5z"/>
+                      </svg>
+                      <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.cores && (raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.loadStatus.last5MinutesAverage && raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.loadStatus.last15MinutesAverage)"
+                        class="bi bi-emoji-laughing" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path fill-rule="evenodd" d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5z"/>
+                        <path d="M7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z"/>
+                      </svg>
+                      <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.cores && (raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.loadStatus.last5MinutesAverage && raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.loadStatus.last15MinutesAverage)"
+                        class="bi bi-emoji-angry" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path fill-rule="evenodd" d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683z"/>
+                        <path d="M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>
+                        <path fill-rule="evenodd" d="M4.053 4.276a.5.5 0 0 1 .67-.223l2 1a.5.5 0 1 1-.447.894l-2-1a.5.5 0 0 1-.223-.67zm7.894 0a.5.5 0 0 0-.67-.223l-2 1a.5.5 0 1 0 .447.894l2-1a.5.5 0 0 0 .223-.67z"/>
+                      </svg>
+                      <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.cores && ((raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.loadStatus.last5MinutesAverage && raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.loadStatus.last15MinutesAverage) || (raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.loadStatus.last5MinutesAverage && raspberryPi.cpu.loadStatus.lastMinuteAverage > raspberryPi.cpu.loadStatus.last15MinutesAverage))"
+                        class="bi bi-emoji-neutral" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path fill-rule="evenodd" d="M4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                        <path d="M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>
+                      </svg>
+                    </dd>
                     <dt class="col-sm-4">Kernel real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.kernelRealTime | number:'1.0-2'}}&#37;</dd>
+                    <dd class="col-sm-8">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                          [class.bg-warning]="raspberryPi.cpu.loadStatus.kernelRealTime >= 40 && raspberryPi.cpu.loadStatus.kernelRealTime < 50"
+                          [class.bg-danger]="raspberryPi.cpu.loadStatus.kernelRealTime >= 50"
+                          [style.width.%]="raspberryPi.cpu.loadStatus.kernelRealTime"
+                          aria-valuenow="raspberryPi.cpu.loadStatus.kernelRealTime"
+                          aria-valuemin="0" aria-valuemax="100">
+                          {{raspberryPi.cpu.loadStatus.kernelRealTime | number:'1.0-2'}}&#37;
+                        </div>
+                      </div>
+                    </dd>
                     <dt class="col-sm-4">User real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.userRealTime | number:'1.0-2'}}&#37;</dd>
+                    <dd class="col-sm-8">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                          [class.bg-warning]="raspberryPi.cpu.loadStatus.userRealTime >= 80 && raspberryPi.cpu.loadStatus.userRealTime < 90"
+                          [class.bg-danger]="raspberryPi.cpu.loadStatus.userRealTime >= 90"
+                          [style.width.%]="raspberryPi.cpu.loadStatus.userRealTime"
+                          aria-valuenow="raspberryPi.cpu.loadStatus.userRealTime"
+                          aria-valuemin="0" aria-valuemax="100">
+                          {{raspberryPi.cpu.loadStatus.userRealTime | number:'1.0-2'}}&#37;
+                        </div>
+                      </div>
+                    </dd>
                     <dt class="col-sm-4">Total real-time</dt>
-                    <dd class="col-sm-8">{{raspberryPi.cpu.loadStatus.totalRealTime | number:'1.0-2'}}&#37;</dd>
+                    <dd class="col-sm-8">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                          [class.bg-warning]="raspberryPi.cpu.loadStatus.totalRealTime >= 90 && raspberryPi.cpu.loadStatus.totalRealTime < 95"
+                          [class.bg-danger]="raspberryPi.cpu.loadStatus.totalRealTime >= 95"  
+                          [style.width.%]="raspberryPi.cpu.loadStatus.totalRealTime"
+                          aria-valuenow="raspberryPi.cpu.loadStatus.totalRealTime"
+                          aria-valuemin="0" aria-valuemax="100">
+                          {{raspberryPi.cpu.loadStatus.totalRealTime | number:'1.0-2'}}&#37;
+                        </div>
+                      </div>
+                    </dd>
                   </dl>
                 </dd>
               </dl>
@@ -225,46 +302,62 @@
           </div>
           <br/>
           <div class="card" *ngIf="raspberryPi.ram">
-            <h4 class="card-header">RAM</h4>
+            <h4 class="card-header">RAM ({{raspberryPi.ram.total}} MB)</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Total</dt>
-                <dd class="col-sm-9">{{raspberryPi.ram.total}} MB</dd>
-                <dt class="col-sm-3">
+                <dt class="col-sm-2">
                   Status
                   <span style="font-size:8px;color:white">{{raspberryPi.ram.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Used</dt>
-                    <dd class="col-sm-8">{{raspberryPi.ram.status.used}} MB ({{100 * raspberryPi.ram.status.used / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Free</dt>
-                    <dd class="col-sm-8">{{raspberryPi.ram.status.free}} MB ({{100 * raspberryPi.ram.status.free / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Disk Cache</dt>
-                    <dd class="col-sm-8">{{raspberryPi.ram.status.diskCache}} MB ({{100 * raspberryPi.ram.status.diskCache / raspberryPi.ram.total | number:'1.0-2'}}&#37;)</dd>
-                  </dl>
+                <dd class="col-sm-10">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                      [style.width.%]="100 * raspberryPi.ram.status.used / raspberryPi.ram.total"
+                      aria-valuenow="100 * raspberryPi.ram.status.used / raspberryPi.ram.total"
+                      aria-valuemin="0" aria-valuemax="100">
+                      Used ({{raspberryPi.ram.status.used}} MB)
+                    </div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+                      [style.width.%]="100 * raspberryPi.ram.status.diskCache / raspberryPi.ram.total"
+                      aria-valuenow="100 * raspberryPi.ram.status.diskCache / raspberryPi.ram.total"
+                      aria-valuemin="0" aria-valuemax="100">
+                      Disk Cache ({{raspberryPi.ram.status.diskCache}} MB)
+                    </div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                      [style.width.%]="100 * raspberryPi.ram.status.free / raspberryPi.ram.total"
+                      aria-valuenow="100 * raspberryPi.ram.status.free / raspberryPi.ram.total"
+                      aria-valuemin="0" aria-valuemax="100">
+                      Free ({{raspberryPi.ram.status.free}} MB)
+                    </div>
+                  </div>
                 </dd>
               </dl>
             </div>
           </div>
           <br />
           <div class="card" *ngIf="raspberryPi.swapMemory">
-            <h4 class="card-header">Swap Memory</h4>
+            <h4 class="card-header">Swap Memory ({{raspberryPi.swapMemory.total}} MB)</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Total</dt>
-                <dd class="col-sm-9">{{raspberryPi.swapMemory.total}} MB</dd>
-                <dt class="col-sm-3">
+                <dt class="col-sm-2">
                   Status
                   <span style="font-size:8px;color:white">{{raspberryPi.swapMemory.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-4">Used</dt>
-                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.used}} MB ({{100 * raspberryPi.swapMemory.status.used / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
-                    <dt class="col-sm-4">Free</dt>
-                    <dd class="col-sm-8">{{raspberryPi.swapMemory.status.free}} MB ({{100 * raspberryPi.swapMemory.status.free / raspberryPi.swapMemory.total | number:'1.0-2'}}&#37;)</dd>
-                  </dl>
+                <dd class="col-sm-10">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+                      [style.width.%]="100 * raspberryPi.swapMemory.status.used / raspberryPi.swapMemory.total"
+                      aria-valuenow="100 * raspberryPi.swapMemory.status.used / raspberryPi.swapMemory.total"
+                      aria-valuemin="0" aria-valuemax="100">
+                      Used ({{raspberryPi.swapMemory.status.used}} MB)
+                    </div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                      [style.width.%]="100 * raspberryPi.swapMemory.status.free / raspberryPi.swapMemory.total"
+                      aria-valuenow="100 * raspberryPi.swapMemory.status.free / raspberryPi.swapMemory.total"
+                      aria-valuemin="0" aria-valuemax="100">
+                      Free ({{raspberryPi.swapMemory.status.free}} MB)
+                    </div>
+                  </div>
                 </dd>
               </dl>
             </div>
@@ -280,21 +373,29 @@
                   <h4 class="card-header">{{fileSystem.name}}</h4>
                   <div class="card-body">
                     <dl class="row">
-                      <dt class="col-sm-3">Type</dt>
-                      <dd class="col-sm-9">{{fileSystem.type}}</dd>
-                      <dt class="col-sm-3">Total</dt>
-                      <dd class="col-sm-9">{{fileSystem.total}} KB</dd>
-                      <dt class="col-sm-3">
+                      <dt class="col-sm-2">Type</dt>
+                      <dd class="col-sm-10">{{fileSystem.type}}</dd>
+                      <dt class="col-sm-2">Total</dt>
+                      <dd class="col-sm-10">{{fileSystem.total}} KB</dd>
+                      <dt class="col-sm-2">
                         Status
                         <span style="font-size:8px;color:white">{{fileSystem.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                       </dt>
-                      <dd class="col-sm-9">
-                        <dl class="row">
-                          <dt class="col-sm-4">Used</dt>
-                          <dd class="col-sm-8">{{fileSystem.status.used}} KB ({{100 * fileSystem.status.used / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
-                          <dt class="col-sm-4">Available</dt>
-                          <dd class="col-sm-8">{{fileSystem.status.available}} KB ({{100 * fileSystem.status.available / fileSystem.total | number:'1.0-2'}}&#37;)</dd>
-                        </dl>
+                      <dd class="col-sm-10">
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+                            [style.width.%]="100 * fileSystem.status.used / fileSystem.total"
+                            aria-valuenow="100 * fileSystem.status.used / fileSystem.total"
+                            aria-valuemin="0" aria-valuemax="100">
+                            Used ({{fileSystem.status.used}} KB)
+                          </div>
+                          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                            [style.width.%]="100 * fileSystem.status.available / fileSystem.total"
+                            aria-valuenow="100 * fileSystem.status.available / fileSystem.total"
+                            aria-valuemin="0" aria-valuemax="100">
+                            Free ({{fileSystem.status.available}} KB)
+                          </div>
+                        </div>
                       </dd>
                     </dl>
                   </div>
