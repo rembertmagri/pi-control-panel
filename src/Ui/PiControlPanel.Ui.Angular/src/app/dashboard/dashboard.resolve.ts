@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
-import { RaspberryPiService } from '../shared/services/raspberry-pi.service';
-import { IRaspberryPi } from "../shared/interfaces/raspberry-pi";
+import { RaspberryPiService } from '@services/raspberry-pi.service';
+import { IRaspberryPi } from "@interfaces/raspberry-pi";
 
 @Injectable()
 export class DashboardResolve implements Resolve<IRaspberryPi> {

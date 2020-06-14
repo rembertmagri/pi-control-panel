@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, map, finalize } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { get, isNil, orderBy } from 'lodash';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { IRaspberryPi } from '../interfaces/raspberry-pi';
+import { IRaspberryPi } from '@interfaces/raspberry-pi';
 import { ErrorHandlingService } from './error-handling.service';
-import { CpuMaxFrequencyLevel } from '../constants/cpu-max-frequency-level';
+import { CpuMaxFrequencyLevel } from '@constants/cpu-max-frequency-level';
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { MatSpinner } from '@angular/material/progress-spinner';

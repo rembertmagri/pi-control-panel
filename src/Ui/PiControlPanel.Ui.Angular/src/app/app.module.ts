@@ -26,9 +26,9 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { AuthInterceptor } from '@interceptors/auth.interceptor';
 
-import { environment } from '../environments/environment';
+import { environment } from '@environments/environment';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';

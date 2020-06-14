@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IUserAccount } from '../shared/interfaces/userAccount';
-import { AuthService } from '../shared/services/auth.service';
+import { IUserAccount } from '@interfaces/userAccount';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   templateUrl: './login.component.html',

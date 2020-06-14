@@ -7,11 +7,11 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { checkGraphQLErrors } from '../operators/check-graphql-errors.operator';
+import { checkGraphQLErrors } from '@operators/check-graphql-errors.operator';
 import { get } from 'lodash';
 import { UNAUTHORIZED, FORBIDDEN } from 'http-status-codes';
-import { delayedRetry } from '../operators/delayed-retry.operator';
-import { AuthService } from '../services/auth.service';
+import { delayedRetry } from '@operators/delayed-retry.operator';
+import { AuthService } from '@services/auth.service';
 import { Router } from '@angular/router';
 
 @Injectable({
