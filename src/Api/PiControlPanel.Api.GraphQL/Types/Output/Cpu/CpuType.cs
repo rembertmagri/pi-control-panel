@@ -20,7 +20,7 @@
         {
             this.Field(x => x.Cores);
             this.Field(x => x.Model);
-            this.Field(x => x.ScalingGovernor);
+            this.Field(x => x.ScalingGovernor, true);
             this.Field("maxFrequency", x => x.MaximumFrequency);
 
             this.Field<CpuLoadStatusType>()
