@@ -51,9 +51,9 @@
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(UiPath)dist/*" />
+      <DistFiles Include="$(UiPath)dist/**" />
       <ResolvedFileToPublish Include="@(DistFiles)">
-        <RelativePath>PiControlPanel.Ui.Angular/dist/%(Filename)%(Extension)</RelativePath>
+        <RelativePath>PiControlPanel.Ui.Angular/dist/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
