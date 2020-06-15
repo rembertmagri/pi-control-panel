@@ -182,7 +182,7 @@
                 <dd class="col-sm-9">
                   <dl class="row">
                     <dt class="col-sm-4">Load average</dt>
-                    <dd class="col-sm-8 loadAverage" title="last min: {{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}} # 5 min: {{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}} # 15 min: {{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}">
+                    <dd class="col-sm-8 loadAverage" title="1 min: {{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}} / 5 min: {{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}} / 15 min: {{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}">
                       <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.cores"
                         class="bi bi-emoji-sunglasses" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
