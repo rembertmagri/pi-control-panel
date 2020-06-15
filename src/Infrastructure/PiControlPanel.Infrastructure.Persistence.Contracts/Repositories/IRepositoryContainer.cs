@@ -21,9 +21,9 @@
         IRepositoryBase<Entities.Cpu.CpuFrequency> CpuFrequencyRepository { get; }
 
         /// <summary>
-        /// Gets the repository for the CpuTemperature entity.
+        /// Gets the repository for the CpuSensorsStatus entity.
         /// </summary>
-        IRepositoryBase<Entities.Cpu.CpuTemperature> CpuTemperatureRepository { get; }
+        IRepositoryBase<Entities.Cpu.CpuSensorsStatus> CpuSensorsStatusRepository { get; }
 
         /// <summary>
         /// Gets the repository for the CpuLoadStatus entity.

@@ -4,16 +4,16 @@
     using PiControlPanel.Domain.Models.Hardware.Cpu;
 
     /// <summary>
-    /// The CpuTemperature GraphQL output type.
+    /// The CpuSensorsStatus GraphQL output type.
     /// </summary>
-    public class CpuTemperatureType : ObjectGraphType<CpuTemperature>
+    public class CpuSensorsStatusType : ObjectGraphType<CpuSensorsStatus>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CpuTemperatureType"/> class.
+        /// Initializes a new instance of the <see cref="CpuSensorsStatusType"/> class.
         /// </summary>
-        public CpuTemperatureType()
+        public CpuSensorsStatusType()
         {
-            this.Field("value", x => x.Temperature);
+            this.Field(x => x.Temperature);
             this.Field<DateTimeGraphType>("dateTime");
         }
     }

@@ -44,9 +44,9 @@
         public DbSet<Entities.Cpu.CpuFrequency> CpuFrequency { get; set; }
 
         /// <summary>
-        /// Gets or sets the database set for the CpuTemperature entity.
+        /// Gets or sets the database set for the CpuSensorsStatus entity.
         /// </summary>
-        public DbSet<Entities.Cpu.CpuTemperature> CpuTemperature { get; set; }
+        public DbSet<Entities.Cpu.CpuSensorsStatus> CpuSensorsStatus { get; set; }
 
         /// <summary>
         /// Gets or sets the database set for the CpuLoadStatus entity.

@@ -145,7 +145,7 @@
                 <dd class="col-sm-9">
                   <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                      [class.bg-warning]="raspberryPi.cpu.frequency.value >= 0.9*raspberryPi.cpu.maxFrequency && raspberryPi.cpu.temperature.value < raspberryPi.cpu.maxFrequency"
+                      [class.bg-warning]="raspberryPi.cpu.frequency.value >= 0.9*raspberryPi.cpu.maxFrequency && raspberryPi.cpu.frequency.value < raspberryPi.cpu.maxFrequency"
                       [class.bg-danger]="raspberryPi.cpu.frequency.value >= raspberryPi.cpu.maxFrequency"
                       [style.width.%]="100*raspberryPi.cpu.frequency.value/raspberryPi.cpu.maxFrequency"
                       aria-valuenow="raspberryPi.cpu.frequency.value"
@@ -156,7 +156,7 @@
                 </dd>
                 <dt class="col-sm-3">
                   Sensors
-                  <span style="font-size:8px;color:white">{{raspberryPi.cpu.temperature.dateTime | date:'M/d/yy h:mm:ss'}}</span>
+                  <span style="font-size:8px;color:white">{{raspberryPi.cpu.sensorsStatus.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
@@ -164,12 +164,12 @@
                     <dd class="col-sm-8">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                          [class.bg-warning]="raspberryPi.cpu.temperature.value >= 55 && raspberryPi.cpu.temperature.value < 70"
-                          [class.bg-danger]="raspberryPi.cpu.temperature.value >= 70"
-                          [style.width.%]="raspberryPi.cpu.temperature.value"
-                          aria-valuenow="raspberryPi.cpu.temperature.value"
+                          [class.bg-warning]="raspberryPi.cpu.sensorsStatus.temperature >= 55 && raspberryPi.cpu.sensorsStatus.temperature < 70"
+                          [class.bg-danger]="raspberryPi.cpu.sensorsStatus.temperature >= 70"
+                          [style.width.%]="raspberryPi.cpu.sensorsStatus.temperature"
+                          aria-valuenow="raspberryPi.cpu.sensorsStatus.temperature"
                           aria-valuemin="0" aria-valuemax="100">
-                          {{raspberryPi.cpu.temperature.value}} &#8451;
+                          {{raspberryPi.cpu.sensorsStatus.temperature}} &#8451;
                         </div>
                       </div>
                     </dd>

@@ -41,23 +41,23 @@
             IEnumerable<DateTime> dateTimes, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the most recent value of the CPU temperature.
+        /// Gets the most recent value of the CPU sensors status.
         /// </summary>
-        /// <returns>The CpuTemperature object.</returns>
-        Task<CpuTemperature> GetLastTemperatureAsync();
+        /// <returns>The CpuSensorsStatus object.</returns>
+        Task<CpuSensorsStatus> GetLastSensorsStatusAsync();
 
         /// <summary>
-        /// Gets the paged list of values for the CPU temperature.
+        /// Gets the paged list of values for the CPU sensors status.
         /// </summary>
         /// <param name="pagingInput">The paging information.</param>
-        /// <returns>The paged info containing the CPU temperature list.</returns>
-        Task<PagingOutput<CpuTemperature>> GetTemperaturesAsync(PagingInput pagingInput);
+        /// <returns>The paged info containing the CPU sensors status list.</returns>
+        Task<PagingOutput<CpuSensorsStatus>> GetSensorsStatusesAsync(PagingInput pagingInput);
 
         /// <summary>
-        /// Gets an observable of the CPU temperature.
+        /// Gets an observable of the CPU sensors status.
         /// </summary>
-        /// <returns>The observable CpuTemperature.</returns>
-        IObservable<CpuTemperature> GetTemperatureObservable();
+        /// <returns>The observable CpuSensorsStatus.</returns>
+        IObservable<CpuSensorsStatus> GetSensorsStatusObservable();
 
         /// <summary>
         /// Gets the most recent value of the CPU frequency.
@@ -85,10 +85,10 @@
         Task SaveLoadStatusAsync();
 
         /// <summary>
-        /// Retrieves and saves the CPU temperature.
+        /// Retrieves and saves the CPU sensors status.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SaveTemperatureAsync();
+        Task SaveSensorsStatusAsync();
 
         /// <summary>
         /// Retrieves and saves the CPU frequency.

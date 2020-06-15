@@ -29,8 +29,11 @@ case "$1" in
         # Apply database changes
         if [ ! -z "$2" ] && [ -f '/var/db/picontrolpanel/picontrolpanel.db' ]; then
             if (dpkg --compare-versions "$2" lt 1.40) then
-                echo -e 'Applying db change: creating Cpu.ScalingGovernor column'
                 sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Cpu" ADD COLUMN "ScalingGovernor" TEXT;'
+            fi
+			if (dpkg --compare-versions "$2" lt 1.44) then
+                echo -e 'Applying db change: renaming CpuTemperature to CpuSensorsStatus'
+                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuTemperature" RENAME TO "CpuSensorsStatus";'
             fi
         fi
         # End of Apply database changes

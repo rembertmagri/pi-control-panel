@@ -54,21 +54,21 @@
                     return cpuService.GetLoadStatusObservable();
                 });
 
-            this.FieldSubscribe<CpuTemperatureType>(
-                "CpuTemperature",
+            this.FieldSubscribe<CpuSensorsStatusType>(
+                "CpuSensorsStatus",
                 resolve: context =>
                 {
                     return context.Source;
                 },
                 subscribe: context =>
                 {
-                    logger.Info("CpuTemperature subscription");
+                    logger.Info("CpuSensorsStatus subscription");
 
                     var messageHandlingContext = context.UserContext.As<MessageHandlingContext>();
                     var graphQLUserContext = messageHandlingContext.Get<GraphQLUserContext>("GraphQLUserContext");
                     var userContext = graphQLUserContext.GetUserContext();
 
-                    return cpuService.GetTemperatureObservable();
+                    return cpuService.GetSensorsStatusObservable();
                 });
 
             this.FieldSubscribe<CpuFrequencyType>(

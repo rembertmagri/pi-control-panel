@@ -33,7 +33,7 @@
             serviceRegistry.Register<Contracts.Persistence.IChipsetService, Persistence.ChipsetService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuService, Persistence.Cpu.CpuService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuFrequencyService, Persistence.Cpu.CpuFrequencyService>();
-            serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuTemperatureService, Persistence.Cpu.CpuTemperatureService>();
+            serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuSensorsStatusService, Persistence.Cpu.CpuSensorsStatusService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuLoadStatusService, Persistence.Cpu.CpuLoadStatusService>();
             serviceRegistry.Register<Contracts.Persistence.IGpuService, Persistence.GpuService>();
             serviceRegistry.Register<Contracts.Persistence.Os.IOsService, Persistence.Os.OsService>();
@@ -67,7 +67,7 @@
             serviceRegistry.RegisterSingleton<IMapper>(factory => new AutoMapperConfiguration().GetIMapper());
 
             serviceRegistry.RegisterSingleton<ISubject<CpuFrequency>>(factory => new ReplaySubject<CpuFrequency>(1));
-            serviceRegistry.RegisterSingleton<ISubject<CpuTemperature>>(factory => new ReplaySubject<CpuTemperature>(1));
+            serviceRegistry.RegisterSingleton<ISubject<CpuSensorsStatus>>(factory => new ReplaySubject<CpuSensorsStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<CpuLoadStatus>>(factory => new ReplaySubject<CpuLoadStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<RandomAccessMemoryStatus>>(factory => new ReplaySubject<RandomAccessMemoryStatus>(1));
             serviceRegistry.RegisterSingleton<ISubject<SwapMemoryStatus>>(factory => new ReplaySubject<SwapMemoryStatus>(1));

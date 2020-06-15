@@ -45,24 +45,24 @@
                     return averageLoads.ToConnection();
                 });
 
-            this.Field<CpuTemperatureType>()
-                .Name("Temperature")
+            this.Field<CpuSensorsStatusType>()
+                .Name("SensorsStatus")
                 .ResolveAsync(async context =>
                 {
-                    logger.Debug("Temperature field");
+                    logger.Debug("SensorsStatus field");
 
-                    return await cpuService.GetLastTemperatureAsync();
+                    return await cpuService.GetLastSensorsStatusAsync();
                 });
 
-            this.Connection<CpuTemperatureType>()
-                .Name("Temperatures")
+            this.Connection<CpuSensorsStatusType>()
+                .Name("SensorsStatuses")
                 .Bidirectional()
                 .ResolveAsync(async context =>
                 {
-                    logger.Debug("Temperatures connection");
+                    logger.Debug("SensorsStatuses connection");
 
                     var pagingInput = context.GetPagingInput();
-                    var temperatures = await cpuService.GetTemperaturesAsync(pagingInput);
+                    var temperatures = await cpuService.GetSensorsStatusesAsync(pagingInput);
 
                     return temperatures.ToConnection();
                 });

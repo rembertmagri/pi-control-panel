@@ -45,8 +45,8 @@ export class RaspberryPiService {
                 value
                 dateTime
               }
-              temperature {
-                value
+              sensorsStatus {
+                temperature
                 dateTime
               }
               loadStatus {

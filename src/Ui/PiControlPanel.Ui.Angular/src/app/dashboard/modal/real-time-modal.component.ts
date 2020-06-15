@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
-import { CpuTemperatureService } from '@services/cpu-temperature.service';
+import { CpuSensorsStatusService } from '@services/cpu-temperature.service';
 import { CpuLoadStatusService } from '@services/cpu-load-status.service';
 import { RamStatusService } from '@services/ram-status.service';
 import { SwapMemoryStatusService } from '@services/swap-memory-status.service';
@@ -36,7 +36,7 @@ export class RealTimeModalComponent implements OnInit {
 
   constructor(public bsModalRef: BsModalRef,
     private cpuFrequencyService: CpuFrequencyService,
-    private cpuTemperatureService: CpuTemperatureService,
+    private cpuSensorsStatusService: CpuSensorsStatusService,
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
     private swapMemoryStatusService: SwapMemoryStatusService,
@@ -44,7 +44,7 @@ export class RealTimeModalComponent implements OnInit {
 
   ngOnInit() {
     this.cpuFrequencyService.refetch();
-    this.cpuTemperatureService.refetch();
+    this.cpuSensorsStatusService.refetch();
     this.cpuLoadStatusService.refetch();
     this.ramStatusService.refetch();
     this.swapMemoryStatusService.refetch();
@@ -57,7 +57,7 @@ export class RealTimeModalComponent implements OnInit {
 
   loadNextPage() {
     this.cpuFrequencyService.getNextPage();
-    this.cpuTemperatureService.getNextPage();
+    this.cpuSensorsStatusService.getNextPage();
     this.cpuLoadStatusService.getNextPage();
     this.ramStatusService.getNextPage();
     this.swapMemoryStatusService.getNextPage();
@@ -66,7 +66,7 @@ export class RealTimeModalComponent implements OnInit {
 
   loadPreviousPage() {
     this.cpuFrequencyService.getPreviousPage();
-    this.cpuTemperatureService.getPreviousPage();
+    this.cpuSensorsStatusService.getPreviousPage();
     this.cpuLoadStatusService.getPreviousPage();
     this.ramStatusService.getPreviousPage();
     this.swapMemoryStatusService.getPreviousPage();
