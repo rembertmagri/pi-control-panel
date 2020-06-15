@@ -17,25 +17,25 @@
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly ISubject<CpuFrequency> cpuFrequencySubject;
-        private readonly ISubject<CpuTemperature> cpuTemperatureSubject;
+        private readonly ISubject<CpuSensorsStatus> cpuSensorsStatusSubject;
         private readonly ISubject<CpuLoadStatus> cpuLoadStatusSubject;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CpuService"/> class.
         /// </summary>
         /// <param name="cpuFrequencySubject">The CPU frequency subject.</param>
-        /// <param name="cpuTemperatureSubject">The CPU temperature subject.</param>
+        /// <param name="cpuSensorsStatusSubject">The CPU sensors status subject.</param>
         /// <param name="cpuLoadStatusSubject">The CPU load status subject.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public CpuService(
             ISubject<CpuFrequency> cpuFrequencySubject,
-            ISubject<CpuTemperature> cpuTemperatureSubject,
+            ISubject<CpuSensorsStatus> cpuSensorsStatusSubject,
             ISubject<CpuLoadStatus> cpuLoadStatusSubject,
             ILogger logger)
             : base(logger)
         {
             this.cpuFrequencySubject = cpuFrequencySubject;
-            this.cpuTemperatureSubject = cpuTemperatureSubject;
+            this.cpuSensorsStatusSubject = cpuSensorsStatusSubject;
             this.cpuLoadStatusSubject = cpuLoadStatusSubject;
         }
 
@@ -90,9 +90,9 @@
         }
 
         /// <inheritdoc/>
-        public Task<CpuTemperature> GetTemperatureAsync()
+        public Task<CpuSensorsStatus> GetSensorsStatusAsync()
         {
-            this.Logger.Debug("Infra layer -> CpuService -> GetTemperatureAsync");
+            this.Logger.Debug("Infra layer -> CpuService -> GetSensorsStatusAsync");
 
             var result = BashCommands.MeasureTemp.Bash();
             this.Logger.Trace($"Result of '{BashCommands.MeasureTemp}' command: '{result}'");
@@ -100,31 +100,30 @@
             var temperatureResult = result[(result.IndexOf('=') + 1) ..result.IndexOf("'")];
             this.Logger.Trace($"Temperature substring: '{temperatureResult}'");
 
-            if (double.TryParse(temperatureResult, out var temperature))
+            if (!double.TryParse(temperatureResult, out var temperature))
             {
-                return Task.FromResult(new CpuTemperature()
-                {
-                    Temperature = temperature,
-                    DateTime = DateTime.Now
-                });
+                this.Logger.Warn($"Could not parse temperature: '{temperatureResult}'");
             }
 
-            this.Logger.Warn($"Could not parse temperature: '{temperatureResult}'");
-            return null;
+            return Task.FromResult(new CpuSensorsStatus()
+            {
+                Temperature = temperature,
+                DateTime = DateTime.Now
+            });
         }
 
         /// <inheritdoc/>
-        public IObservable<CpuTemperature> GetTemperatureObservable()
+        public IObservable<CpuSensorsStatus> GetSensorsStatusObservable()
         {
-            this.Logger.Debug("Infra layer -> CpuService -> GetTemperatureObservable");
-            return this.cpuTemperatureSubject.AsObservable();
+            this.Logger.Debug("Infra layer -> CpuService -> GetSensorsStatusObservable");
+            return this.cpuSensorsStatusSubject.AsObservable();
         }
 
         /// <inheritdoc/>
-        public void PublishTemperature(CpuTemperature temperature)
+        public void PublishSensorsStatus(CpuSensorsStatus sensorsStatus)
         {
-            this.Logger.Debug("Infra layer -> CpuService -> PublishTemperature");
-            this.cpuTemperatureSubject.OnNext(temperature);
+            this.Logger.Debug("Infra layer -> CpuService -> PublishSensorsStatus");
+            this.cpuSensorsStatusSubject.OnNext(sensorsStatus);
         }
 
         /// <inheritdoc/>

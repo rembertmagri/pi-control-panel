@@ -4,7 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { unionBy, isNil } from 'lodash';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { ICpuTemperature } from '@interfaces/raspberry-pi';
+import { ICpuSensorsStatus } from '@interfaces/raspberry-pi';
 import { Connection } from '@interfaces/connection';
 import { DEFAULT_PAGE_SIZE, QUERY_REFETCH_DUE_TIME, QUERY_REFETCH_PERIOD } from '@constants/consts';
 import { ErrorHandlingService } from './error-handling.service';
@@ -12,30 +12,30 @@ import { ErrorHandlingService } from './error-handling.service';
 @Injectable({
   providedIn: 'root',
 })
-export class CpuTemperatureService {
+export class CpuSensorsStatusService {
   searchQuery: QueryRef<any>;
   afterCursor: string = null;
   beforeCursor: string = null;
-  searchQueryResult: Observable<Connection<ICpuTemperature>>;
+  searchQueryResult: Observable<Connection<ICpuSensorsStatus>>;
   
   constructor(private apollo: Apollo,
     private errorHandlingService: ErrorHandlingService) {
   }
 
-  getFirstCpuTemperatures(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<ICpuTemperature>> {
+  getFirstCpuSensorsStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<ICpuSensorsStatus>> {
     const variables = {
-      firstTemperatures: pageSize,
-      afterTemperatures: null
+      firstSensorsStatuses: pageSize,
+      afterSensorsStatuses: null
     };
     if (!this.searchQuery) {
-      this.searchQuery = this.apollo.watchQuery<{ cpuTemperatures: Connection<ICpuTemperature> }>({
+      this.searchQuery = this.apollo.watchQuery<{ cpuSensorsStatuses: Connection<ICpuSensorsStatus> }>({
         query: gql`
-          query CpuTemperatures($firstTemperatures: Int, $afterTemperatures: String) {
+          query CpuSensorsStatuses($firstSensorsStatuses: Int, $afterSensorsStatuses: String) {
             raspberryPi {
               cpu {
-                temperatures(first: $firstTemperatures, after: $afterTemperatures) {
+                sensorsStatuses(first: $firstSensorsStatuses, after: $afterSensorsStatuses) {
                 items {
-                    value
+                    temperature
                     dateTime
                   }
                   pageInfo {
@@ -55,7 +55,7 @@ export class CpuTemperatureService {
       this.searchQueryResult = this.searchQuery.valueChanges
         .pipe(
           map(result => {
-            const connection = result.data.raspberryPi.cpu.temperatures as Connection<ICpuTemperature>;
+            const connection = result.data.raspberryPi.cpu.sensorsStatuses as Connection<ICpuSensorsStatus>;
             this.beforeCursor = connection.pageInfo.startCursor;
             this.afterCursor = connection.pageInfo.endCursor;
             return connection;
@@ -72,20 +72,20 @@ export class CpuTemperatureService {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
-          afterTemperatures: this.afterCursor
+          afterSensorsStatuses: this.afterCursor
         },
         updateQuery: ((prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult.raspberryPi.cpu.temperatures.items) {
+          if (!fetchMoreResult.raspberryPi.cpu.sensorsStatuses.items) {
             return prev;
           }
           return Object.assign({}, prev, {
             raspberryPi: {
               cpu: {
-                temperatures: {
-                  items: unionBy(prev.raspberryPi.cpu.temperatures.items, fetchMoreResult.raspberryPi.cpu.temperatures.items, 'dateTime'),
-                  pageInfo: fetchMoreResult.raspberryPi.cpu.temperatures.pageInfo,
-                  totalCount: fetchMoreResult.raspberryPi.cpu.temperatures.totalCount,
-                  __typename: 'CpuTemperatureConnection'
+                sensorsStatuses: {
+                  items: unionBy(prev.raspberryPi.cpu.sensorsStatuses.items, fetchMoreResult.raspberryPi.cpu.sensorsStatuses.items, 'dateTime'),
+                  pageInfo: fetchMoreResult.raspberryPi.cpu.sensorsStatuses.pageInfo,
+                  totalCount: fetchMoreResult.raspberryPi.cpu.sensorsStatuses.totalCount,
+                  __typename: 'CpuSensorsStatusConnection'
                 },
                 __typename: 'CpuType'
               },
@@ -97,20 +97,20 @@ export class CpuTemperatureService {
     }
   }
 
-  getLastCpuTemperatures(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<ICpuTemperature>> {
+  getLastCpuSensorsStatuses(pageSize: number = DEFAULT_PAGE_SIZE): Observable<Connection<ICpuSensorsStatus>> {
     const variables = {
-      lastTemperatures: pageSize,
-      beforeTemperatures: null
+      lastSensorsStatuses: pageSize,
+      beforeSensorsStatuses: null
     };
     if (!this.searchQuery) {
-      this.searchQuery = this.apollo.watchQuery<{ cpuTemperatures: Connection<ICpuTemperature> }>({
+      this.searchQuery = this.apollo.watchQuery<{ cpuSensorsStatuses: Connection<ICpuSensorsStatus> }>({
         query: gql`
-          query CpuTemperatures($lastTemperatures: Int, $beforeTemperatures: String) {
+          query CpuSensorsStatuses($lastSensorsStatuses: Int, $beforeSensorsStatuses: String) {
             raspberryPi {
               cpu {
-                temperatures(last: $lastTemperatures, before: $beforeTemperatures) {
+                sensorsStatuses(last: $lastSensorsStatuses, before: $beforeSensorsStatuses) {
                 items {
-                    value
+                    temperature
                     dateTime
                   }
                   pageInfo {
@@ -130,7 +130,7 @@ export class CpuTemperatureService {
       this.searchQueryResult = this.searchQuery.valueChanges
         .pipe(
           map(result => {
-            const connection = result.data.raspberryPi.cpu.temperatures as Connection<ICpuTemperature>;
+            const connection = result.data.raspberryPi.cpu.sensorsStatuses as Connection<ICpuSensorsStatus>;
             this.beforeCursor = connection.pageInfo.startCursor;
             this.afterCursor = connection.pageInfo.endCursor;
             return connection;
@@ -147,20 +147,20 @@ export class CpuTemperatureService {
     if (this.searchQuery) {
       this.searchQuery.fetchMore({
         variables: {
-          beforeTemperatures: this.beforeCursor
+          beforeSensorsStatuses: this.beforeCursor
         },
         updateQuery: ((prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult.raspberryPi.cpu.temperatures.items) {
+          if (!fetchMoreResult.raspberryPi.cpu.sensorsStatuses.items) {
             return prev;
           }
           return Object.assign({}, prev, {
             raspberryPi: {
               cpu: {
-                temperatures: {
-                  items: unionBy(prev.raspberryPi.cpu.temperatures.items, fetchMoreResult.raspberryPi.cpu.temperatures.items, 'dateTime'),
-                  pageInfo: fetchMoreResult.raspberryPi.cpu.temperatures.pageInfo,
-                  totalCount: fetchMoreResult.raspberryPi.cpu.temperatures.totalCount,
-                  __typename: 'CpuTemperatureConnection'
+                sensorsStatuses: {
+                  items: unionBy(prev.raspberryPi.cpu.sensorsStatuses.items, fetchMoreResult.raspberryPi.cpu.sensorsStatuses.items, 'dateTime'),
+                  pageInfo: fetchMoreResult.raspberryPi.cpu.sensorsStatuses.pageInfo,
+                  totalCount: fetchMoreResult.raspberryPi.cpu.sensorsStatuses.totalCount,
+                  __typename: 'CpuSensorsStatusConnection'
                 },
                 __typename: 'CpuType'
               },
@@ -172,13 +172,13 @@ export class CpuTemperatureService {
     }
   }
 
-  subscribeToNewCpuTemperatures() {
+  subscribeToNewCpuSensorsStatuses() {
     if (this.searchQuery) {
       this.searchQuery.subscribeToMore({
         document: gql`
-        subscription CpuTemperature {
-          cpuTemperature {
-            value
+        subscription CpuSensorsStatus {
+          cpuSensorsStatus {
+            temperature
             dateTime
           }
         }`,
@@ -186,15 +186,15 @@ export class CpuTemperatureService {
           if (!subscriptionData.data) {
             return prev;
           }
-          const newCpuTemperature = subscriptionData.data.cpuTemperature;
+          const newCpuSensorsStatus = subscriptionData.data.cpuSensorsStatus;
           return Object.assign({}, prev, {
             raspberryPi: {
               cpu: {
-                temperatures: {
-                  items: [newCpuTemperature, ...prev.raspberryPi.cpu.temperatures.items],
-                  pageInfo: prev.raspberryPi.cpu.temperatures.pageInfo,
-                  totalCount: prev.raspberryPi.cpu.temperatures.totalCount + 1,
-                  __typename: 'CpuTemperatureConnection'
+                sensorsStatuses: {
+                  items: [newCpuSensorsStatus, ...prev.raspberryPi.cpu.sensorsStatuses.items],
+                  pageInfo: prev.raspberryPi.cpu.sensorsStatuses.pageInfo,
+                  totalCount: prev.raspberryPi.cpu.sensorsStatuses.totalCount + 1,
+                  __typename: 'CpuSensorsStatusConnection'
                 },
                 __typename: 'CpuType'
               },

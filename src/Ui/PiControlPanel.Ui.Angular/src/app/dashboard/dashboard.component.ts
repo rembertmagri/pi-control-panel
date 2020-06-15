@@ -5,7 +5,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { 
   IRaspberryPi,
   ICpuFrequency,
-  ICpuTemperature,
+  ICpuSensorsStatus,
   ICpuLoadStatus,
   IMemoryStatus, 
   IRandomAccessMemoryStatus, 
@@ -35,7 +35,7 @@ import {
   find } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
-import { CpuTemperatureService } from '@services/cpu-temperature.service';
+import { CpuSensorsStatusService } from '@services/cpu-temperature.service';
 import { CpuLoadStatusService } from '@services/cpu-load-status.service';
 import { RamStatusService } from '@services/ram-status.service';
 import { SwapMemoryStatusService } from '@services/swap-memory-status.service';
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
   modalRef: BsModalRef;
 
   subscribedToNewCpuFrequencies: boolean;
-  subscribedToNewCpuTemperatures: boolean;
+  subscribedToNewCpuSensorsStatuses: boolean;
   subscribedToNewCpuLoadStatuses: boolean;
   subscribedToNewRamStatuses: boolean;
   subscribedToNewSwapMemoryStatuses: boolean;
@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit {
   subscribedToNewNetworkInterfaceStatuses: boolean[];
 
   cpuFrequencyBehaviorSubjectSubscription: Subscription;
-  cpuTemperatureBehaviorSubjectSubscription: Subscription;
+  cpuSensorsStatusBehaviorSubjectSubscription: Subscription;
   cpuLoadStatusBehaviorSubjectSubscription: Subscription;
   ramStatusBehaviorSubjectSubscription: Subscription;
   swapMemoryStatusBehaviorSubjectSubscription: Subscription;
@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
   networkInterfaceStatusBehaviorSubjectSubscriptions: Subscription[];
 
   cpuFrequencyPeriodicRefetchSubscription: Subscription;
-  cpuTemperaturePeriodicRefetchSubscription: Subscription;
+  cpuSensorsStatusPeriodicRefetchSubscription: Subscription;
   cpuLoadStatusPeriodicRefetchSubscription: Subscription;
   ramStatusPeriodicRefetchSubscription: Subscription;
   swapMemoryStatusPeriodicRefetchSubscription: Subscription;
@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit {
     private raspberryPiService: RaspberryPiService,
     private authService: AuthService,
     private cpuFrequencyService: CpuFrequencyService,
-    private cpuTemperatureService: CpuTemperatureService,
+    private cpuSensorsStatusService: CpuSensorsStatusService,
     private cpuLoadStatusService: CpuLoadStatusService,
     private ramStatusService: RamStatusService,
     private swapMemoryStatusService: SwapMemoryStatusService,
@@ -150,27 +150,27 @@ export class DashboardComponent implements OnInit {
         );
     }
     
-    if(!isNil(get(this.raspberryPi, 'cpu.temperature'))) {
-      this.subscribedToNewCpuTemperatures = false;
-      this.cpuTemperatureBehaviorSubjectSubscription = this.cpuTemperatureService.getLastCpuTemperatures()
+    if(!isNil(get(this.raspberryPi, 'cpu.sensorsStatus'))) {
+      this.subscribedToNewCpuSensorsStatuses = false;
+      this.cpuSensorsStatusBehaviorSubjectSubscription = this.cpuSensorsStatusService.getLastCpuSensorsStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.cpu.temperature = first(result.items);
-            this.raspberryPi.cpu.temperatures = result.items;
+            this.raspberryPi.cpu.sensorsStatus = first(result.items);
+            this.raspberryPi.cpu.sensorsStatuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
               this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewCpuTemperatures) {
-              this.cpuTemperatureService.subscribeToNewCpuTemperatures();
-              this.cpuTemperaturePeriodicRefetchSubscription = this.cpuTemperatureService.refetchPeriodically()
+            if(!this.subscribedToNewCpuSensorsStatuses) {
+              this.cpuSensorsStatusService.subscribeToNewCpuSensorsStatuses();
+              this.cpuSensorsStatusPeriodicRefetchSubscription = this.cpuSensorsStatusService.refetchPeriodically()
                 .subscribe(
                   result => {
-                    console.log(result ? `CPU temperature refetched @ ${new Date()}` : "Failed to refetch CPU temperature");
+                    console.log(result ? `CPU sensors status refetched @ ${new Date()}` : "Failed to refetch CPU sensors status");
                   },
                   error => this.errorMessage = <any>error
                 );
-              this.subscribedToNewCpuTemperatures = true;
+              this.subscribedToNewCpuSensorsStatuses = true;
             }
           },
           error => this.errorMessage = <any>error
@@ -369,11 +369,11 @@ export class DashboardComponent implements OnInit {
     if (!isNil(this.cpuFrequencyPeriodicRefetchSubscription)) {
       this.cpuFrequencyPeriodicRefetchSubscription.unsubscribe();
     }
-    if (!isNil(this.cpuTemperatureBehaviorSubjectSubscription)) {
-      this.cpuTemperatureBehaviorSubjectSubscription.unsubscribe();
+    if (!isNil(this.cpuSensorsStatusBehaviorSubjectSubscription)) {
+      this.cpuSensorsStatusBehaviorSubjectSubscription.unsubscribe();
     }
-    if (!isNil(this.cpuTemperaturePeriodicRefetchSubscription)) {
-      this.cpuTemperaturePeriodicRefetchSubscription.unsubscribe();
+    if (!isNil(this.cpuSensorsStatusPeriodicRefetchSubscription)) {
+      this.cpuSensorsStatusPeriodicRefetchSubscription.unsubscribe();
     }
     if (!isNil(this.cpuLoadStatusBehaviorSubjectSubscription)) {
       this.cpuLoadStatusBehaviorSubjectSubscription.unsubscribe();
@@ -563,13 +563,13 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuTemperatures() {
-    if(isNil(get(this.raspberryPi, 'cpu.temperatures'))) {
+    if(isNil(get(this.raspberryPi, 'cpu.sensorsStatuses'))) {
       return [];
     }
-    const temperatureData = map(this.raspberryPi.cpu.temperatures, (temperature: ICpuTemperature) => {
+    const temperatureData = map(this.raspberryPi.cpu.sensorsStatuses, (sensorsStatus: ICpuSensorsStatus) => {
       return {
-        value: temperature.value,
-        name: new Date(temperature.dateTime)
+        value: sensorsStatus.temperature,
+        name: new Date(sensorsStatus.dateTime)
       };
     });
     return orderBy(temperatureData, 'name');

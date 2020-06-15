@@ -23,8 +23,8 @@ export interface ICpu {
   maxFrequency: number;
   frequency: ICpuFrequency;
   frequencies: ICpuFrequency[];
-  temperature: ICpuTemperature;
-  temperatures: ICpuTemperature[];
+  sensorsStatus: ICpuSensorsStatus;
+  sensorsStatuses: ICpuSensorsStatus[];
   loadStatus: ICpuLoadStatus;
   loadStatuses: ICpuLoadStatus[];
 }
@@ -34,8 +34,8 @@ export interface ICpuFrequency {
   dateTime: string;
 }
 
-export interface ICpuTemperature {
-  value: number;
+export interface ICpuSensorsStatus {
+  temperature: number;
   dateTime: string;
 }
 

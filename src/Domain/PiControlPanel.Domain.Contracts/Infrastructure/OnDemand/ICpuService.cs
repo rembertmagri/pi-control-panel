@@ -28,22 +28,22 @@
         void PublishLoadStatus(CpuLoadStatus loadStatus);
 
         /// <summary>
-        /// Gets the value of the CPU temperature.
+        /// Gets the value of the CPU sensors status.
         /// </summary>
-        /// <returns>The CpuTemperature object.</returns>
-        Task<CpuTemperature> GetTemperatureAsync();
+        /// <returns>The CpuSensorsStatus object.</returns>
+        Task<CpuSensorsStatus> GetSensorsStatusAsync();
 
         /// <summary>
-        /// Gets an observable of the CPU temperature.
+        /// Gets an observable of the CPU sensors status.
         /// </summary>
-        /// <returns>The observable CpuTemperature.</returns>
-        IObservable<CpuTemperature> GetTemperatureObservable();
+        /// <returns>The observable CpuSensorsStatus.</returns>
+        IObservable<CpuSensorsStatus> GetSensorsStatusObservable();
 
         /// <summary>
-        /// Publishes the value of the CPU temperature.
+        /// Publishes the value of the CPU sensors status.
         /// </summary>
-        /// <param name="temperature">The value to be publlished.</param>
-        void PublishTemperature(CpuTemperature temperature);
+        /// <param name="sensorsStatus">The value to be publlished.</param>
+        void PublishSensorsStatus(CpuSensorsStatus sensorsStatus);
 
         /// <summary>
         /// Gets the value of the CPU frequency.

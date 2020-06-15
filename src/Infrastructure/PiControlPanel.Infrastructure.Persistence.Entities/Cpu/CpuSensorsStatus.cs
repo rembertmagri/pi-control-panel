@@ -3,7 +3,7 @@
     using System.ComponentModel.DataAnnotations;
 
     /// <inheritdoc/>
-    public class CpuTemperature : BaseTimedEntity
+    public class CpuSensorsStatus : BaseTimedEntity
     {
         /// <summary>
         /// Gets or sets the CPU temperature.

@@ -16,7 +16,7 @@
     public class CpuService : BaseService<Cpu>, ICpuService
     {
         private readonly Persistence.Cpu.ICpuFrequencyService persistenceFrequencyService;
-        private readonly Persistence.Cpu.ICpuTemperatureService persistenceTemperatureService;
+        private readonly Persistence.Cpu.ICpuSensorsStatusService persistenceSensorsStatusService;
         private readonly Persistence.Cpu.ICpuLoadStatusService persistenceLoadStatusService;
 
         /// <summary>
@@ -24,21 +24,21 @@
         /// </summary>
         /// <param name="persistenceService">The infrastructure layer persistence CPU service.</param>
         /// <param name="persistenceFrequencyService">The infrastructure layer persistence CPU frequency service.</param>
-        /// <param name="persistenceTemperatureService">The infrastructure layer persistence CPU temperature service.</param>
+        /// <param name="persistenceSensorsStatusService">The infrastructure layer persistence CPU sensors status service.</param>
         /// <param name="persistenceLoadStatusService">The infrastructure layer persistence CPU load status service.</param>
         /// <param name="onDemandService">The infrastructure layer on demand service.</param>
         /// <param name="logger">The NLog logger instance.</param>
         public CpuService(
             Persistence.Cpu.ICpuService persistenceService,
             Persistence.Cpu.ICpuFrequencyService persistenceFrequencyService,
-            Persistence.Cpu.ICpuTemperatureService persistenceTemperatureService,
+            Persistence.Cpu.ICpuSensorsStatusService persistenceSensorsStatusService,
             Persistence.Cpu.ICpuLoadStatusService persistenceLoadStatusService,
             OnDemand.ICpuService onDemandService,
             ILogger logger)
             : base(persistenceService, onDemandService, logger)
         {
             this.persistenceFrequencyService = persistenceFrequencyService;
-            this.persistenceTemperatureService = persistenceTemperatureService;
+            this.persistenceSensorsStatusService = persistenceSensorsStatusService;
             this.persistenceLoadStatusService = persistenceLoadStatusService;
         }
 
@@ -73,24 +73,24 @@
         }
 
         /// <inheritdoc/>
-        public async Task<CpuTemperature> GetLastTemperatureAsync()
+        public async Task<CpuSensorsStatus> GetLastSensorsStatusAsync()
         {
-            this.Logger.Debug("Application layer -> CpuService -> GetLastTemperatureAsync");
-            return await this.persistenceTemperatureService.GetLastAsync();
+            this.Logger.Debug("Application layer -> CpuService -> GetLastSensorsStatusAsync");
+            return await this.persistenceSensorsStatusService.GetLastAsync();
         }
 
         /// <inheritdoc/>
-        public async Task<PagingOutput<CpuTemperature>> GetTemperaturesAsync(PagingInput pagingInput)
+        public async Task<PagingOutput<CpuSensorsStatus>> GetSensorsStatusesAsync(PagingInput pagingInput)
         {
-            this.Logger.Debug("Application layer -> CpuService -> GetTemperaturesAsync");
-            return await this.persistenceTemperatureService.GetPageAsync(pagingInput);
+            this.Logger.Debug("Application layer -> CpuService -> GetSensorsStatusesAsync");
+            return await this.persistenceSensorsStatusService.GetPageAsync(pagingInput);
         }
 
         /// <inheritdoc/>
-        public IObservable<CpuTemperature> GetTemperatureObservable()
+        public IObservable<CpuSensorsStatus> GetSensorsStatusObservable()
         {
-            this.Logger.Debug("Application layer -> CpuService -> GetTemperatureObservable");
-            return ((OnDemand.ICpuService)this.OnDemandService).GetTemperatureObservable();
+            this.Logger.Debug("Application layer -> CpuService -> GetSensorsStatusObservable");
+            return ((OnDemand.ICpuService)this.OnDemandService).GetSensorsStatusObservable();
         }
 
         /// <inheritdoc/>
@@ -125,13 +125,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task SaveTemperatureAsync()
+        public async Task SaveSensorsStatusAsync()
         {
-            this.Logger.Debug("Application layer -> CpuService -> SaveTemperatureAsync");
-            var temperature = await ((OnDemand.ICpuService)this.OnDemandService).GetTemperatureAsync();
+            this.Logger.Debug("Application layer -> CpuService -> SaveSensorsStatusAsync");
+            var sensorsStatus = await ((OnDemand.ICpuService)this.OnDemandService).GetSensorsStatusAsync();
 
-            await this.persistenceTemperatureService.AddAsync(temperature);
-            ((OnDemand.ICpuService)this.OnDemandService).PublishTemperature(temperature);
+            await this.persistenceSensorsStatusService.AddAsync(sensorsStatus);
+            ((OnDemand.ICpuService)this.OnDemandService).PublishSensorsStatus(sensorsStatus);
         }
 
         /// <inheritdoc/>
