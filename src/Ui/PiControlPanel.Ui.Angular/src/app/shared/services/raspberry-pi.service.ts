@@ -47,6 +47,15 @@ export class RaspberryPiService {
               }
               sensorsStatus {
                 temperature
+                voltage
+                underVoltageDetected
+                armFrequencyCapped
+                currentlyThrottled
+                softTemperatureLimitActive
+                underVoltageOccurred
+                armFrequencyCappingOccurred
+                throttlingOccurred
+                softTemperatureLimitOccurred
                 dateTime
               }
               loadStatus {

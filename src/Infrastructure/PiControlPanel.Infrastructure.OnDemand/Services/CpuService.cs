@@ -96,18 +96,41 @@
 
             var result = BashCommands.MeasureTemp.Bash();
             this.Logger.Trace($"Result of '{BashCommands.MeasureTemp}' command: '{result}'");
-
             var temperatureResult = result[(result.IndexOf('=') + 1) ..result.IndexOf("'")];
             this.Logger.Trace($"Temperature substring: '{temperatureResult}'");
-
             if (!double.TryParse(temperatureResult, out var temperature))
             {
                 this.Logger.Warn($"Could not parse temperature: '{temperatureResult}'");
             }
 
+            result = BashCommands.MeasureVolts.Bash();
+            this.Logger.Trace($"Result of '{BashCommands.MeasureVolts}' command: '{result}'");
+            var voltageResult = result[(result.IndexOf('=') + 1) ..result.IndexOf("V")];
+            this.Logger.Trace($"Voltage substring: '{voltageResult}'");
+            if (!double.TryParse(voltageResult, out var voltage))
+            {
+                this.Logger.Warn($"Could not parse voltage: '{voltageResult}'");
+            }
+
+            result = BashCommands.GetThrottled.Bash();
+            this.Logger.Trace($"Result of '{BashCommands.GetThrottled}' command: '{result}'");
+            var getThrottledResult = result[(result.IndexOf('x') + 1) ..result.Length];
+            this.Logger.Trace($"Throttled substring: '{getThrottledResult}'");
+            var getThrottledInBinary = Convert.ToString(Convert.ToInt32(getThrottledResult, 16), 2);
+            var binaryLength = getThrottledInBinary.Length;
+
             return Task.FromResult(new CpuSensorsStatus()
             {
                 Temperature = temperature,
+                Voltage = voltage,
+                UnderVoltageDetected = binaryLength > 0 && '1'.Equals(getThrottledInBinary[binaryLength - 1]),
+                ArmFrequencyCapped = binaryLength > 1 && '1'.Equals(getThrottledInBinary[binaryLength - 2]),
+                CurrentlyThrottled = binaryLength > 2 && '1'.Equals(getThrottledInBinary[binaryLength - 3]),
+                SoftTemperatureLimitActive = binaryLength > 3 && '1'.Equals(getThrottledInBinary[binaryLength - 4]),
+                UnderVoltageOccurred = binaryLength > 16 && '1'.Equals(getThrottledInBinary[binaryLength - 17]),
+                ArmFrequencyCappingOccurred = binaryLength > 17 && '1'.Equals(getThrottledInBinary[binaryLength - 18]),
+                ThrottlingOccurred = binaryLength > 18 && '1'.Equals(getThrottledInBinary[binaryLength - 19]),
+                SoftTemperatureLimitOccurred = binaryLength > 19 && '1'.Equals(getThrottledInBinary[binaryLength - 20]),
                 DateTime = DateTime.Now
             });
         }

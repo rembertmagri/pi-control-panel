@@ -11,6 +11,16 @@
         public const string MeasureTemp = "vcgencmd measure_temp";
 
         /// <summary>
+        /// Displays the CPU voltage.
+        /// </summary>
+        public const string MeasureVolts = "vcgencmd measure_volts";
+
+        /// <summary>
+        /// Displays the CPU throttled state.
+        /// </summary>
+        public const string GetThrottled = "vcgencmd get_throttled";
+
+        /// <summary>
         /// Concatenates time_in_state file to standard output.
         /// </summary>
         public const string CatCpuFreqStats = "cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state";

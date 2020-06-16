@@ -160,8 +160,8 @@
                 </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Temperature</dt>
-                    <dd class="col-sm-8">
+                    <dt class="col-sm-3">Temperature</dt>
+                    <dd class="col-sm-9">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                           [class.bg-warning]="raspberryPi.cpu.sensorsStatus.temperature >= 55 && raspberryPi.cpu.sensorsStatus.temperature < 70"
@@ -173,6 +173,8 @@
                         </div>
                       </div>
                     </dd>
+                    <dt class="col-sm-3">Voltage</dt>
+                    <dd class="col-sm-9">{{raspberryPi.cpu.sensorsStatus.voltage | number:'1.0-2'}} V</dd>
                   </dl>
                 </dd>
                 <dt class="col-sm-3">
@@ -181,8 +183,8 @@
                 </dt>
                 <dd class="col-sm-9">
                   <dl class="row">
-                    <dt class="col-sm-4">Load average</dt>
-                    <dd class="col-sm-8 loadAverage" title="1 min: {{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}} / 5 min: {{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}} / 15 min: {{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}">
+                    <dt class="col-sm-3">Load average</dt>
+                    <dd class="col-sm-9 loadAverage" title="1 min: {{raspberryPi.cpu.loadStatus.lastMinuteAverage | number:'1.0-2'}} / 5 min: {{raspberryPi.cpu.loadStatus.last5MinutesAverage | number:'1.0-2'}} / 15 min: {{raspberryPi.cpu.loadStatus.last15MinutesAverage | number:'1.0-2'}}">
                       <svg *ngIf="raspberryPi.cpu.loadStatus.lastMinuteAverage <= raspberryPi.cpu.cores"
                         class="bi bi-emoji-sunglasses" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -209,8 +211,8 @@
                         <path d="M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>
                       </svg>
                     </dd>
-                    <dt class="col-sm-4">Kernel real-time</dt>
-                    <dd class="col-sm-8">
+                    <dt class="col-sm-3">Kernel real-time</dt>
+                    <dd class="col-sm-9">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                           [class.bg-warning]="raspberryPi.cpu.loadStatus.kernelRealTime >= 40 && raspberryPi.cpu.loadStatus.kernelRealTime < 50"
@@ -222,8 +224,8 @@
                         </div>
                       </div>
                     </dd>
-                    <dt class="col-sm-4">User real-time</dt>
-                    <dd class="col-sm-8">
+                    <dt class="col-sm-3">User real-time</dt>
+                    <dd class="col-sm-9">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                           [class.bg-warning]="raspberryPi.cpu.loadStatus.userRealTime >= 80 && raspberryPi.cpu.loadStatus.userRealTime < 90"
@@ -235,8 +237,8 @@
                         </div>
                       </div>
                     </dd>
-                    <dt class="col-sm-4">Total real-time</dt>
-                    <dd class="col-sm-8">
+                    <dt class="col-sm-3">Total real-time</dt>
+                    <dd class="col-sm-9">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                           [class.bg-warning]="raspberryPi.cpu.loadStatus.totalRealTime >= 90 && raspberryPi.cpu.loadStatus.totalRealTime < 95"

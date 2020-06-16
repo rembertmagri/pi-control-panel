@@ -36,6 +36,15 @@ export interface ICpuFrequency {
 
 export interface ICpuSensorsStatus {
   temperature: number;
+  voltage: number;
+  underVoltageDetected: boolean;
+  armFrequencyCapped: boolean;
+  currentlyThrottled: boolean;
+  softTemperatureLimitActive: boolean;
+  underVoltageOccurred: boolean;
+  armFrequencyCappingOccurred: boolean;
+  throttlingOccurred: boolean;
+  softTemperatureLimitOccurred: boolean;
   dateTime: string;
 }
 
