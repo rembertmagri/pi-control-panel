@@ -32,8 +32,19 @@ case "$1" in
                 sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Cpu" ADD COLUMN "ScalingGovernor" TEXT;'
             fi
             if (dpkg --compare-versions "$2" lt 1.44) then
-                echo -e 'Applying db change: renaming CpuTemperature to CpuSensorsStatus'
                 sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuTemperature" RENAME TO "CpuSensorsStatus";'
+            fi
+			if (dpkg --compare-versions "$2" lt 1.45) then
+                echo -e 'Applying db change: creating missing CpuSensorsStatus columns'
+                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "Voltage" REAL NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "UnderVoltageDetected" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "ArmFrequencyCapped" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "CurrentlyThrottled" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "SoftTemperatureLimitActive" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "UnderVoltageOccurred" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "ArmFrequencyCappingOccurred" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "ThrottlingOccurred" INTEGER NOT NULL DEFAULT 0;'
+				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "SoftTemperatureLimitOccurred" INTEGER NOT NULL DEFAULT 0;'
             fi
         fi
         # End of Apply database changes

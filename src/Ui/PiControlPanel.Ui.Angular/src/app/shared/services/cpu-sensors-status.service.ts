@@ -36,6 +36,15 @@ export class CpuSensorsStatusService {
                 sensorsStatuses(first: $firstSensorsStatuses, after: $afterSensorsStatuses) {
                 items {
                     temperature
+                    voltage
+                    underVoltageDetected
+                    armFrequencyCapped
+                    currentlyThrottled
+                    softTemperatureLimitActive
+                    underVoltageOccurred
+                    armFrequencyCappingOccurred
+                    throttlingOccurred
+                    softTemperatureLimitOccurred
                     dateTime
                   }
                   pageInfo {
@@ -111,6 +120,15 @@ export class CpuSensorsStatusService {
                 sensorsStatuses(last: $lastSensorsStatuses, before: $beforeSensorsStatuses) {
                 items {
                     temperature
+                    voltage
+                    underVoltageDetected
+                    armFrequencyCapped
+                    currentlyThrottled
+                    softTemperatureLimitActive
+                    underVoltageOccurred
+                    armFrequencyCappingOccurred
+                    throttlingOccurred
+                    softTemperatureLimitOccurred
                     dateTime
                   }
                   pageInfo {
@@ -179,6 +197,15 @@ export class CpuSensorsStatusService {
         subscription CpuSensorsStatus {
           cpuSensorsStatus {
             temperature
+            voltage
+            underVoltageDetected
+            armFrequencyCapped
+            currentlyThrottled
+            softTemperatureLimitActive
+            underVoltageOccurred
+            armFrequencyCappingOccurred
+            throttlingOccurred
+            softTemperatureLimitOccurred
             dateTime
           }
         }`,

@@ -35,7 +35,7 @@ import {
   find } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
-import { CpuSensorsStatusService } from '@services/cpu-temperature.service';
+import { CpuSensorsStatusService } from '@services/cpu-sensors-status.service';
 import { CpuLoadStatusService } from '@services/cpu-load-status.service';
 import { RamStatusService } from '@services/ram-status.service';
 import { SwapMemoryStatusService } from '@services/swap-memory-status.service';
