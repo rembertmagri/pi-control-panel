@@ -11,5 +11,14 @@
 }
 
 .loadAverage {
-    font-size: 1.4em;
+    height: 250px;
+}
+
+.networkInterfaceSpeed {
+    height: 250px;
+    margin-bottom: 80px;
+}
+
+.throttling {
+    height: 25px;
 }
