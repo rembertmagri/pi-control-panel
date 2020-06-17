@@ -225,9 +225,9 @@
                     <dt class="col-sm-3">Load average</dt>
                     <dd class="col-sm-9 loadAverage">
                       <ngx-charts-gauge
-                        [results]="loadAverageChartData.results"
-                        [customColors]="loadAverageChartData.colors"
-                        [max]="loadAverageChartData.maxScaleValue"
+                        [results]="loadAverageGaugeChartData.results"
+                        [customColors]="loadAverageGaugeChartData.colors"
+                        [max]="loadAverageGaugeChartData.maxScaleValue"
                         [showText]="false"
                         [bigSegments]="8"
                         [smallSegments]="4">
@@ -393,7 +393,7 @@
           <div class="card" *ngIf="raspberryPi.network">
             <h4 class="card-header">Network</h4>
             <div class="card-body">
-              <div *ngFor="let networkInterface of raspberryPi.network.networkInterfaces">
+              <div *ngFor="let networkInterface of raspberryPi.network.networkInterfaces; index as i">
                 <div class="card">
                   <h4 class="card-header">{{networkInterface.name}}</h4>
                   <div class="card-body">
@@ -410,14 +410,22 @@
                       </dt>
                       <dd class="col-sm-9">
                         <dl class="row">
-                          <dt class="col-sm-4">Total Received</dt>
-                          <dd class="col-sm-8">{{networkInterface.status.totalReceived | bytes}}</dd>
-                          <dt class="col-sm-4">Receive Speed</dt>
-                          <dd class="col-sm-8">{{networkInterface.status.receiveSpeed | bytes}}/s</dd>
-                          <dt class="col-sm-4">Total Sent</dt>
-                          <dd class="col-sm-8">{{networkInterface.status.totalSent | bytes}}</dd>
-                          <dt class="col-sm-4">Send Speed</dt>
-                          <dd class="col-sm-8">{{networkInterface.status.sendSpeed | bytes}}/s</dd>
+                          <dt class="col-sm-3">Total Received</dt>
+                          <dd class="col-sm-9">{{networkInterface.status.totalReceived | bytes}}</dd>
+                          <dt class="col-sm-3">Total Sent</dt>
+                          <dd class="col-sm-9">{{networkInterface.status.totalSent | bytes}}</dd>
+                          <dt class="col-sm-3">Speed</dt>
+                          <dd class="col-sm-9 networkInterfaceSpeed">
+                            <ngx-charts-gauge
+                              [results]="networkInterfaceSpeedGaugeChartData[i]"
+                              [axisTickFormatting]="formatNetworkInterfaceSpeed"
+                              [valueFormatting]="formatNetworkInterfaceSpeed"
+                              [bigSegments]="8"
+                              [smallSegments]="4"
+                              [legend]="true"
+                              [legendPosition]="below">
+                            </ngx-charts-gauge>
+                          </dd>
                         </dl>
                       </dd>
                     </dl>

@@ -32,7 +32,9 @@ import {
   includes,
   fill,
   isEmpty,
-  find } from 'lodash';
+  find,
+  isNumber,
+  toNumber } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
 import { CpuSensorsStatusService } from '@services/cpu-sensors-status.service';
@@ -46,6 +48,7 @@ import { CpuMaxFrequencyLevel } from '@constants/cpu-max-frequency-level';
 import { ChartData } from '@constants/chart-data';
 import { MAX_CHART_VISIBLE_ITEMS } from '@constants/consts';
 import { environment } from '@environments/environment';
+import { BytesPipe } from 'angular-pipes';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -91,11 +94,13 @@ export class DashboardComponent implements OnInit {
   selectedChartItems: string [];
   unselectedChartItems: string [];
 
-  public loadAverageChartData: any = {
+  loadAverageGaugeChartData: any = {
     results: [],
     colors: [],
     maxScaleValue: 0
   };
+
+  networkInterfaceSpeedGaugeChartData: any[];
 
   version = environment.version;
 
@@ -189,7 +194,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           result => {
             this.raspberryPi.cpu.loadStatus = first(result.items);
-            this.loadAverageChartData = this.getLoadAverageChartData();
+            this.loadAverageGaugeChartData = this.getLoadAverageGaugeChartData();
             this.raspberryPi.cpu.loadStatuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
               this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
@@ -323,6 +328,7 @@ export class DashboardComponent implements OnInit {
       const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
       this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
       this.networkInterfaceStatusBehaviorSubjectSubscriptions = fill(Array(numberOfNetworkInterfaces), null);
+      this.networkInterfaceSpeedGaugeChartData = fill(Array(numberOfNetworkInterfaces), null);
       for(const networkInterface of this.raspberryPi.network.networkInterfaces) {
         const interfaceName = networkInterface.name;
 
@@ -336,6 +342,7 @@ export class DashboardComponent implements OnInit {
                 networkInterface.status = first(result.items);
                 networkInterface.statuses = result.items;
                 const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
+                this.networkInterfaceSpeedGaugeChartData[index] = this.getNetworkInterfaceSpeedGaugeChartData(networkInterface.status);
                 if(!isNil(this.modalRef)) {
                   if(includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
                     this.modalRef.content.chartData[5+2*index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
@@ -661,7 +668,7 @@ export class DashboardComponent implements OnInit {
     return orderBy(sendSpeedData, 'name');
   }
 
-  getLoadAverageChartData() {
+  getLoadAverageGaugeChartData() {
     let colors = ['#99E9C0', '#8DC6A9', '#74A58C'];
     if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage > 0.8 * this.raspberryPi.cpu.cores) {
       if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage <= this.raspberryPi.cpu.loadStatus.last5MinutesAverage &&
@@ -675,7 +682,7 @@ export class DashboardComponent implements OnInit {
       }
     }
     return {
-      results: 
+      results:
       [
         {
           name: 'Last minute load average',
@@ -712,6 +719,27 @@ export class DashboardComponent implements OnInit {
         this.raspberryPi.cpu.loadStatus.last15MinutesAverage
       ]) 
     };    
+  }
+
+  getNetworkInterfaceSpeedGaugeChartData(status: INetworkInterfaceStatus) {
+    console.log('bar');
+    return [
+      {
+        name: 'Receive Speed',
+        value: status.receiveSpeed
+      },
+      {
+        name: 'Send Speed',
+        value: status.sendSpeed
+      }
+    ]
+  }
+
+  formatNetworkInterfaceSpeed(speed) {
+    if (isNumber(speed)) {
+      return `${(new BytesPipe).transform(speed)}/s`;
+    }
+    return `${(new BytesPipe).transform(toNumber(speed.replace(/\,/g,'')))}/s`;
   }
 
 }

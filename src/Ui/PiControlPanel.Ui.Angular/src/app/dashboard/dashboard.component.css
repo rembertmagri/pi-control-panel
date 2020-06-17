@@ -13,3 +13,8 @@
 .loadAverage {
     height: 250px;
 }
+
+.networkInterfaceSpeed {
+    height: 250px;
+    margin-bottom: 80px;
+}
