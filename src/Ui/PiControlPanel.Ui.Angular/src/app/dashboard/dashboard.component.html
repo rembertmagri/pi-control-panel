@@ -175,6 +175,30 @@
                     </dd>
                     <dt class="col-sm-3">Voltage</dt>
                     <dd class="col-sm-9">{{raspberryPi.cpu.sensorsStatus.voltage | number:'1.2-2'}} V</dd>
+                    <dt class="col-sm-3">Throttling</dt>
+                    <dd class="col-sm-9">
+                      <span *ngIf="!raspberryPi.cpu.sensorsStatus.underVoltageDetected && 
+                        !raspberryPi.cpu.sensorsStatus.armFrequencyCapped &&
+                        !raspberryPi.cpu.sensorsStatus.currentlyThrottled &&
+                        !raspberryPi.cpu.sensorsStatus.underVoltageOccurred &&
+                        !raspberryPi.cpu.sensorsStatus.armFrequencyCappingOccurred &&
+                        !raspberryPi.cpu.sensorsStatus.throttlingOccurred">No</span>
+                      <img class="throttling" src="../assets/lightning.svg"
+                        *ngIf="raspberryPi.cpu.sensorsStatus.underVoltageDetected ||
+                        raspberryPi.cpu.sensorsStatus.underVoltageOccurred"
+                        [style.opacity]="raspberryPi.cpu.sensorsStatus.underVoltageDetected?1:0.3"
+                        [title]="raspberryPi.cpu.sensorsStatus.underVoltageDetected?'Under voltage detected':'Under voltage occurred'">
+                      <img class="throttling" src="../assets/thermometer.svg"
+                        *ngIf="raspberryPi.cpu.sensorsStatus.armFrequencyCapped ||
+                        raspberryPi.cpu.sensorsStatus.armFrequencyCappingOccurred"
+                        [style.opacity]="raspberryPi.cpu.sensorsStatus.armFrequencyCapped?1:0.3"
+                        [title]="raspberryPi.cpu.sensorsStatus.armFrequencyCapped?'Arm frequency capped':'Arm frequency capping occurred'">
+                      <img class="throttling" src="../assets/cpu.svg"
+                        *ngIf="raspberryPi.cpu.sensorsStatus.currentlyThrottled ||
+                        raspberryPi.cpu.sensorsStatus.throttlingOccurred"
+                        [style.opacity]="raspberryPi.cpu.sensorsStatus.currentlyThrottled?1:0.3"
+                        [title]="raspberryPi.cpu.sensorsStatus.currentlyThrottled?'Currently throttled':'Throttling occurred'">
+                    </dd>
                   </dl>
                 </dd>
                 <dt class="col-sm-3">
@@ -418,8 +442,8 @@
                           <dd class="col-sm-9 networkInterfaceSpeed">
                             <ngx-charts-gauge
                               [results]="networkInterfaceSpeedGaugeChartData[i]"
-                              [axisTickFormatting]="formatNetworkInterfaceSpeed"
-                              [valueFormatting]="formatNetworkInterfaceSpeed"
+                              [axisTickFormatting]="formatNetworkInterfaceSpeedAxisTick"
+                              [valueFormatting]="formatNetworkInterfaceSpeedValue"
                               [bigSegments]="8"
                               [smallSegments]="4"
                               [legend]="true"

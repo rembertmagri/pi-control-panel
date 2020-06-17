@@ -722,24 +722,18 @@ export class DashboardComponent implements OnInit {
   }
 
   getNetworkInterfaceSpeedGaugeChartData(status: INetworkInterfaceStatus) {
-    console.log('bar');
     return [
-      {
-        name: 'Receive Speed',
-        value: status.receiveSpeed
-      },
-      {
-        name: 'Send Speed',
-        value: status.sendSpeed
-      }
-    ]
+      { name: 'Receive Speed', value: status.receiveSpeed },
+      { name: 'Send Speed', value: status.sendSpeed }
+    ];
   }
 
-  formatNetworkInterfaceSpeed(speed) {
-    if (isNumber(speed)) {
-      return `${(new BytesPipe).transform(speed)}/s`;
-    }
-    return `${(new BytesPipe).transform(toNumber(speed.replace(/\,/g,'')))}/s`;
+  formatNetworkInterfaceSpeedValue(speed) {
+    return `${(new BytesPipe()).transform(speed)}/s`;
+  }
+
+  formatNetworkInterfaceSpeedAxisTick(speed) {
+    return `${(new BytesPipe()).transform(toNumber(speed.replace(/\,/g,'')), 1)}/s`;
   }
 
 }
