@@ -91,6 +91,12 @@ export class DashboardComponent implements OnInit {
   selectedChartItems: string [];
   unselectedChartItems: string [];
 
+  public loadAverageChartData: any = {
+    results: [],
+    colors: [],
+    maxScaleValue: 0
+  };
+
   version = environment.version;
 
   constructor(private _route: ActivatedRoute,
@@ -183,6 +189,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           result => {
             this.raspberryPi.cpu.loadStatus = first(result.items);
+            this.loadAverageChartData = this.getLoadAverageChartData();
             this.raspberryPi.cpu.loadStatuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
               this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
@@ -652,6 +659,59 @@ export class DashboardComponent implements OnInit {
       };
     });
     return orderBy(sendSpeedData, 'name');
+  }
+
+  getLoadAverageChartData() {
+    let colors = ['#99E9C0', '#8DC6A9', '#74A58C'];
+    if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage > 0.8 * this.raspberryPi.cpu.cores) {
+      if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage <= this.raspberryPi.cpu.loadStatus.last5MinutesAverage &&
+        this.raspberryPi.cpu.loadStatus.lastMinuteAverage <= this.raspberryPi.cpu.loadStatus.last15MinutesAverage) {
+          colors = ['#98BCDE', '#89A9C6', '#748DA5'];
+      } else if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage > this.raspberryPi.cpu.loadStatus.last5MinutesAverage &&
+        this.raspberryPi.cpu.loadStatus.lastMinuteAverage > this.raspberryPi.cpu.loadStatus.last15MinutesAverage) {
+          colors = ['#E79191', '#C08484', '#9D6C6C'];
+      } else {
+        colors = ['#E2D891', '#C4BC83', '#9E9266'];
+      }
+    }
+    return {
+      results: 
+      [
+        {
+          name: 'Last minute load average',
+          value: this.raspberryPi.cpu.loadStatus.lastMinuteAverage
+        },
+        {
+          name: 'Last 5 minutes load average',
+          value: this.raspberryPi.cpu.loadStatus.last5MinutesAverage
+        },
+        {
+          name: 'Last 15 minutes load average',
+          value: this.raspberryPi.cpu.loadStatus.last15MinutesAverage
+        }
+      ],
+      colors:
+      [
+        {
+          name: 'Last minute load average',
+          value: colors[0]
+        },
+        {
+          name: 'Last 5 minutes load average',
+          value: colors[1]
+        },
+        {
+          name: 'Last 15 minutes load average',
+          value: colors[2]
+        }
+      ],
+      maxScaleValue: max([
+        this.raspberryPi.cpu.cores,
+        this.raspberryPi.cpu.loadStatus.lastMinuteAverage,
+        this.raspberryPi.cpu.loadStatus.last5MinutesAverage,
+        this.raspberryPi.cpu.loadStatus.last15MinutesAverage
+      ]) 
+    };    
   }
 
 }
