@@ -684,33 +684,15 @@ export class DashboardComponent implements OnInit {
     return {
       results:
       [
-        {
-          name: 'Last minute load average',
-          value: this.raspberryPi.cpu.loadStatus.lastMinuteAverage
-        },
-        {
-          name: 'Last 5 minutes load average',
-          value: this.raspberryPi.cpu.loadStatus.last5MinutesAverage
-        },
-        {
-          name: 'Last 15 minutes load average',
-          value: this.raspberryPi.cpu.loadStatus.last15MinutesAverage
-        }
+        { name: 'Last minute load average', value: this.raspberryPi.cpu.loadStatus.lastMinuteAverage },
+        { name: 'Last 5 minutes load average', value: this.raspberryPi.cpu.loadStatus.last5MinutesAverage },
+        { name: 'Last 15 minutes load average', value: this.raspberryPi.cpu.loadStatus.last15MinutesAverage }
       ],
       colors:
       [
-        {
-          name: 'Last minute load average',
-          value: colors[0]
-        },
-        {
-          name: 'Last 5 minutes load average',
-          value: colors[1]
-        },
-        {
-          name: 'Last 15 minutes load average',
-          value: colors[2]
-        }
+        { name: 'Last minute load average', value: colors[0] },
+        { name: 'Last 5 minutes load average', value: colors[1] },
+        { name: 'Last 15 minutes load average', value: colors[2] }
       ],
       maxScaleValue: max([
         this.raspberryPi.cpu.cores,
@@ -724,8 +706,7 @@ export class DashboardComponent implements OnInit {
   getNetworkInterfaceSpeedGaugeChartData(status: INetworkInterfaceStatus) {
     return [
       { name: 'Receive Speed', value: status.receiveSpeed },
-      { name: 'Send Speed', value: status.sendSpeed }
-    ];
+      { name: 'Send Speed', value: status.sendSpeed }];
   }
 
   formatNetworkInterfaceSpeedValue(speed) {
