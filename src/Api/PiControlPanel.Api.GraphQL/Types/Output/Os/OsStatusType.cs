@@ -14,6 +14,7 @@
         public OsStatusType()
         {
             this.Field(x => x.Uptime);
+            this.Field(x => x.UpgradeablePackages);
             this.Field<DateTimeGraphType>("dateTime");
         }
     }

@@ -33,7 +33,6 @@ import {
   fill,
   isEmpty,
   find,
-  isNumber,
   toNumber } from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
@@ -139,7 +138,7 @@ export class DashboardComponent implements OnInit {
       this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
         .subscribe(
           result => {
-            this.raspberryPi.cpu.frequency = first(result.items);
+            this.raspberryPi.cpu.frequency = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.frequencies = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
               this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
@@ -166,7 +165,7 @@ export class DashboardComponent implements OnInit {
       this.cpuSensorsStatusBehaviorSubjectSubscription = this.cpuSensorsStatusService.getLastCpuSensorsStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.cpu.sensorsStatus = first(result.items);
+            this.raspberryPi.cpu.sensorsStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.sensorsStatuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
               this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
@@ -193,7 +192,7 @@ export class DashboardComponent implements OnInit {
       this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.cpu.loadStatus = first(result.items);
+            this.raspberryPi.cpu.loadStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.loadAverageGaugeChartData = this.getLoadAverageGaugeChartData();
             this.raspberryPi.cpu.loadStatuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
@@ -221,7 +220,7 @@ export class DashboardComponent implements OnInit {
       this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.ram.status = first(result.items);
+            this.raspberryPi.ram.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.ram.statuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
               this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
@@ -248,7 +247,7 @@ export class DashboardComponent implements OnInit {
       this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.swapMemory.status = first(result.items);
+            this.raspberryPi.swapMemory.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.swapMemory.statuses = result.items;
             if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
               this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
@@ -275,7 +274,7 @@ export class DashboardComponent implements OnInit {
       this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
         .subscribe(
           result => {
-            this.raspberryPi.os.status = first(result.items);
+            this.raspberryPi.os.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.os.statuses = result.items;
             if(!this.subscribedToNewOsStatuses) {
               this.osStatusService.subscribeToNewOsStatuses();
@@ -303,7 +302,7 @@ export class DashboardComponent implements OnInit {
           this.diskFileSystemStatusService.getLastFileSystemStatuses(fileSystemName)
             .subscribe(
               result => {
-                fileSystem.status = first(result.items);
+                fileSystem.status = first(orderBy(result.items, 'dateTime', 'desc'));
                 fileSystem.statuses = result.items;
                 if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
                   this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
@@ -339,7 +338,7 @@ export class DashboardComponent implements OnInit {
           this.networkInterfaceStatusService.getLastNetworkInterfaceStatuses(interfaceName)
             .subscribe(
               result => {
-                networkInterface.status = first(result.items);
+                networkInterface.status = first(orderBy(result.items, 'dateTime', 'desc'));
                 networkInterface.statuses = result.items;
                 const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
                 this.networkInterfaceSpeedGaugeChartData[index] = this.getNetworkInterfaceSpeedGaugeChartData(networkInterface.status);

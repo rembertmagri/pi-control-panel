@@ -82,13 +82,29 @@
         {
             var result = BashCommands.Uptime.Bash();
             this.Logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
-
             var uptimeResult = result.Replace("up ", string.Empty);
             this.Logger.Trace($"Uptime substring: '{uptimeResult}'");
+
+            result = BashCommands.SudoAptGetUpdate.Bash();
+            this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
+            var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
+            result = aptGetUpgradeSimulateCommand.Bash();
+            this.Logger.Trace($"Result of '{aptGetUpgradeSimulateCommand}' command: '{result}'");
+            var lines = result.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+            var upgradeablePackagesSummary = lines.Single(line => line.EndsWith(" not upgraded."));
+            if (!int.TryParse(
+                upgradeablePackagesSummary.Substring(0, upgradeablePackagesSummary.IndexOf(" ") + 1),
+                out var upgradeablePackages))
+            {
+                this.Logger.Warn($"Could not parse upgradeable packages: '{upgradeablePackagesSummary}'");
+            }
 
             return new OsStatus()
             {
                 Uptime = uptimeResult,
+                UpgradeablePackages = upgradeablePackages,
                 DateTime = DateTime.Now
             };
         }
