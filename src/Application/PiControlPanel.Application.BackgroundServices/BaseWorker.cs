@@ -47,6 +47,8 @@
         {
             try
             {
+                await Task.Yield();
+
                 bool.TryParse(this.Configuration[$"Workers:{typeof(T).Name}:Enabled"], out var enabled);
                 if (!enabled)
                 {

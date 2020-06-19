@@ -124,6 +124,12 @@
                 options.AllowSynchronousIO = true;
             });
 
+            services.AddHostedService<DiskWorker>();
+            services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
+            services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
+            services.AddHostedService<NetworkWorker>();
+            services.AddHostedService<NetworkInterfaceStatusWorker>();
+
             if (!this.IsRunningInContainer())
             {
                 services.AddHostedService<ChipsetWorker>();
@@ -136,12 +142,6 @@
             {
                 this.logger.Warn("Running on Docker, not creating incompatible background services.");
             }
-
-            services.AddHostedService<DiskWorker>();
-            services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
-            services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
-            services.AddHostedService<NetworkWorker>();
-            services.AddHostedService<NetworkInterfaceStatusWorker>();
 
             // Configuring SPA Path
             services.AddSpaStaticFiles(configuration =>
