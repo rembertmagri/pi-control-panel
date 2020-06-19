@@ -122,6 +122,7 @@ export class RaspberryPiService {
               hostname
               status {
                 uptime
+                upgradeablePackages
                 dateTime
               }
             }

@@ -36,6 +36,7 @@ export class OsStatusService {
                 statuses(first: $firstOsStatuses, after: $afterOsStatuses) {
                   items {
                     uptime
+                    upgradeablePackages
                     dateTime
                   }
                   pageInfo {
@@ -111,6 +112,7 @@ export class OsStatusService {
                 statuses(last: $lastOsStatuses, before: $beforeOsStatuses) {
                   items {
                     uptime
+                    upgradeablePackages
                     dateTime
                   }
                   pageInfo {
@@ -179,6 +181,7 @@ export class OsStatusService {
         subscription OsStatus {
           osStatus {
             uptime
+            upgradeablePackages
             dateTime
           }
         }`,

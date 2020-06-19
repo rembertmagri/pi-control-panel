@@ -119,5 +119,15 @@
         /// Concatenates dev file to standard output.
         /// </summary>
         public const string CatProcNetDev = "cat /proc/net/dev";
+
+        /// <summary>
+        /// Displays upgradeable packages and updates them.
+        /// </summary>
+        public const string SudoAptGetUpdate = "sudo apt-get update";
+
+        /// <summary>
+        /// Displays upgradeable packages and updates them.
+        /// </summary>
+        public const string SudoAptGetUpgrade = "sudo apt-get upgrade -{0}";
     }
 }

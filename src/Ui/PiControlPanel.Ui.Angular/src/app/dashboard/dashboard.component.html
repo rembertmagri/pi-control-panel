@@ -54,7 +54,7 @@
       </div>
 
       <div class="row">
-        <div class="col-sm" *ngIf="raspberryPi.chipset">
+        <div class="col-sm-4" *ngIf="raspberryPi.chipset">
           <div class="card">
             <h4 class="card-header">Chipset</h4>
             <div class="card-body">
@@ -71,35 +71,42 @@
             </div>
           </div>
         </div>
-        <div class="col-sm" *ngIf="raspberryPi.gpu">
+        <div class="col-sm-3" *ngIf="raspberryPi.gpu">
           <div class="card">
             <h4 class="card-header">GPU</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-3">Memory</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.memory}} MB</dd>
-                <dt class="col-sm-3">Frequency</dt>
-                <dd class="col-sm-9">{{raspberryPi.gpu.frequency}} MHz</dd>
+                <dt class="col-sm-4">Memory</dt>
+                <dd class="col-sm-8">{{raspberryPi.gpu.memory}} MB</dd>
+                <dt class="col-sm-4">Frequency</dt>
+                <dd class="col-sm-8">{{raspberryPi.gpu.frequency}} MHz</dd>
               </dl>
             </div>
           </div>
         </div>
-        <div class="col-sm" *ngIf="raspberryPi.os">
+        <div class="col-sm-5" *ngIf="raspberryPi.os">
           <div class="card">
-            <h4 class="card-header">OS</h4>
+            <h4 class="card-header">Operating System</h4>
             <div class="card-body">
               <dl class="row">
-                <dt class="col-sm-4">Name</dt>
-                <dd class="col-sm-8">{{raspberryPi.os.name}}</dd>
-                <dt class="col-sm-4">Kernel</dt>
-                <dd class="col-sm-8">{{raspberryPi.os.kernel}}</dd>
-                <dt class="col-sm-4">Hostname</dt>
-                <dd class="col-sm-8">{{raspberryPi.os.hostname}}</dd>
-                <dt class="col-sm-4">
-                  Uptime
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">{{raspberryPi.os.name}}</dd>
+                <dt class="col-sm-3">Kernel</dt>
+                <dd class="col-sm-9">{{raspberryPi.os.kernel}}</dd>
+                <dt class="col-sm-3">Hostname</dt>
+                <dd class="col-sm-9">{{raspberryPi.os.hostname}}</dd>
+                <dt class="col-sm-3">
+                  Status
                   <span style="font-size:8px;color:white">{{raspberryPi.os.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
-                <dd class="col-sm-8">{{raspberryPi.os.status.uptime}}</dd>
+                <dd class="col-sm-9">
+                  <dl class="row">
+                    <dt class="col-sm-3">Uptime</dt>
+                    <dd class="col-sm-9">{{raspberryPi.os.status.uptime}}</dd>
+                    <dt class="col-sm-3">Package(s)</dt>
+                    <dd class="col-sm-9">{{raspberryPi.os.status.upgradeablePackages}} upgradable</dd>
+                  </dl>
+                </dd>
               </dl>
             </div>
           </div>
@@ -385,7 +392,7 @@
                       <dt class="col-sm-2">Type</dt>
                       <dd class="col-sm-10">{{fileSystem.type}}</dd>
                       <dt class="col-sm-2">Total</dt>
-                      <dd class="col-sm-10">{{fileSystem.total | bytes: 0 : 'KB' }}</dd>
+                      <dd class="col-sm-10">{{fileSystem.total | bytes: 2 : 'KB' }}</dd>
                       <dt class="col-sm-2">
                         Status
                         <span style="font-size:8px;color:white">{{fileSystem.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
@@ -396,13 +403,13 @@
                             [style.width.%]="100 * fileSystem.status.used / fileSystem.total"
                             aria-valuenow="100 * fileSystem.status.used / fileSystem.total"
                             aria-valuemin="0" aria-valuemax="100">
-                            Used ({{fileSystem.status.used | bytes: 0 : 'KB' }})
+                            Used ({{fileSystem.status.used | bytes: 2 : 'KB' }})
                           </div>
                           <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
                             [style.width.%]="100 * fileSystem.status.available / fileSystem.total"
                             aria-valuenow="100 * fileSystem.status.available / fileSystem.total"
                             aria-valuemin="0" aria-valuemax="100">
-                            Free ({{fileSystem.status.available | bytes: 0 : 'KB' }})
+                            Free ({{fileSystem.status.available | bytes: 2 : 'KB' }})
                           </div>
                         </div>
                       </dd>

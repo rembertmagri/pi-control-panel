@@ -129,6 +129,7 @@ export interface IOs {
 
 export interface IOsStatus {
   uptime: string;
+  upgradeablePackages: number;
   dateTime: string;
 }
 
