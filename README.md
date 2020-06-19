@@ -4,7 +4,7 @@ Web control panel for Raspberry Pi 4 implemented on Angular and  .NET Core using
 
 Login | Dashboard | Real-Time Chart | Real-Time Chart (overclocking results)
 ------------ | ------------- | ------------- | -------------
-![login](https://user-images.githubusercontent.com/30979154/82757722-630fb480-9db0-11ea-81f4-a88b3de05270.png) | ![dashboard](https://user-images.githubusercontent.com/30979154/82757721-630fb480-9db0-11ea-96e4-cdf52010dba8.png) | ![real-time chart](https://user-images.githubusercontent.com/30979154/82757720-62771e00-9db0-11ea-954d-35db3058d4ef.png) | ![overclocking results](https://user-images.githubusercontent.com/30979154/82757723-630fb480-9db0-11ea-8589-08743053dee1.png)
+![login](https://user-images.githubusercontent.com/30979154/82757722-630fb480-9db0-11ea-81f4-a88b3de05270.png) | ![dashboard](https://user-images.githubusercontent.com/30979154/85182029-7f8af980-b255-11ea-9cce-6f46e055d60e.png) | ![real-time chart](https://user-images.githubusercontent.com/30979154/82757720-62771e00-9db0-11ea-954d-35db3058d4ef.png) | ![overclocking results](https://user-images.githubusercontent.com/30979154/82757723-630fb480-9db0-11ea-8589-08743053dee1.png)
 
 ## Installing on Raspberry Pi
 
