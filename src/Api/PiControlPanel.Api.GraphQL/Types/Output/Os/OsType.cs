@@ -21,6 +21,7 @@
             this.Field(x => x.Name);
             this.Field(x => x.Kernel);
             this.Field(x => x.Hostname);
+            this.Field(x => x.UpgradeablePackages);
 
             this.Field<OsStatusType>()
                 .Name("Status")

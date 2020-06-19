@@ -123,13 +123,13 @@ export interface IOs {
   name: string;
   kernel: string;
   hostname: string;
+  upgradeablePackages: number;
   status: IOsStatus;
   statuses: IOsStatus[];
 }
 
 export interface IOsStatus {
   uptime: string;
-  upgradeablePackages: number;
   dateTime: string;
 }
 

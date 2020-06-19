@@ -95,18 +95,13 @@
                 <dd class="col-sm-9">{{raspberryPi.os.kernel}}</dd>
                 <dt class="col-sm-3">Hostname</dt>
                 <dd class="col-sm-9">{{raspberryPi.os.hostname}}</dd>
+                <dt class="col-sm-3">Package(s)</dt>
+                <dd class="col-sm-9">{{raspberryPi.os.upgradeablePackages}} upgradable</dd>
                 <dt class="col-sm-3">
-                  Status
+                  Uptime
                   <span style="font-size:8px;color:white">{{raspberryPi.os.status.dateTime | date:'M/d/yy h:mm:ss'}}</span>
                 </dt>
-                <dd class="col-sm-9">
-                  <dl class="row">
-                    <dt class="col-sm-3">Uptime</dt>
-                    <dd class="col-sm-9">{{raspberryPi.os.status.uptime}}</dd>
-                    <dt class="col-sm-3">Package(s)</dt>
-                    <dd class="col-sm-9">{{raspberryPi.os.status.upgradeablePackages}} upgradable</dd>
-                  </dl>
-                </dd>
+                <dd class="col-sm-9">{{raspberryPi.os.status.uptime}}</dd>
               </dl>
             </div>
           </div>

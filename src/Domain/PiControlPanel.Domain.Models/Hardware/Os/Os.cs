@@ -19,5 +19,10 @@
         /// Gets or sets the system hostname.
         /// </summary>
         public string Hostname { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of upgradeable packages.
+        /// </summary>
+        public int UpgradeablePackages { get; set; }
     }
 }

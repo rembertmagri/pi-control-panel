@@ -45,9 +45,9 @@ case "$1" in
 				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "ThrottlingOccurred" INTEGER NOT NULL DEFAULT 0;'
 				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "CpuSensorsStatus" ADD COLUMN "SoftTemperatureLimitOccurred" INTEGER NOT NULL DEFAULT 0;'
             fi
-            if (dpkg --compare-versions "$2" lt 1.47) then
-                echo -e 'Applying db change: creating missing OsStatus column'
-                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "OsStatus" ADD COLUMN "UpgradeablePackages" INTEGER NOT NULL DEFAULT 0;'
+			if (dpkg --compare-versions "$2" lt 1.48) then
+                echo -e 'Applying db change: creating missing Os column'
+                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Os" ADD COLUMN "UpgradeablePackages" INTEGER NOT NULL DEFAULT 0;'
             fi
         fi
         # End of Apply database changes

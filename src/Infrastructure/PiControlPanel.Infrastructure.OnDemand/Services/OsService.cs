@@ -70,27 +70,12 @@
             var kernel = kernelInfo.Replace("Kernel:", string.Empty).Trim();
             this.Logger.Trace($"Kernel: '{kernel}'");
 
-            return new Os()
-            {
-                Name = os,
-                Kernel = kernel,
-                Hostname = hostname
-            };
-        }
-
-        private OsStatus GetOsStatus()
-        {
-            var result = BashCommands.Uptime.Bash();
-            this.Logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
-            var uptimeResult = result.Replace("up ", string.Empty);
-            this.Logger.Trace($"Uptime substring: '{uptimeResult}'");
-
             result = BashCommands.SudoAptGetUpdate.Bash();
             this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
             var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
             result = aptGetUpgradeSimulateCommand.Bash();
             this.Logger.Trace($"Result of '{aptGetUpgradeSimulateCommand}' command: '{result}'");
-            var lines = result.Split(
+            lines = result.Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries);
             var upgradeablePackagesSummary = lines.Single(line => line.EndsWith(" not upgraded."));
@@ -101,10 +86,25 @@
                 this.Logger.Warn($"Could not parse upgradeable packages: '{upgradeablePackagesSummary}'");
             }
 
+            return new Os()
+            {
+                Name = os,
+                Kernel = kernel,
+                Hostname = hostname,
+                UpgradeablePackages = upgradeablePackages
+            };
+        }
+
+        private OsStatus GetOsStatus()
+        {
+            var result = BashCommands.Uptime.Bash();
+            this.Logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
+            var uptimeResult = result.Replace("up ", string.Empty);
+            this.Logger.Trace($"Uptime substring: '{uptimeResult}'");
+
             return new OsStatus()
             {
                 Uptime = uptimeResult,
-                UpgradeablePackages = upgradeablePackages,
                 DateTime = DateTime.Now
             };
         }
