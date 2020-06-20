@@ -35,15 +35,9 @@ parserOptions:
 plugins:
   - '@typescript-eslint'
 
-###########
-# Extends #
-###########
-extends:
-  - 'eslint:recommended'
-
 #########
 # Rules #
 #########
 rules: {
-  "no-console": 2
+  no-console: 2
 }
