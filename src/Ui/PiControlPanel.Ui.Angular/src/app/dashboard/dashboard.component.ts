@@ -698,7 +698,7 @@ export class DashboardComponent implements OnInit {
         this.raspberryPi.cpu.loadStatus.lastMinuteAverage,
         this.raspberryPi.cpu.loadStatus.last5MinutesAverage,
         this.raspberryPi.cpu.loadStatus.last15MinutesAverage
-      ]) 
+      ])
     };    
   }
 
@@ -717,4 +717,3 @@ export class DashboardComponent implements OnInit {
   }
 
 }
-
