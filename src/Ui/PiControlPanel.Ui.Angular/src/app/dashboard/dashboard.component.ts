@@ -715,7 +715,7 @@ export class DashboardComponent implements OnInit {
   }
 
   formatNetworkInterfaceSpeedAxisTick(speed) {
-    return `${(new BytesPipe()).transform(toNumber(speed.replace(/,/g, '')), 1)}/s`;
+    return `${(new BytesPipe()).transform(toNumber(speed.replace(/\,/g, '')), 1)}/s`;
   }
 
 }
