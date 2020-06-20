@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  super-linter:
+  super_linter:
     name: Lint Code Base
     runs-on: ubuntu-latest
     steps:
@@ -18,6 +18,7 @@ jobs:
         
   dotnet_build_and_test_pr:
     name: Build and Test .Net
+    needs: [super_linter]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
@@ -35,6 +36,7 @@ jobs:
 
   nodejs_build_and_test_pr:
     name: Build and Test Angular
+    needs: [super_linter]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
