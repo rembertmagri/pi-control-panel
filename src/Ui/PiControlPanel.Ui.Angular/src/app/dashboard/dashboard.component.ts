@@ -176,7 +176,6 @@ export class DashboardComponent implements OnInit {
               this.cpuSensorsStatusPeriodicRefetchSubscription = this.cpuSensorsStatusService.refetchPeriodically()
                 .subscribe(
                   result => {
-                    console.log('hey hey');
                     console.log(result ? `CPU sensors status refetched @ ${new Date()}` : "Failed to refetch CPU sensors status");
                   },
                   error => this.errorMessage = <any>error
