@@ -8,7 +8,6 @@ jobs:
   super-linter:
     name: Lint Code Base
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -20,7 +19,6 @@ jobs:
   dotnet_build_and_test_pr:
     name: Build and Test .Net
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -38,16 +36,19 @@ jobs:
   nodejs_build_and_test_pr:
     name: Build and Test Angular
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
         node-version: '13.10.1'
-    - run: npm install
+    - name: Install
+      run: npm install
       working-directory: src/Ui/PiControlPanel.Ui.Angular
-    - run: npm run build --if-present
+    - name: Build
+      run: npm run build --if-present
       working-directory: src/Ui/PiControlPanel.Ui.Angular
-    - run: CI=true npm test
+    - name: Test
+      run: CI=true npm test
       working-directory: src/Ui/PiControlPanel.Ui.Angular
