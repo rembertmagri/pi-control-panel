@@ -15,8 +15,6 @@ jobs:
       uses: docker://github/super-linter:v2.1.0
       env:
         VALIDATE_ALL_CODEBASE: false
-        VALIDATE_JAVASCRIPT_STANDARD: false
-        VALIDATE_TYPESCRIPT_STANDARD: false
         
   dotnet_build_and_test_pr:
     name: Build and Test .Net
