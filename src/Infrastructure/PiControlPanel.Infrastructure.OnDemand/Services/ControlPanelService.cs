@@ -44,6 +44,22 @@
         }
 
         /// <inheritdoc/>
+        public Task<bool> UpdateAsync(string username)
+        {
+            this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
+
+            var result = BashCommands.SudoAptGetUpdate.Bash();
+            this.logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
+
+            var sudoAptGetUpgradeCommand = string.Format(BashCommands.SudoAptGetUpgrade, "y");
+            var sudoSuCommand = string.Format(BashCommands.SudoSu, username, sudoAptGetUpgradeCommand);
+            result = sudoSuCommand.Bash();
+            this.logger.Info($"Result of '{sudoSuCommand}' command: '{result}'");
+
+            return Task.FromResult(true);
+        }
+
+        /// <inheritdoc/>
         public Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");

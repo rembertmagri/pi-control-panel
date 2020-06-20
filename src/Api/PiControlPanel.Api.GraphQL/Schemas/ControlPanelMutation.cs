@@ -44,6 +44,20 @@
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
             this.FieldAsync<BooleanGraphType>(
+                "Update",
+                resolve: async context =>
+                {
+                    logger.Info("Update mutation");
+
+                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var userContext = graphQLUserContext.GetUserContext();
+                    var username = userContext.Username;
+
+                    return await controlPanelService.UpdateAsync(username);
+                })
+                .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
+
+            this.FieldAsync<BooleanGraphType>(
                 "Kill",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "ProcessId" }),

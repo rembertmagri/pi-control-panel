@@ -129,5 +129,10 @@
         /// Displays upgradeable packages and updates them.
         /// </summary>
         public const string SudoAptGetUpgrade = "sudo apt-get upgrade -{0}";
+
+        /// <summary>
+        /// Runs a command as another user in background.
+        /// </summary>
+        public const string SudoSu = "sudo su - {0} -c '{1}' &";
     }
 }

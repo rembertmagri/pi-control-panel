@@ -22,6 +22,13 @@
         Task<bool> ShutdownAsync();
 
         /// <summary>
+        /// Updates the firmware of the board.
+        /// </summary>
+        /// <param name="username">The logged in user username.</param>
+        /// <returns>Whether the operation was successful.</returns>
+        Task<bool> UpdateAsync(string username);
+
+        /// <summary>
         /// Kills a specific process.
         /// </summary>
         /// <param name="context">The user context.</param>
