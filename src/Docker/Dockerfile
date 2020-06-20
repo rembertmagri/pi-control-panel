@@ -48,4 +48,3 @@ RUN mkdir -p /var/db/picontrolpanel
 RUN mkdir -p /var/log/picontrolpanel
 ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
 HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:8080/healthcheck || exit 1
-
