@@ -39,6 +39,5 @@ plugins:
 # Rules #
 #########
 rules: {
-  'no-unused-vars': 'off',
-  '@typescript-eslint/no-unused-vars': 'off'
+  'no-trailing-whitespace': 'error'
 }
