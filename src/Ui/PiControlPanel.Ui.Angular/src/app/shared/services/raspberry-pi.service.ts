@@ -21,9 +21,9 @@ export class RaspberryPiService {
     private apollo: Apollo,
     private overlay: Overlay,
     private errorHandlingService: ErrorHandlingService
-    ) {
-      this.overlayRef = this.createOverlay();
-    }
+  ) {
+    this.overlayRef = this.createOverlay();
+  }
 
   getRaspberryPi(): Observable<IRaspberryPi> {
     return this.apollo.query<{ raspberryPi: IRaspberryPi }>({
@@ -147,9 +147,9 @@ export class RaspberryPiService {
       fetchPolicy: 'network-only'
     }).pipe(
       map(result => {
-        var raspberryPi = get(result.data, 'raspberryPi');
-        var processes = get(raspberryPi, 'cpu.loadStatus.processes');
-        if(!isNil(processes)){
+        const raspberryPi = get(result.data, 'raspberryPi');
+        const processes = get(raspberryPi, 'cpu.loadStatus.processes');
+        if (!isNil(processes)) {
           raspberryPi.cpu.loadStatus.processes = orderBy(
             processes,
             ['cpuPercentage', 'ramPercentage'],
@@ -217,21 +217,21 @@ export class RaspberryPiService {
 
   private createOverlay() {
     return this.overlay.create({
-        hasBackdrop: true,
-        backdropClass: 'dark-backdrop',
-        positionStrategy: this.overlay.position()
-            .global()
-            .centerHorizontally()
-            .centerVertically()
+      hasBackdrop: true,
+      backdropClass: 'dark-backdrop',
+      positionStrategy: this.overlay.position()
+        .global()
+        .centerHorizontally()
+        .centerVertically()
     });
   }
 
   private showSpinner() {
     this.overlayRef.attach(new ComponentPortal(MatSpinner));
   }
- 
+
   private stopSpinner() {
-    if(this.overlayRef.hasAttached()) {
+    if (this.overlayRef.hasAttached()) {
       this.overlayRef.detach();
     }
   }

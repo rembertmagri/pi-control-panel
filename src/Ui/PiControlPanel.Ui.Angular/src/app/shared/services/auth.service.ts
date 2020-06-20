@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   isSuperUser() {
-    var roles = this.getRoles();
+    const roles = this.getRoles();
     if (isNil(roles) || !roles.includes(Role.USER)) {
       return false;
     }

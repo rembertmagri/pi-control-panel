@@ -16,7 +16,7 @@
     "build": "ng build",
     "build:ssr": "ng run PiControlPanel.Ui.Angular:server:dev",
     "test": "ng test",
-    "lint": "eslint \"**/*.{js,ts}\"",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
     "e2e": "ng e2e"
   },
   "dependencies": {
