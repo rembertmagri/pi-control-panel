@@ -39,5 +39,5 @@ plugins:
 # Rules #
 #########
 rules: {
-  'no-trailing-whitespace': 'error'
+  no-trailing-whitespace: 'error'
 }
