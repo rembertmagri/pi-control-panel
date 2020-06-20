@@ -35,12 +35,6 @@ parserOptions:
 plugins:
   - '@typescript-eslint'
 
-###########
-# Extends #
-###########
-extends:
-  - 'eslint:recommended'
-
 #########
 # Rules #
 #########
