@@ -56,6 +56,6 @@ export class LoginService {
 
   private handleError(error) {
     return throwError('You could not be signed in to your account. Please check your username and password and try again.');
-  };
+  }
 
 }

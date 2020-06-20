@@ -8,8 +8,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ErrorHandlingService {
 
-  constructor() { }
-
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -34,6 +32,6 @@ export class ErrorHandlingService {
     }
     // return an observable with a user-facing error message
     return throwError('Something bad happened; please try again later.');
-  };
+  }
 
 }

@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RaspberryPiService } from '@services/raspberry-pi.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { 
+import {
   IRaspberryPi,
   ICpuFrequency,
   ICpuSensorsStatus,
   ICpuLoadStatus,
-  IMemoryStatus, 
-  IRandomAccessMemoryStatus, 
-  INetworkInterfaceStatus} from '@interfaces/raspberry-pi';
+  IMemoryStatus,
+  IRandomAccessMemoryStatus,
+  INetworkInterfaceStatus
+} from '@interfaces/raspberry-pi';
 import { AuthService } from '@services/auth.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -33,7 +34,8 @@ import {
   fill,
   isEmpty,
   find,
-  toNumber } from 'lodash';
+  toNumber
+} from 'lodash';
 import { RealTimeModalComponent } from './modal/real-time-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
 import { CpuSensorsStatusService } from '@services/cpu-sensors-status.service';
@@ -90,8 +92,8 @@ export class DashboardComponent implements OnInit {
   CpuMaxFrequencyLevel = CpuMaxFrequencyLevel;
 
   readonly MAX_CHART_VISIBLE_ITEMS = MAX_CHART_VISIBLE_ITEMS;
-  selectedChartItems: string [];
-  unselectedChartItems: string [];
+  selectedChartItems: string[];
+  unselectedChartItems: string[];
 
   loadAverageGaugeChartData: any = {
     results: [],
@@ -133,18 +135,18 @@ export class DashboardComponent implements OnInit {
         error => this.errorMessage = <any>error
       );
 
-    if(!isNil(get(this.raspberryPi, 'cpu.frequency'))) {
+    if (!isNil(get(this.raspberryPi, 'cpu.frequency'))) {
       this.subscribedToNewCpuFrequencies = false;
       this.cpuFrequencyBehaviorSubjectSubscription = this.cpuFrequencyService.getLastCpuFrequencies()
         .subscribe(
           result => {
             this.raspberryPi.cpu.frequency = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.frequencies = result.items;
-            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
+            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
               this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewCpuFrequencies) {
+            if (!this.subscribedToNewCpuFrequencies) {
               this.cpuFrequencyService.subscribeToNewCpuFrequencies();
               this.cpuFrequencyPeriodicRefetchSubscription = this.cpuFrequencyService.refetchPeriodically()
                 .subscribe(
@@ -159,19 +161,19 @@ export class DashboardComponent implements OnInit {
           error => this.errorMessage = <any>error
         );
     }
-    
-    if(!isNil(get(this.raspberryPi, 'cpu.sensorsStatus'))) {
+
+    if (!isNil(get(this.raspberryPi, 'cpu.sensorsStatus'))) {
       this.subscribedToNewCpuSensorsStatuses = false;
       this.cpuSensorsStatusBehaviorSubjectSubscription = this.cpuSensorsStatusService.getLastCpuSensorsStatuses()
         .subscribe(
           result => {
             this.raspberryPi.cpu.sensorsStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.sensorsStatuses = result.items;
-            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
+            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
               this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewCpuSensorsStatuses) {
+            if (!this.subscribedToNewCpuSensorsStatuses) {
               this.cpuSensorsStatusService.subscribeToNewCpuSensorsStatuses();
               this.cpuSensorsStatusPeriodicRefetchSubscription = this.cpuSensorsStatusService.refetchPeriodically()
                 .subscribe(
@@ -187,7 +189,7 @@ export class DashboardComponent implements OnInit {
         );
     }
 
-    if(!isNil(get(this.raspberryPi, 'cpu.loadStatus'))) {
+    if (!isNil(get(this.raspberryPi, 'cpu.loadStatus'))) {
       this.subscribedToNewCpuLoadStatuses = false;
       this.cpuLoadStatusBehaviorSubjectSubscription = this.cpuLoadStatusService.getLastCpuLoadStatuses()
         .subscribe(
@@ -195,11 +197,11 @@ export class DashboardComponent implements OnInit {
             this.raspberryPi.cpu.loadStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.loadAverageGaugeChartData = this.getLoadAverageGaugeChartData();
             this.raspberryPi.cpu.loadStatuses = result.items;
-            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
+            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
               this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewCpuLoadStatuses) {
+            if (!this.subscribedToNewCpuLoadStatuses) {
               this.cpuLoadStatusService.subscribeToNewCpuLoadStatuses();
               this.cpuLoadStatusPeriodicRefetchSubscription = this.cpuLoadStatusService.refetchPeriodically()
                 .subscribe(
@@ -215,18 +217,18 @@ export class DashboardComponent implements OnInit {
         );
     }
 
-    if(!isNil(get(this.raspberryPi, 'ram.status'))) {
+    if (!isNil(get(this.raspberryPi, 'ram.status'))) {
       this.subscribedToNewRamStatuses = false;
       this.ramStatusBehaviorSubjectSubscription = this.ramStatusService.getLastMemoryStatuses()
         .subscribe(
           result => {
             this.raspberryPi.ram.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.ram.statuses = result.items;
-            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
+            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
               this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewRamStatuses) {
+            if (!this.subscribedToNewRamStatuses) {
               this.ramStatusService.subscribeToNewMemoryStatuses();
               this.ramStatusPeriodicRefetchSubscription = this.ramStatusService.refetchPeriodically()
                 .subscribe(
@@ -242,18 +244,18 @@ export class DashboardComponent implements OnInit {
         );
     }
 
-    if(!isNil(get(this.raspberryPi, 'swapMemory.status'))) {
+    if (!isNil(get(this.raspberryPi, 'swapMemory.status'))) {
       this.subscribedToNewSwapMemoryStatuses = false;
       this.swapMemoryStatusBehaviorSubjectSubscription = this.swapMemoryStatusService.getLastMemoryStatuses()
         .subscribe(
           result => {
             this.raspberryPi.swapMemory.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.swapMemory.statuses = result.items;
-            if(!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
+            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
               this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
               this.modalRef.content.chartData = [...this.modalRef.content.chartData];
             }
-            if(!this.subscribedToNewSwapMemoryStatuses) {
+            if (!this.subscribedToNewSwapMemoryStatuses) {
               this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
               this.swapMemoryStatusPeriodicRefetchSubscription = this.swapMemoryStatusService.refetchPeriodically()
                 .subscribe(
@@ -268,15 +270,15 @@ export class DashboardComponent implements OnInit {
           error => this.errorMessage = <any>error
         );
     }
-    
-    if(!isNil(get(this.raspberryPi, 'os.status'))) {
+
+    if (!isNil(get(this.raspberryPi, 'os.status'))) {
       this.subscribedToNewOsStatuses = false;
       this.osStatusBehaviorSubjectSubscription = this.osStatusService.getLastOsStatuses()
         .subscribe(
           result => {
             this.raspberryPi.os.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.os.statuses = result.items;
-            if(!this.subscribedToNewOsStatuses) {
+            if (!this.subscribedToNewOsStatuses) {
               this.osStatusService.subscribeToNewOsStatuses();
               this.osStatusPeriodicRefetchSubscription = this.osStatusService.refetchPeriodically()
                 .subscribe(
@@ -291,12 +293,12 @@ export class DashboardComponent implements OnInit {
           error => this.errorMessage = <any>error
         );
     }
-    
-    if(!isNil(get(this.raspberryPi, 'disk.fileSystems'))) {
+
+    if (!isNil(get(this.raspberryPi, 'disk.fileSystems'))) {
       const numberOfFileSystems = this.raspberryPi.disk.fileSystems.length;
       this.subscribedToNewDiskFileSystemStatuses = fill(Array(numberOfFileSystems), false);
       this.diskFileSystemStatusBehaviorSubjectSubscriptions = fill(Array(numberOfFileSystems), null);
-      for(const fileSystem of this.raspberryPi.disk.fileSystems) {
+      for (const fileSystem of this.raspberryPi.disk.fileSystems) {
         const fileSystemName = fileSystem.name;
         this.diskFileSystemStatusBehaviorSubjectSubscriptions[fileSystemName] =
           this.diskFileSystemStatusService.getLastFileSystemStatuses(fileSystemName)
@@ -304,7 +306,7 @@ export class DashboardComponent implements OnInit {
               result => {
                 fileSystem.status = first(orderBy(result.items, 'dateTime', 'desc'));
                 fileSystem.statuses = result.items;
-                if(!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
+                if (!this.subscribedToNewDiskFileSystemStatuses[fileSystemName]) {
                   this.diskFileSystemStatusService.subscribeToNewFileSystemStatuses(fileSystemName);
                   if (isNil(this.diskFileSystemStatusPeriodicRefetchSubscription)) {
                     this.diskFileSystemStatusPeriodicRefetchSubscription = this.diskFileSystemStatusService.refetchPeriodically()
@@ -322,13 +324,13 @@ export class DashboardComponent implements OnInit {
             );
       }
     }
-    
-    if(!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+
+    if (!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
       const numberOfNetworkInterfaces = this.raspberryPi.network.networkInterfaces.length;
       this.subscribedToNewNetworkInterfaceStatuses = fill(Array(numberOfNetworkInterfaces), false);
       this.networkInterfaceStatusBehaviorSubjectSubscriptions = fill(Array(numberOfNetworkInterfaces), null);
       this.networkInterfaceSpeedGaugeChartData = fill(Array(numberOfNetworkInterfaces), null);
-      for(const networkInterface of this.raspberryPi.network.networkInterfaces) {
+      for (const networkInterface of this.raspberryPi.network.networkInterfaces) {
         const interfaceName = networkInterface.name;
 
         this.unselectedChartItems.push(`Network ${interfaceName} Rx (B/s)`);
@@ -342,17 +344,17 @@ export class DashboardComponent implements OnInit {
                 networkInterface.statuses = result.items;
                 const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
                 this.networkInterfaceSpeedGaugeChartData[index] = this.getNetworkInterfaceSpeedGaugeChartData(networkInterface.status);
-                if(!isNil(this.modalRef)) {
-                  if(includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
-                    this.modalRef.content.chartData[5+2*index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
+                if (!isNil(this.modalRef)) {
+                  if (includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
+                    this.modalRef.content.chartData[5 + 2 * index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
                     this.modalRef.content.chartData = [...this.modalRef.content.chartData];
                   }
-                  if(includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
-                    this.modalRef.content.chartData[5+2*index+1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
+                  if (includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
+                    this.modalRef.content.chartData[5 + 2 * index + 1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
                     this.modalRef.content.chartData = [...this.modalRef.content.chartData];
                   }
                 }
-                if(!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
+                if (!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
                   this.networkInterfaceStatusService.subscribeToNewNetworkInterfaceStatuses(interfaceName);
                   if (isNil(this.networkInterfaceStatusPeriodicRefetchSubscription)) {
                     this.networkInterfaceStatusPeriodicRefetchSubscription = this.networkInterfaceStatusService.refetchPeriodically()
@@ -413,7 +415,7 @@ export class DashboardComponent implements OnInit {
       this.osStatusPeriodicRefetchSubscription.unsubscribe();
     }
     if (!isEmpty(this.diskFileSystemStatusBehaviorSubjectSubscriptions)) {
-      for(const diskFileSystemStatusBehaviorSubjectSubscription of this.diskFileSystemStatusBehaviorSubjectSubscriptions) {
+      for (const diskFileSystemStatusBehaviorSubjectSubscription of this.diskFileSystemStatusBehaviorSubjectSubscriptions) {
         if (!isNil(diskFileSystemStatusBehaviorSubjectSubscription)) {
           diskFileSystemStatusBehaviorSubjectSubscription.unsubscribe();
         }
@@ -423,7 +425,7 @@ export class DashboardComponent implements OnInit {
       this.diskFileSystemStatusPeriodicRefetchSubscription.unsubscribe();
     }
     if (!isEmpty(this.networkInterfaceStatusBehaviorSubjectSubscriptions)) {
-      for(const networkInterfaceStatusBehaviorSubjectSubscription of this.networkInterfaceStatusBehaviorSubjectSubscriptions) {
+      for (const networkInterfaceStatusBehaviorSubjectSubscription of this.networkInterfaceStatusBehaviorSubjectSubscriptions) {
         if (!isNil(networkInterfaceStatusBehaviorSubjectSubscription)) {
           networkInterfaceStatusBehaviorSubjectSubscription.unsubscribe();
         }
@@ -450,7 +452,7 @@ export class DashboardComponent implements OnInit {
         }
       );
     });
-    if(!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+    if (!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
       forEach(this.raspberryPi.network.networkInterfaces, (networkInterface) => {
         const interfaceName = networkInterface.name;
         this.modalRef.content.chartData.push(
@@ -476,34 +478,34 @@ export class DashboardComponent implements OnInit {
     this.raspberryPiService.rebootRaspberryPi()
       .pipe(take(1))
       .subscribe(
-      result => {
-        if (result) {
-          alert('Rebooting...');
-          this.logout();
-        }
-        else {
-          alert('Error');
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          if (result) {
+            alert('Rebooting...');
+            this.logout();
+          }
+          else {
+            alert('Error');
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
   }
-  
+
   shutdown() {
     this.raspberryPiService.shutdownRaspberryPi()
       .pipe(take(1))
       .subscribe(
-      result => {
-        if (result) {
-          alert('Shutting down...');
-          this.logout();
-        }
-        else {
-          alert('Error');
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          if (result) {
+            alert('Shutting down...');
+            this.logout();
+          }
+          else {
+            alert('Error');
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
   }
 
   logout() {
@@ -515,20 +517,20 @@ export class DashboardComponent implements OnInit {
     this.raspberryPiService.killProcess(processId)
       .pipe(take(1))
       .subscribe(
-      result => {
-        if (result) {
-          alert(`Process #${processId} killed`);
-          this.raspberryPi.cpu.loadStatus.processes =
-            remove(this.raspberryPi.cpu.loadStatus.processes, (process) => {
-              return process.processId !== processId;
-            });
-        }
-        else {
-          alert('Error');
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          if (result) {
+            alert(`Process #${processId} killed`);
+            this.raspberryPi.cpu.loadStatus.processes =
+              remove(this.raspberryPi.cpu.loadStatus.processes, (process) => {
+                return process.processId !== processId;
+              });
+          }
+          else {
+            alert('Error');
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
   }
 
   isAuthorizedToKill(processOwnerUsername: string) {
@@ -536,7 +538,7 @@ export class DashboardComponent implements OnInit {
       return true;
     }
     const username = this.authService.getLoggedInUsername();
-    if (endsWith(processOwnerUsername, '+')){
+    if (endsWith(processOwnerUsername, '+')) {
       return startsWith(username, trimEnd(processOwnerUsername, '+'));
     }
     return username === processOwnerUsername;
@@ -546,21 +548,21 @@ export class DashboardComponent implements OnInit {
     this.raspberryPiService.overclockRaspberryPi(cpuMaxFrequencyLevel)
       .pipe(take(1))
       .subscribe(
-      result => {
-        if (result) {
-          alert(`Raspberry Pi overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level, rebooting...`);
-          this.logout();
-        }
-        else {
-          alert(`Raspberry Pi already overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level`);
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+        result => {
+          if (result) {
+            alert(`Raspberry Pi overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level, rebooting...`);
+            this.logout();
+          }
+          else {
+            alert(`Raspberry Pi already overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level`);
+          }
+        },
+        error => this.errorMessage = <any>error
+      );
   }
 
   getOrderedAndMappedCpuNormalizedFrequencies() {
-    if(isNil(get(this.raspberryPi, 'cpu.frequencies'))) {
+    if (isNil(get(this.raspberryPi, 'cpu.frequencies'))) {
       return [];
     }
     const maxFrequency = max(map(this.raspberryPi.cpu.frequencies, 'value'));
@@ -576,7 +578,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuTemperatures() {
-    if(isNil(get(this.raspberryPi, 'cpu.sensorsStatuses'))) {
+    if (isNil(get(this.raspberryPi, 'cpu.sensorsStatuses'))) {
       return [];
     }
     const temperatureData = map(this.raspberryPi.cpu.sensorsStatuses, (sensorsStatus: ICpuSensorsStatus) => {
@@ -589,7 +591,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedCpuLoadStatuses() {
-    if(isNil(get(this.raspberryPi, 'cpu.loadStatuses'))) {
+    if (isNil(get(this.raspberryPi, 'cpu.loadStatuses'))) {
       return [];
     }
     const loadStatusData = map(this.raspberryPi.cpu.loadStatuses, (loadStatus: ICpuLoadStatus) => {
@@ -606,7 +608,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedRamStatuses() {
-    if(isNil(get(this.raspberryPi, 'ram.statuses'))) {
+    if (isNil(get(this.raspberryPi, 'ram.statuses'))) {
       return [];
     }
     const ramStatusData = map(this.raspberryPi.ram.statuses, (memoryStatus: IRandomAccessMemoryStatus) => {
@@ -620,7 +622,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedSwapMemoryStatuses() {
-    if(isNil(get(this.raspberryPi, 'swapMemory.statuses'))) {
+    if (isNil(get(this.raspberryPi, 'swapMemory.statuses'))) {
       return [];
     }
     const swapMemoryStatusData = map(this.raspberryPi.swapMemory.statuses, (memoryStatus: IMemoryStatus) => {
@@ -634,7 +636,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
-    if(isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+    if (isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
       return [];
     }
     const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
@@ -651,7 +653,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName: string) {
-    if(isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
+    if (isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
       return [];
     }
     const networkInterface = find(this.raspberryPi.network.networkInterfaces, { 'name': interfaceName });
@@ -672,34 +674,34 @@ export class DashboardComponent implements OnInit {
     if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage > 0.8 * this.raspberryPi.cpu.cores) {
       if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage <= this.raspberryPi.cpu.loadStatus.last5MinutesAverage &&
         this.raspberryPi.cpu.loadStatus.lastMinuteAverage <= this.raspberryPi.cpu.loadStatus.last15MinutesAverage) {
-          colors = ['#98BCDE', '#89A9C6', '#748DA5'];
+        colors = ['#98BCDE', '#89A9C6', '#748DA5'];
       } else if (this.raspberryPi.cpu.loadStatus.lastMinuteAverage > this.raspberryPi.cpu.loadStatus.last5MinutesAverage &&
         this.raspberryPi.cpu.loadStatus.lastMinuteAverage > this.raspberryPi.cpu.loadStatus.last15MinutesAverage) {
-          colors = ['#E79191', '#C08484', '#9D6C6C'];
+        colors = ['#E79191', '#C08484', '#9D6C6C'];
       } else {
         colors = ['#E2D891', '#C4BC83', '#9E9266'];
       }
     }
     return {
       results:
-      [
-        { name: 'Last minute load average', value: this.raspberryPi.cpu.loadStatus.lastMinuteAverage },
-        { name: 'Last 5 minutes load average', value: this.raspberryPi.cpu.loadStatus.last5MinutesAverage },
-        { name: 'Last 15 minutes load average', value: this.raspberryPi.cpu.loadStatus.last15MinutesAverage }
-      ],
+        [
+          { name: 'Last minute load average', value: this.raspberryPi.cpu.loadStatus.lastMinuteAverage },
+          { name: 'Last 5 minutes load average', value: this.raspberryPi.cpu.loadStatus.last5MinutesAverage },
+          { name: 'Last 15 minutes load average', value: this.raspberryPi.cpu.loadStatus.last15MinutesAverage }
+        ],
       colors:
-      [
-        { name: 'Last minute load average', value: colors[0] },
-        { name: 'Last 5 minutes load average', value: colors[1] },
-        { name: 'Last 15 minutes load average', value: colors[2] }
-      ],
+        [
+          { name: 'Last minute load average', value: colors[0] },
+          { name: 'Last 5 minutes load average', value: colors[1] },
+          { name: 'Last 15 minutes load average', value: colors[2] }
+        ],
       maxScaleValue: max([
         this.raspberryPi.cpu.cores,
         this.raspberryPi.cpu.loadStatus.lastMinuteAverage,
         this.raspberryPi.cpu.loadStatus.last5MinutesAverage,
         this.raspberryPi.cpu.loadStatus.last15MinutesAverage
-      ]) 
-    };    
+      ])
+    };
   }
 
   getNetworkInterfaceSpeedGaugeChartData(status: INetworkInterfaceStatus) {
@@ -713,7 +715,7 @@ export class DashboardComponent implements OnInit {
   }
 
   formatNetworkInterfaceSpeedAxisTick(speed) {
-    return `${(new BytesPipe()).transform(toNumber(speed.replace(/\,/g,'')), 1)}/s`;
+    return `${(new BytesPipe()).transform(toNumber(speed.replace(/,/g, '')), 1)}/s`;
   }
 
 }

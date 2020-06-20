@@ -16,7 +16,7 @@
     "build": "ng build",
     "build:ssr": "ng run PiControlPanel.Ui.Angular:server:dev",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
     "e2e": "ng e2e"
   },
   "dependencies": {
@@ -67,7 +67,10 @@
     "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.8",
     "@types/node": "~14.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.3.0",
+    "@typescript-eslint/parser": "^3.3.0",
     "codelyzer": "^5.2.2",
+    "eslint": "^7.3.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.2",
     "karma": "^5.0.9",
@@ -81,7 +84,6 @@
   "optionalDependencies": {
     "node-sass": "^4.14.1",
     "protractor": "~7.0.0",
-    "ts-node": "~8.10.1",
-    "tslint": "~6.1.2"
+    "ts-node": "~8.10.1"
   }
 }
