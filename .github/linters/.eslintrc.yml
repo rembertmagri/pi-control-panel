@@ -39,5 +39,6 @@ plugins:
 # Rules #
 #########
 rules: {
+  no-unused-vars: 'off'
   no-console: 'error'
 }
