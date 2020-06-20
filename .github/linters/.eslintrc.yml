@@ -39,6 +39,7 @@ plugins:
 # Rules #
 #########
 rules: {
-  no-unused-vars: 'off'
+  no-unused-vars: 'off',
+  no-extra-semi: 'off',
   no-console: 'error'
 }
