@@ -24,9 +24,8 @@
         /// <summary>
         /// Updates the firmware of the board.
         /// </summary>
-        /// <param name="username">The logged in user username.</param>
         /// <returns>Whether the operation was successful.</returns>
-        Task<bool> UpdateAsync(string username);
+        Task<bool> UpdateAsync();
 
         /// <summary>
         /// Kills a specific process.

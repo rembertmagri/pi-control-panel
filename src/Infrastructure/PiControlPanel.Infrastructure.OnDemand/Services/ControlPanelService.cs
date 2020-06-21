@@ -44,7 +44,7 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync(string username)
+        public Task<bool> UpdateAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
 

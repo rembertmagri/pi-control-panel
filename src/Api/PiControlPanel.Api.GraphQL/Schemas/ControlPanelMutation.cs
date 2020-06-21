@@ -49,11 +49,7 @@
                 {
                     logger.Info("Update mutation");
 
-                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
-                    var userContext = graphQLUserContext.GetUserContext();
-                    var username = userContext.Username;
-
-                    return await controlPanelService.UpdateAsync(username);
+                    return await controlPanelService.UpdateAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 

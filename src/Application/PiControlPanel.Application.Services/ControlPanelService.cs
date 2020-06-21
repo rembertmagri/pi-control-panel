@@ -39,10 +39,10 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync(string username)
+        public Task<bool> UpdateAsync()
         {
             this.logger.Debug("Application layer -> ControlPanelService -> UpdateAsync");
-            return this.onDemandService.UpdateAsync(username);
+            return this.onDemandService.UpdateAsync();
         }
 
         /// <inheritdoc/>
