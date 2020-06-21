@@ -4,6 +4,8 @@
     using System.Threading.Tasks;
     using CliWrap;
     using CliWrap.Buffered;
+    using CliWrap.Exceptions;
+    using PiControlPanel.Domain.Models;
 
     /// <summary>
     /// Utility class that extends string to execute bash commands.
@@ -20,10 +22,17 @@
             var escapedArgs = cmd.Replace("\"", "\\\"");
             var command = Cli.Wrap("/bin/bash").WithArguments($"-c \"{escapedArgs}\"");
 
-            var result = await command.ExecuteBufferedAsync();
-            return result?.StandardOutput == null ?
-                string.Empty :
-                result.StandardOutput.TrimEnd(Environment.NewLine.ToCharArray());
+            try
+            {
+                var result = await command.ExecuteBufferedAsync();
+                return result?.StandardOutput == null ?
+                    string.Empty :
+                    result.StandardOutput.TrimEnd(Environment.NewLine.ToCharArray());
+            }
+            catch (CommandExecutionException ex)
+            {
+                throw new BusinessException($"Error running '{cmd}' command", ex);
+            }
         }
     }
 }

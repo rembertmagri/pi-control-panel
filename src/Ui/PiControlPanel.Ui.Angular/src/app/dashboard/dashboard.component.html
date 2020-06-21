@@ -101,7 +101,7 @@
                     <div class="col-sm-6">{{raspberryPi.os.upgradeablePackages}} upgradable</div>
                     <div class="col-sm-6">
                       <button type="button" class="btn btn-dark" (click)="update()" [disabled]="!isSuperUser"
-                        *ngIf="false">
+                        *ngIf="raspberryPi.os.upgradeablePackages !== 0">
                         Update
                       </button>
                     </div>
