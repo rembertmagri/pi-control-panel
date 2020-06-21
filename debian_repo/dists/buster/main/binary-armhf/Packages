@@ -1,15 +1,15 @@
 Package: pi-control-panel
-Version: 1.50
+Version: 1.51
 Architecture: armhf
 Essential: no
 Depends: procps,sqlite3
 Maintainer: Rembert Magri
 Priority: optional
 Section: utils
-Filename: pool/main/p/pi-control-panel/pi-control-panel_1.50_armhf.deb
-Size: 17175324
-SHA256: 15203fb51edd40a7e3bd2902635fbc919c6ebb32b7d103f4a8324cc559d533a3
-SHA1: ac8e83eaf5de7fc5c2481e4b5c87004bf5b72d6d
-MD5sum: 4cc3d8462dd364f9b87a2bb80d93f3c6
+Filename: pool/main/p/pi-control-panel/pi-control-panel_1.51_armhf.deb
+Size: 17176512
+SHA256: b017308f78548e1e2220cf68ccce81186d285a9326c19331acaa26e411bdb1af
+SHA1: c429716d53749ccc8cda0ff9511b20d6db70d009
+MD5sum: 6dacfd473633c4e8fe48ca6cc742aab1
 Description: Raspberry Pi Control Panel
 
