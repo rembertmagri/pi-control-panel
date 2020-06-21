@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, finalize } from 'rxjs/operators';
 import { get, isNil, orderBy } from 'lodash';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
@@ -182,6 +182,20 @@ export class RaspberryPiService {
     }).pipe(
       map(result => get(result.data, 'shutdown')),
       catchError(this.errorHandlingService.handleError)
+    );
+  }
+
+  updateRaspberryPi(): Observable<boolean> {
+    this.showSpinner();
+    return this.apollo.mutate({
+      mutation: gql`	
+        mutation update {	
+          update	
+        }`
+    }).pipe(
+      map(result => get(result.data, 'update')),
+      catchError(this.errorHandlingService.handleError),
+      finalize(() => this.stopSpinner())
     );
   }
 

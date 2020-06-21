@@ -129,5 +129,15 @@
         /// Displays upgradeable packages and updates them.
         /// </summary>
         public const string SudoAptGetUpgrade = "sudo apt-get upgrade -{0}";
+
+        /// <summary>
+        /// Removes not used dependencies.
+        /// </summary>
+        public const string SudoAptgetAutoremove = "sudo apt-get autoremove -y";
+
+        /// <summary>
+        /// Clears the local repository of retrieved package files.
+        /// </summary>
+        public const string SudoAptgetAutoclean = "sudo apt-get autoclean";
     }
 }

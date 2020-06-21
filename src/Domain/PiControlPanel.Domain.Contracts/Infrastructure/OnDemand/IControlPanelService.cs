@@ -22,6 +22,12 @@
         Task<bool> ShutdownAsync();
 
         /// <summary>
+        /// Updates the firmware of the board.
+        /// </summary>
+        /// <returns>Whether the operation was successful.</returns>
+        Task<bool> UpdateAsync();
+
+        /// <summary>
         /// Kills a specific process.
         /// </summary>
         /// <param name="context">The user context.</param>
