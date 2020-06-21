@@ -131,13 +131,13 @@
         public const string SudoAptGetUpgrade = "sudo apt-get upgrade -{0}";
 
         /// <summary>
-        /// Runs a command as another user in background.
+        /// Removes not used dependencies.
         /// </summary>
-        public const string SudoSu = "sudo su - {0} -c '{1}'";
+        public const string SudoAptgetAutoremove = "sudo apt-get autoremove -y";
 
         /// <summary>
-        /// Displays ids of processes by user and process name.
+        /// Clears the local repository of retrieved package files.
         /// </summary>
-        public const string Pgrep = "pgrep -nu {0} {1}";
+        public const string SudoAptgetAutoclean = "sudo apt-get autoclean";
     }
 }

@@ -9,6 +9,7 @@ Restart=always
 RestartSec=1
 WorkingDirectory=/opt/picontrolpanel
 User=picontrolpanel
+KillMode=process
 Environment=ASPNETCORE_ENVIRONMENT=Production
 ExecStart=/opt/picontrolpanel/PiControlPanel.Api.GraphQL
 
