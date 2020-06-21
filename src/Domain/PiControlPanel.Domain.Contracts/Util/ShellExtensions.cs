@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Utility class that extends string to execute bash commands.
@@ -34,6 +35,15 @@
             process.WaitForExit();
 
             return result == null ? string.Empty : result.TrimEnd(Environment.NewLine.ToCharArray());
+        }
+
+        /// <summary>
+        /// Executes a bash command in background.
+        /// </summary>
+        /// <param name="cmd">The command to be executed.</param>
+        public static void BashBg(this string cmd)
+        {
+            Task.Run(() => Bash(cmd));
         }
     }
 }

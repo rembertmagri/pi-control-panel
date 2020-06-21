@@ -49,12 +49,16 @@
             this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
 
             var result = BashCommands.SudoAptGetUpdate.Bash();
-            this.logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
+            this.logger.Info($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
 
             var sudoAptGetUpgradeCommand = string.Format(BashCommands.SudoAptGetUpgrade, "y");
             var sudoSuCommand = string.Format(BashCommands.SudoSu, username, sudoAptGetUpgradeCommand);
-            result = sudoSuCommand.Bash();
-            this.logger.Info($"Result of '{sudoSuCommand}' command: '{result}'");
+            sudoSuCommand.BashBg();
+            this.logger.Info($"Command '{sudoSuCommand}' is running");
+
+            var pgrepCommand = string.Format(BashCommands.Pgrep, "root", "apt-get");
+            result = pgrepCommand.Bash();
+            this.logger.Info($"Result of '{pgrepCommand}' command: '{result}'");
 
             return Task.FromResult(true);
         }

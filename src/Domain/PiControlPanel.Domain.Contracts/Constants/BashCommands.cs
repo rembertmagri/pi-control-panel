@@ -133,6 +133,11 @@
         /// <summary>
         /// Runs a command as another user in background.
         /// </summary>
-        public const string SudoSu = "sudo su - {0} -c '{1}' &";
+        public const string SudoSu = "sudo su - {0} -c '{1}'";
+
+        /// <summary>
+        /// Displays ids of processes by user and process name.
+        /// </summary>
+        public const string Pgrep = "pgrep -nu {0} {1}";
     }
 }
