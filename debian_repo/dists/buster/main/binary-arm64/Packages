@@ -1,15 +1,15 @@
 Package: pi-control-panel
-Version: 1.51
+Version: 1.52
 Architecture: arm64
 Essential: no
 Depends: procps,sqlite3
 Maintainer: Rembert Magri
 Priority: optional
 Section: utils
-Filename: pool/main/p/pi-control-panel/pi-control-panel_1.51_arm64.deb
-Size: 16753528
-SHA256: ef2ce1d7afa5d13ae943c8e52c0c032cf83a93c7c01866f25a0c503fb3d64789
-SHA1: f531853e32554e7b63bae38f62a02231cbb863b0
-MD5sum: daaf2dfe89d396c79b0c84ffba499d02
+Filename: pool/main/p/pi-control-panel/pi-control-panel_1.52_arm64.deb
+Size: 16776096
+SHA256: 5a4775037ed27b1b3a5ee49493b2294edbb47bc711f34e901ce75919a7178230
+SHA1: fdf52091186507ece65f3e1ef8645c65b92e6c46
+MD5sum: c54b7525e1716f909a91964307b2bc20
 Description: Raspberry Pi Control Panel
 
