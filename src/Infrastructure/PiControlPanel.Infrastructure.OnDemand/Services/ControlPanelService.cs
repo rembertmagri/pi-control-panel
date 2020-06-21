@@ -79,16 +79,18 @@
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
 
             var sudoKillCommand = string.Format(BashCommands.SudoKill, processId);
-            var result = await sudoKillCommand.BashAsync();
 
-            if (!string.IsNullOrEmpty(result))
+            try
             {
-                this.logger.Warn($"Result of '{sudoKillCommand}' command: '{result}'");
+                var result = await sudoKillCommand.BashAsync();
+                this.logger.Info($"Result of '{sudoKillCommand}' command: '{result}'");
+                return string.IsNullOrEmpty(result);
+            }
+            catch (BusinessException ex)
+            {
+                this.logger.Error(ex, $"Error running '{sudoKillCommand}' command");
                 return false;
             }
-
-            this.logger.Info($"Result of '{sudoKillCommand}' command is empty, success");
-            return true;
         }
 
         /// <inheritdoc/>
