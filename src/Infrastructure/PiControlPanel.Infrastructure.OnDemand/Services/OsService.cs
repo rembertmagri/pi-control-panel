@@ -8,8 +8,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Os;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class OsService : BaseService<Os>, IOsService
@@ -31,8 +31,7 @@
         public Task<OsStatus> GetStatusAsync()
         {
             this.Logger.Debug("Infra layer -> OsService -> GetStatusAsync");
-            var operatingSystemStatus = this.GetOsStatus();
-            return Task.FromResult(operatingSystemStatus);
+            return this.GetOsStatusAsync();
         }
 
         /// <inheritdoc/>
@@ -50,9 +49,9 @@
         }
 
         /// <inheritdoc/>
-        protected override Os GetModel()
+        protected override async Task<Os> GetModelAsync()
         {
-            var result = BashCommands.Hostnamectl.Bash();
+            var result = await BashCommands.Hostnamectl.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Hostnamectl}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -70,10 +69,10 @@
             var kernel = kernelInfo.Replace("Kernel:", string.Empty).Trim();
             this.Logger.Trace($"Kernel: '{kernel}'");
 
-            result = BashCommands.SudoAptGetUpdate.Bash();
+            result = await BashCommands.SudoAptGetUpdate.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
             var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
-            result = aptGetUpgradeSimulateCommand.Bash();
+            result = await aptGetUpgradeSimulateCommand.BashAsync();
             this.Logger.Trace($"Result of '{aptGetUpgradeSimulateCommand}' command: '{result}'");
             lines = result.Split(
                 new[] { Environment.NewLine },
@@ -95,9 +94,9 @@
             };
         }
 
-        private OsStatus GetOsStatus()
+        private async Task<OsStatus> GetOsStatusAsync()
         {
-            var result = BashCommands.Uptime.Bash();
+            var result = await BashCommands.Uptime.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Uptime}' command: '{result}'");
             var uptimeResult = result.Replace("up ", string.Empty);
             this.Logger.Trace($"Uptime substring: '{uptimeResult}'");

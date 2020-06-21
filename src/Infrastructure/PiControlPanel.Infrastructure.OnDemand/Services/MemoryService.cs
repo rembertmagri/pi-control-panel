@@ -9,8 +9,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Memory;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class MemoryService<TMemory, TMemoryStatus> : BaseService<TMemory>, IMemoryService<TMemory, TMemoryStatus>
@@ -34,8 +34,7 @@
         public Task<TMemoryStatus> GetStatusAsync()
         {
             this.Logger.Debug("Infra layer -> MemoryService -> GetStatusAsync");
-            var memoryStatus = this.GetMemoryStatus();
-            return Task.FromResult(memoryStatus);
+            return this.GetMemoryStatusAsync();
         }
 
         /// <inheritdoc/>
@@ -53,9 +52,9 @@
         }
 
         /// <inheritdoc/>
-        protected override TMemory GetModel()
+        protected override async Task<TMemory> GetModelAsync()
         {
-            var result = BashCommands.Free.Bash();
+            var result = await BashCommands.Free.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -74,9 +73,9 @@
             };
         }
 
-        private TMemoryStatus GetMemoryStatus()
+        private async Task<TMemoryStatus> GetMemoryStatusAsync()
         {
-            var result = BashCommands.Free.Bash();
+            var result = await BashCommands.Free.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Free}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },

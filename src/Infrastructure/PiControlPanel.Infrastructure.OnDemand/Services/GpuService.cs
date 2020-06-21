@@ -6,8 +6,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class GpuService : BaseService<Gpu>, IGpuService
@@ -22,15 +22,15 @@
         }
 
         /// <inheritdoc/>
-        protected override Gpu GetModel()
+        protected override async System.Threading.Tasks.Task<Gpu> GetModelAsync()
         {
-            var result = BashCommands.GetMemGpu.Bash();
+            var result = await BashCommands.GetMemGpu.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.GetMemGpu}' command: '{result}'");
             string gpu = result.Replace("gpu=", string.Empty).Replace("M", string.Empty);
             this.Logger.Trace($"Gpu memory: '{gpu}' MB");
 
             var frequency = 500;
-            result = BashCommands.CatBootConfig.Bash();
+            result = await BashCommands.CatBootConfig.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
             var lines = result.Split(
                 new[] { Environment.NewLine },

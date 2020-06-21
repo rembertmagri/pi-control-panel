@@ -10,8 +10,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Network;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class NetworkService : BaseService<Network>, INetworkService
@@ -36,7 +36,7 @@
         {
             this.Logger.Debug("Infra layer -> NetworkService -> GetNetworkInterfacesStatusAsync");
 
-            var result = BashCommands.CatProcNetDev.Bash();
+            var result = await BashCommands.CatProcNetDev.BashAsync();
             var now = DateTime.Now;
             this.Logger.Trace($"Result of '{BashCommands.CatProcNetDev}' command: '{result}'");
             var lines = result
@@ -75,7 +75,7 @@
 
             await Task.Delay(samplingInterval);
 
-            result = BashCommands.CatProcNetDev.Bash();
+            result = await BashCommands.CatProcNetDev.BashAsync();
             now = DateTime.Now;
             this.Logger.Trace($"Result of '{BashCommands.CatProcNetDev}' command: '{result}'");
             lines = result
@@ -131,14 +131,14 @@
         }
 
         /// <inheritdoc/>
-        protected override Network GetModel()
+        protected override async Task<Network> GetModelAsync()
         {
             var model = new Network()
             {
                 NetworkInterfaces = new List<NetworkInterface>()
             };
 
-            var result = BashCommands.Ifconfig.Bash();
+            var result = await BashCommands.Ifconfig.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Ifconfig}' command: '{result}'");
 
             var regex = new Regex(@"(?<name>\S+):\sflags=\d+<\S*RUNNING\S*>\s+mtu\s\d+\r?\n\s+inet\s(?<ip>\S+)\s+netmask\s(?<mask>\S+)\s+broadcast\s(?<gateway>\S+)");
