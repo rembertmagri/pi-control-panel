@@ -10,8 +10,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Cpu;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class CpuService : BaseService<Cpu>, ICpuService
@@ -40,11 +40,11 @@
         }
 
         /// <inheritdoc/>
-        public Task<CpuLoadStatus> GetLoadStatusAsync()
+        public async Task<CpuLoadStatus> GetLoadStatusAsync()
         {
             this.Logger.Debug("Infra layer -> CpuService -> GetLoadStatusAsync");
 
-            var result = BashCommands.Top.Bash();
+            var result = await BashCommands.Top.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Top}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -63,7 +63,7 @@
             processLines = processLines.Take(10).ToList();
             var dateTime = DateTime.Now;
 
-            return Task.FromResult(new CpuLoadStatus()
+            return new CpuLoadStatus()
             {
                 LastMinuteAverage = double.Parse(averageLoadGroups["lastMinute"].Value),
                 Last5MinutesAverage = double.Parse(averageLoadGroups["last5Minutes"].Value),
@@ -72,7 +72,7 @@
                 KernelRealTime = double.Parse(realTimeLoadGroups["kernel"].Value),
                 Processes = this.GetProcesses(processLines, dateTime),
                 DateTime = dateTime
-            });
+            };
         }
 
         /// <inheritdoc/>
@@ -90,11 +90,11 @@
         }
 
         /// <inheritdoc/>
-        public Task<CpuSensorsStatus> GetSensorsStatusAsync()
+        public async Task<CpuSensorsStatus> GetSensorsStatusAsync()
         {
             this.Logger.Debug("Infra layer -> CpuService -> GetSensorsStatusAsync");
 
-            var result = BashCommands.MeasureTemp.Bash();
+            var result = await BashCommands.MeasureTemp.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.MeasureTemp}' command: '{result}'");
             var temperatureResult = result[(result.IndexOf('=') + 1) ..result.IndexOf("'")];
             this.Logger.Trace($"Temperature substring: '{temperatureResult}'");
@@ -103,7 +103,7 @@
                 this.Logger.Warn($"Could not parse temperature: '{temperatureResult}'");
             }
 
-            result = BashCommands.MeasureVolts.Bash();
+            result = await BashCommands.MeasureVolts.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.MeasureVolts}' command: '{result}'");
             var voltageResult = result[(result.IndexOf('=') + 1) ..result.IndexOf("V")];
             this.Logger.Trace($"Voltage substring: '{voltageResult}'");
@@ -112,14 +112,14 @@
                 this.Logger.Warn($"Could not parse voltage: '{voltageResult}'");
             }
 
-            result = BashCommands.GetThrottled.Bash();
+            result = await BashCommands.GetThrottled.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.GetThrottled}' command: '{result}'");
             var getThrottledResult = result[(result.IndexOf('x') + 1) ..result.Length];
             this.Logger.Trace($"Throttled substring: '{getThrottledResult}'");
             var getThrottledInBinary = Convert.ToString(Convert.ToInt32(getThrottledResult, 16), 2);
             var binaryLength = getThrottledInBinary.Length;
 
-            return Task.FromResult(new CpuSensorsStatus()
+            return new CpuSensorsStatus()
             {
                 Temperature = temperature,
                 Voltage = voltage,
@@ -132,7 +132,7 @@
                 ThrottlingOccurred = binaryLength > 18 && '1'.Equals(getThrottledInBinary[binaryLength - 19]),
                 SoftTemperatureLimitOccurred = binaryLength > 19 && '1'.Equals(getThrottledInBinary[binaryLength - 20]),
                 DateTime = DateTime.Now
-            });
+            };
         }
 
         /// <inheritdoc/>
@@ -154,7 +154,7 @@
         {
             this.Logger.Debug("Infra layer -> CpuService -> GetFrequencyAsync");
 
-            var result = BashCommands.CatCpuFreqStats.Bash();
+            var result = await BashCommands.CatCpuFreqStats.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatCpuFreqStats}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -176,7 +176,7 @@
 
             await Task.Delay(samplingInterval);
 
-            result = BashCommands.CatCpuFreqStats.Bash();
+            result = await BashCommands.CatCpuFreqStats.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatCpuFreqStats}' command: '{result}'");
             lines = result.Split(
                 new[] { Environment.NewLine },
@@ -230,9 +230,9 @@
         }
 
         /// <inheritdoc/>
-        protected override Cpu GetModel()
+        protected override async Task<Cpu> GetModelAsync()
         {
-            var result = BashCommands.CatProcCpuInfo.Bash();
+            var result = await BashCommands.CatProcCpuInfo.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatProcCpuInfo}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -245,11 +245,11 @@
                 model.Split(':')[1].Trim();
             this.Logger.Trace($"Cpu model: '{model}'");
 
-            result = BashCommands.CatScalingGovernor.Bash();
+            result = await BashCommands.CatScalingGovernor.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatScalingGovernor}' command: '{result}'");
             var scalingGovernor = result;
 
-            result = BashCommands.CatBootConfig.Bash();
+            result = await BashCommands.CatBootConfig.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
             lines = result.Split(
                 new[] { Environment.NewLine },

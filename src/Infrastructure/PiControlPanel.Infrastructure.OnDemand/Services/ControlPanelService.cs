@@ -7,9 +7,9 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models;
     using PiControlPanel.Domain.Models.Enums;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class ControlPanelService : IControlPanelService
@@ -26,32 +26,32 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> RebootAsync()
+        public async Task<bool> RebootAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> RebootAsync");
-            var result = BashCommands.SudoReboot.Bash();
+            var result = await BashCommands.SudoReboot.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.SudoReboot}' command: '{result}'");
-            return Task.FromResult(true);
+            return true;
         }
 
         /// <inheritdoc/>
-        public Task<bool> ShutdownAsync()
+        public async Task<bool> ShutdownAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> ShutdownAsync");
-            var result = BashCommands.SudoShutdown.Bash();
+            var result = await BashCommands.SudoShutdown.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.SudoShutdown}' command: '{result}'");
-            return Task.FromResult(true);
+            return true;
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync()
+        public async Task<bool> UpdateAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> UpdateAsync");
 
-            var result = BashCommands.SudoAptGetUpdate.Bash();
+            var result = await BashCommands.SudoAptGetUpdate.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
             var sudoAptGetUpgradeCommand = string.Format(BashCommands.SudoAptGetUpgrade, "y");
-            result = sudoAptGetUpgradeCommand.Bash();
+            result = await sudoAptGetUpgradeCommand.BashAsync();
             this.logger.Trace($"Result of '{sudoAptGetUpgradeCommand}' command: '{result}'");
 
             string lastLine = result
@@ -62,59 +62,59 @@
                 .Equals(lastLine))
             {
                 this.logger.Info("Firmware already up-to-date, no need to update.");
-                return Task.FromResult(false);
+                return false;
             }
 
-            result = BashCommands.SudoAptgetAutoremove.Bash();
+            result = await BashCommands.SudoAptgetAutoremove.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoremove}' command: '{result}'");
-            result = BashCommands.SudoAptgetAutoclean.Bash();
+            result = await BashCommands.SudoAptgetAutoclean.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.SudoAptgetAutoclean}' command: '{result}'");
 
-            return Task.FromResult(true);
+            return true;
         }
 
         /// <inheritdoc/>
-        public Task<bool> KillAsync(UserContext context, int processId)
+        public async Task<bool> KillAsync(UserContext context, int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> KillAsync");
 
             var sudoKillCommand = string.Format(BashCommands.SudoKill, processId);
-            var result = sudoKillCommand.Bash();
+            var result = await sudoKillCommand.BashAsync();
 
             if (!string.IsNullOrEmpty(result))
             {
                 this.logger.Warn($"Result of '{sudoKillCommand}' command: '{result}'");
-                return Task.FromResult(false);
+                return false;
             }
 
             this.logger.Info($"Result of '{sudoKillCommand}' command is empty, success");
-            return Task.FromResult(true);
+            return true;
         }
 
         /// <inheritdoc/>
-        public Task<string> GetProcessOwnerUsernameAsync(int processId)
+        public async Task<string> GetProcessOwnerUsernameAsync(int processId)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> GetProcessOwnerUsernameAsync");
 
             var processStatusUserCommand = string.Format(BashCommands.PsUser, processId);
-            var result = processStatusUserCommand.Bash();
+            var result = await processStatusUserCommand.BashAsync();
 
             if (string.IsNullOrEmpty(result))
             {
                 this.logger.Warn($"Result of '{processStatusUserCommand}' command is empty, process '{processId}' doesn't exist");
-                return Task.FromResult(string.Empty);
+                return string.Empty;
             }
 
             this.logger.Trace($"Result of '{processStatusUserCommand}' command: '{result}'");
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <inheritdoc/>
-        public Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
+        public async Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel)
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> OverclockAsync");
 
-            var result = BashCommands.CatBootConfig.Bash();
+            var result = await BashCommands.CatBootConfig.BashAsync();
             this.logger.Trace($"Result of '{BashCommands.CatBootConfig}' command: '{result}'");
             var lines = result.Split(
                 new[] { Environment.NewLine },
@@ -129,7 +129,7 @@
             if (currentFrequency == (int)cpuMaxFrequencyLevel)
             {
                 this.logger.Info($"Frequency already set to {currentFrequency}, no need to restart");
-                return Task.FromResult(false);
+                return false;
             }
 
             var overVoltageLine = lines.FirstOrDefault(line => line.Contains("over_voltage="));
@@ -141,7 +141,7 @@
                     BashCommands.SudoSedBootConfig,
                     frequencyLine,
                     $"#over_voltage=0\\n{frequencyLine}");
-                result = createOverVoltageConfigCommand.Bash();
+                result = await createOverVoltageConfigCommand.BashAsync();
                 if (!string.IsNullOrEmpty(result))
                 {
                     this.logger.Error($"Result of '{createOverVoltageConfigCommand}' command: '{result}', couldn't create over_voltage configuration");
@@ -174,7 +174,7 @@
                 BashCommands.SudoSedBootConfig,
                 $"{overVoltageLine}",
                 $"over_voltage={overVoltage}");
-            result = setOverVoltageConfigCommand.Bash();
+            result = await setOverVoltageConfigCommand.BashAsync();
             if (!string.IsNullOrEmpty(result))
             {
                 this.logger.Error($"Result of '{setOverVoltageConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
@@ -187,7 +187,7 @@
                 BashCommands.SudoSedBootConfig,
                 $"{frequencyLine}",
                 $"arm_freq={frequency}");
-            result = setFrequencyConfigCommand.Bash();
+            result = await setFrequencyConfigCommand.BashAsync();
             if (!string.IsNullOrEmpty(result))
             {
                 this.logger.Error($"Result of '{setFrequencyConfigCommand}' command: '{result}', couldn't set over_voltage configuration");
@@ -196,7 +196,7 @@
 
             this.logger.Debug($"Result of '{setFrequencyConfigCommand}' command is empty, success");
 
-            return this.RebootAsync();
+            return await this.RebootAsync();
         }
     }
 }

@@ -25,14 +25,13 @@
         public Task<T> GetAsync()
         {
             this.Logger.Debug($"Infra layer -> BaseService<{typeof(T).Name}> -> GetAsync");
-            var model = this.GetModel();
-            return Task.FromResult(model);
+            return this.GetModelAsync();
         }
 
         /// <summary>
         /// Gets the model information on demand.
         /// </summary>
         /// <returns>The model information.</returns>
-        protected abstract T GetModel();
+        protected abstract Task<T> GetModelAsync();
     }
 }

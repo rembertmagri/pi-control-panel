@@ -124,19 +124,19 @@
                 options.AllowSynchronousIO = true;
             });
 
+            services.AddHostedService<NetworkWorker>();
             services.AddHostedService<DiskWorker>();
             services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
             services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
-            services.AddHostedService<NetworkWorker>();
             services.AddHostedService<NetworkInterfaceStatusWorker>();
 
             if (!this.IsRunningInContainer())
             {
-                services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<CpuWorker>();
-                services.AddHostedService<CpuFrequencyWorker>();
+                services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<GpuWorker>();
                 services.AddHostedService<OsWorker>();
+                services.AddHostedService<CpuFrequencyWorker>();
             }
             else
             {

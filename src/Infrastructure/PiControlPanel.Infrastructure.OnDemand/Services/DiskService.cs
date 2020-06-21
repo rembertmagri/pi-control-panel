@@ -10,8 +10,8 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
-    using PiControlPanel.Domain.Contracts.Util;
     using PiControlPanel.Domain.Models.Hardware.Disk;
+    using PiControlPanel.Infrastructure.OnDemand.Util;
 
     /// <inheritdoc/>
     public class DiskService : BaseService<Disk>, IDiskService
@@ -30,11 +30,11 @@
         }
 
         /// <inheritdoc/>
-        public Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
+        public async Task<IList<FileSystemStatus>> GetFileSystemsStatusAsync(IList<string> fileSystemNames)
         {
             this.Logger.Debug("Infra layer -> DiskService -> GetFileSystemsStatusAsync");
 
-            var result = BashCommands.Df.Bash();
+            var result = await BashCommands.Df.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
@@ -62,7 +62,7 @@
                 }
             }
 
-            return Task.FromResult(fileSystemsStatus);
+            return fileSystemsStatus;
         }
 
         /// <inheritdoc/>
@@ -82,14 +82,14 @@
         }
 
         /// <inheritdoc/>
-        protected override Disk GetModel()
+        protected override async Task<Disk> GetModelAsync()
         {
             var model = new Disk()
             {
                 FileSystems = new List<FileSystem>()
             };
 
-            var result = BashCommands.Df.Bash();
+            var result = await BashCommands.Df.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.Df}' command: '{result}'");
             string[] lines = result.Split(
                 new[] { Environment.NewLine },
