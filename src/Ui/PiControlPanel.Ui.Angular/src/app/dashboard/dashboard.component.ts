@@ -529,21 +529,21 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  killProcess(processId: number) {
+  killProcess(processId: number): void {
     this.raspberryPiService.killProcess(processId)
       .pipe(take(1))
       .subscribe(
         result => {
           if (result) {
             alert(`Process #${processId} killed`);
-            this.raspberryPi.cpu.loadStatus.processes =
-              remove(this.raspberryPi.cpu.loadStatus.processes, (process) => {
-                return process.processId !== processId;
-              });
           }
           else {
-            alert('Error');
+            alert(`Process #${processId} was already terminated`);
           }
+          this.raspberryPi.cpu.loadStatus.processes =
+            remove(
+              this.raspberryPi.cpu.loadStatus.processes,
+              (process) => process.processId !== processId);
         },
         error => this.errorMessage = <any>error
       );
