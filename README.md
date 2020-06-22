@@ -5,10 +5,9 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rembertmagri/pi-control-panel)
 ![GitHub issues](https://img.shields.io/github/issues/rembertmagri/pi-control-panel)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/rembertmagri/pi-control-panel)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/rembertmagri/pi-control-panel)
 ![GitHub Release Date](https://img.shields.io/github/release-date/rembertmagri/pi-control-panel)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/rembertmagri/pi-control-panel)
 
 Web control panel for Raspberry Pi 4 implemented on Angular and  .NET Core using GraphQL as API and EF Core as ORM. Allows easy overclocking, killing processes, rebooting and shutting down the Pi. It also provides real-time access to system information such as temperature, memory and disk usage, CPU load and network status.
 
