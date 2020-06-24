@@ -4,6 +4,9 @@
       <div class="row d-flex justify-content-between">
         <img src="../assets/raspberry.gif">
         <h3>Raspberry Pi Control Panel</h3>
+        <nav>
+          <a routerLink="/terminal" routerLinkActive="active" class="btn btn-dark">Terminal</a>
+        </nav>
         <div class="btn-group" role="group" aria-label="Actions">
           <button type="button" class="btn btn-dark" (click)="reboot()" [disabled]="!isSuperUser">
             Reboot
@@ -41,7 +44,7 @@
                     </bs-sortable>
                   </div>
                   <div class="col-sm-3">
-                    <button type="button" class="btn btn-dark" (click)="openModal()"
+                    <button type="button" class="btn btn-dark" (click)="openChartModal()"
                       [disabled]="selectedChartItems.length === 0 || selectedChartItems.length > MAX_CHART_VISIBLE_ITEMS">
                       View Chart
                     </button>

@@ -9,10 +9,10 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { isNil, get } from 'lodash';
 
 @Component({
-  templateUrl: './real-time-modal.component.html',
-  styleUrls: ['./real-time-modal.component.css']
+  templateUrl: './real-time-chart-modal.component.html',
+  styleUrls: ['./real-time-chart-modal.component.css']
 })
-export class RealTimeModalComponent implements OnInit {
+export class RealTimeChartModalComponent implements OnInit {
   errorMessage: string;
   public chartData: any[];
   colorScheme = {
@@ -80,5 +80,5 @@ export class RealTimeModalComponent implements OnInit {
   getValue(model: any) {
     return get(model, 'absoluteValue', model.value);
   }
-  
+
 }

@@ -34,13 +34,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardResolve } from './dashboard/dashboard.resolve';
-import { RealTimeModalComponent } from './dashboard/modal/real-time-modal.component';
+import { RealTimeChartModalComponent } from './dashboard/chart/real-time-chart-modal.component';
+import { TerminalComponent } from './terminal/terminal.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, resolve: { raspberryPi: DashboardResolve } },
+  { path: 'terminal', component: TerminalComponent },
   { path: '**', redirectTo: '/home' },
 ];
 
@@ -49,7 +51,8 @@ export const routes: Routes = [
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    RealTimeModalComponent
+    RealTimeChartModalComponent,
+    TerminalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -75,7 +78,7 @@ export const routes: Routes = [
     NgBytesPipeModule
   ],
   entryComponents: [
-    RealTimeModalComponent,
+    RealTimeChartModalComponent,
     MatSpinner
   ],
   providers: [

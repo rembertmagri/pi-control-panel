@@ -1,0 +1,5 @@
+@import 'xterm/css/xterm.css';
+
+.terminal {
+    min-height: 700px;
+}
