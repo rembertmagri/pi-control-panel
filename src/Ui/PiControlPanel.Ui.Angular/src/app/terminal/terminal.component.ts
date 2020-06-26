@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
 import { environment } from '@environments/environment';
 
 @Component({
@@ -10,6 +11,7 @@ import { environment } from '@environments/environment';
 export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('myTerminal') terminalDiv: ElementRef;
   terminal: Terminal;
+  fitAddon: FitAddon;
   webSocket: WebSocket;
 
   constructor() { }
@@ -19,12 +21,15 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
       cursorBlink: true,
       cursorStyle: "block"
     });
+    this.fitAddon = new FitAddon();
     this.webSocket = new WebSocket(`ws://${environment.graphqlEndpoint}/shell`);
   }
 
   ngAfterViewInit() {
     let currentLine = "";
+    this.terminal.loadAddon(this.fitAddon);
     this.terminal.open(this.terminalDiv.nativeElement);
+    this.fitAddon.fit();
     this.terminal.write('$ ');
     this.terminal.focus();
 
