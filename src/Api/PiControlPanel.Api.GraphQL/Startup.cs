@@ -206,6 +206,9 @@
                 .UseHealthChecks("/healthcheck")
                 .UseGraphQL<ControlPanelSchema>();
 
+            // Add web sockets middleware to the request pipeline (support for shell commands through SSH)
+            app.UseWebSocketsToSsh();
+
             // Enables static files to serve Ui pages
             app.UseStaticFiles();
             if (!webHostEnvironment.IsDevelopment())
