@@ -65,8 +65,10 @@
             }
 
             var jsonResult = Encoding.UTF8.GetString(buffer, 0, webSocketReceiveResult.Count);
-            var authenticated = await this.AuthenticateAsync(jsonResult);
+            this.logger.Trace($"Received string {jsonResult}");
+            var webSocketData = JsonConvert.DeserializeObject<WebSocketData>(jsonResult);
 
+            var authenticated = await this.AuthenticateAsync(webSocketData);
             if (!authenticated)
             {
                 this.logger.Warn($"Closing socket, user could not be authenticated");
@@ -76,10 +78,8 @@
             return authenticated;
         }
 
-        private async Task<bool> AuthenticateAsync(string result)
+        private async Task<bool> AuthenticateAsync(WebSocketData webSocketData)
         {
-            this.logger.Trace($"Received string {result}");
-            var webSocketData = JsonConvert.DeserializeObject<WebSocketData>(result);
             if (!WebSocketDataType.Token.Equals(webSocketData?.Type))
             {
                 this.logger.Warn($"Invalid data type {webSocketData?.Type}");
