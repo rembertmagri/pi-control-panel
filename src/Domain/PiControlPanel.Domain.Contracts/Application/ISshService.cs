@@ -13,6 +13,6 @@
         /// </summary>
         /// <param name="webSocket">The reference to the web socket from the application middleware.</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task RunSsh(WebSocket webSocket);
+        Task BindAsync(WebSocket webSocket);
     }
 }

@@ -35,7 +35,7 @@
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    await sshService.RunSsh(webSocket);
+                    await sshService.BindAsync(webSocket);
                 }
                 else
                 {

@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build-api
 WORKDIR /src
 COPY ["Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj", "Api/PiControlPanel.Api.GraphQL/"]
 COPY ["Application/PiControlPanel.Application.BackgroundServices/PiControlPanel.Application.BackgroundServices.csproj", "Application/PiControlPanel.Application.BackgroundServices/"]
+COPY ["Application/PiControlPanel.Application.SecureShell/PiControlPanel.Application.SecureShell.csproj", "Application/PiControlPanel.Application.SecureShell/"]
 COPY ["Application/PiControlPanel.Application.Services/PiControlPanel.Application.Services.csproj", "Application/PiControlPanel.Application.Services/"]
 COPY ["Domain/PiControlPanel.Domain.Contracts/PiControlPanel.Domain.Contracts.csproj", "Domain/PiControlPanel.Domain.Contracts/"]
 COPY ["Domain/PiControlPanel.Domain.Models/PiControlPanel.Domain.Models.csproj", "Domain/PiControlPanel.Domain.Models/"]
