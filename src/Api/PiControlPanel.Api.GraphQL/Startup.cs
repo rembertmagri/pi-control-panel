@@ -5,6 +5,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Boxed.AspNetCore;
+    using global::GraphQL;
     using global::GraphQL.Server;
     using global::GraphQL.Server.Ui.Playground;
     using LightInject;
@@ -23,7 +24,6 @@
     using PiControlPanel.Application.BackgroundServices;
     using PiControlPanel.Application.BackgroundServices.Cpu;
     using PiControlPanel.Application.Services;
-    using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
@@ -60,6 +60,8 @@
                 .AddUserContextBuilder(context => new GraphQLUserContext { User = context.User });
 
             services.AddCustomGraphQL(this.webHostEnvironment);
+
+            services.AddRequiredServices(this.configuration, this.logger);
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -156,26 +158,11 @@
         /// <param name="container">LightInject service container.</param>
         public void ConfigureContainer(IServiceContainer container)
         {
-            container.SetDefaultLifetime<PerScopeLifetime>();
-
-            container.AddGraphQLServicesDependency();
-
-            container.Register<ISecurityService, SecurityService>();
-            container.Register<IControlPanelService, ControlPanelService>();
-            container.Register<IChipsetService, ChipsetService>();
-            container.Register<ICpuService, CpuService>();
-            container.Register<IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus>, MemoryService<RandomAccessMemory, RandomAccessMemoryStatus>>();
-            container.Register<IMemoryService<SwapMemory, SwapMemoryStatus>, MemoryService<SwapMemory, SwapMemoryStatus>>();
-            container.Register<IGpuService, GpuService>();
-            container.Register<IDiskService, DiskService>();
-            container.Register<IOsService, OsService>();
-            container.Register<INetworkService, NetworkService>();
+            // Sets LightInject as GraphQL's dependency resolver
+            container.RegisterSingleton<IDependencyResolver>(s => new FuncDependencyResolver(container.GetInstance));
 
             // Registers all services required for the Application layer
             container.RegisterFrom<ApplicationCompositionRoot>();
-
-            container.RegisterSingleton<IConfiguration>(factory => this.configuration);
-            container.RegisterSingleton<ILogger>(factory => this.logger);
         }
 
         /// <summary>
@@ -207,7 +194,7 @@
                 .UseGraphQL<ControlPanelSchema>();
 
             // Add web sockets middleware to the request pipeline (support for shell commands through SSH)
-            app.UseWebSocketsToSsh();
+            app.UseMiddleware<WebSocketToSshMiddleware>();
 
             // Enables static files to serve Ui pages
             app.UseStaticFiles();

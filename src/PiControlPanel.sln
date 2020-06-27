@@ -45,7 +45,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F3F2B27
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Tests.UnitTests", "Tests\PiControlPanel.Tests.UnitTests\PiControlPanel.Tests.UnitTests.csproj", "{172EBF48-4C4B-432F-8DF4-A37F53C2374A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiControlPanel.Tests.IntegrationTests", "Tests\PiControlPanel.Tests.IntegrationTests\PiControlPanel.Tests.IntegrationTests.csproj", "{6BC85964-863B-48C6-BEA8-E3C94A1D6235}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Tests.IntegrationTests", "Tests\PiControlPanel.Tests.IntegrationTests\PiControlPanel.Tests.IntegrationTests.csproj", "{6BC85964-863B-48C6-BEA8-E3C94A1D6235}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiControlPanel.Application.SecureShell", "Application\PiControlPanel.Application.SecureShell\PiControlPanel.Application.SecureShell.csproj", "{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,10 @@ Global
 		{6BC85964-863B-48C6-BEA8-E3C94A1D6235}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BC85964-863B-48C6-BEA8-E3C94A1D6235}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BC85964-863B-48C6-BEA8-E3C94A1D6235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{9A486103-437A-4630-B2C8-C80AC1A871F2} = {A9C7A4A7-6C4E-4F75-98E4-F3F89D766073}
 		{172EBF48-4C4B-432F-8DF4-A37F53C2374A} = {5F3F2B27-7342-4A5C-B480-7A9ADF3634F0}
 		{6BC85964-863B-48C6-BEA8-E3C94A1D6235} = {5F3F2B27-7342-4A5C-B480-7A9ADF3634F0}
+		{3E9421D1-1227-4466-9D9C-BE7C879D9B0D} = {394BF366-1BFB-4BC9-BE9A-61DFB1E98EEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98CB8066-E593-4DFF-9EA8-9BB8DB364288}
