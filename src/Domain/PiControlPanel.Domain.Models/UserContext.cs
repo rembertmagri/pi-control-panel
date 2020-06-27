@@ -11,6 +11,11 @@
         public string Username { get; set; }
 
         /// <summary>
+        /// Gets or sets the password of the currently logged in user.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the user is anonymous.
         /// </summary>
         public bool IsAnonymous { get; set; }

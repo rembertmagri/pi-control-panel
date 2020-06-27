@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, Element
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { environment } from '@environments/environment';
+import { IWebSocketData, WebSocketDataType } from '@interfaces/webSocketData';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -23,6 +24,12 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.fitAddon = new FitAddon();
     this.webSocket = new WebSocket(`ws://${environment.graphqlEndpoint}/shell`);
+    this.webSocket.onopen = (event: Event) => {
+      console.log(JSON.stringify(event));
+      const token = localStorage.getItem('jwt');
+      const data = { type: WebSocketDataType.TOKEN, payload: token } as IWebSocketData;
+      this.webSocket.send(JSON.stringify(data));
+    };
   }
 
   ngAfterViewInit() {
@@ -46,7 +53,7 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
       if (ev.keyCode === 13) { //Enter
         this.terminal.write('\r\n');
         if (currentLine) {
-          const data = { type: "command", payload: currentLine };
+          const data = { type: WebSocketDataType.COMMAND, payload: currentLine } as IWebSocketData;
           this.webSocket.send(JSON.stringify(data));
           currentLine = "";
         }

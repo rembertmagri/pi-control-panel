@@ -75,6 +75,35 @@
             };
         }
 
+        /// <inheritdoc/>
+        public async Task<UserAccount> GetUserAccountAsync(string token)
+        {
+            this.logger.Debug("Application layer -> SecurityService -> GetUserAccount");
+
+            var jsonWebToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var usernameClaim = jsonWebToken.Claims.SingleOrDefault(c => c.Type == CustomClaimTypes.Username);
+            var passwordClaim = jsonWebToken.Claims.SingleOrDefault(c => c.Type == CustomClaimTypes.Password);
+
+            if (string.IsNullOrEmpty(usernameClaim?.Value) || string.IsNullOrEmpty(passwordClaim?.Value))
+            {
+                throw new BusinessException("Invalid token");
+            }
+
+            var userAccount = new UserAccount()
+            {
+                Username = usernameClaim.Value,
+                Password = passwordClaim.Value
+            };
+
+            var isUserAccountValid = await this.userAccountService.ValidateAsync(userAccount);
+            if (!isUserAccountValid)
+            {
+                throw new BusinessException("Invalid user account");
+            }
+
+            return userAccount;
+        }
+
         private async Task<JwtSecurityToken> GenerateJwtSecurityTokenAsync(UserAccount userAccount)
         {
             this.logger.Debug("Application layer -> SecurityService -> GenerateJwtSecurityTokenAsync");
@@ -99,6 +128,7 @@
             {
                 this.logger.Info($"Creating claims for user {userAccount.Username}");
                 identity.AddClaim(new Claim(CustomClaimTypes.Username, userAccount.Username));
+                identity.AddClaim(new Claim(CustomClaimTypes.Password, userAccount.Password));
                 identity.AddClaim(new Claim(CustomClaimTypes.IsAnonymous, false.ToString()));
                 identity.AddClaim(new Claim(CustomClaimTypes.IsAuthenticated, true.ToString()));
                 identity.AddClaim(new Claim(ClaimTypes.Role, Roles.User));

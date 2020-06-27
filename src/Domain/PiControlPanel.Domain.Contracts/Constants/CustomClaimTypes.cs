@@ -11,6 +11,11 @@
         public const string Username = nameof(Username);
 
         /// <summary>
+        /// Password claim type.
+        /// </summary>
+        public const string Password = nameof(Password);
+
+        /// <summary>
         /// Is anonymous claim type.
         /// </summary>
         public const string IsAnonymous = nameof(IsAnonymous);
