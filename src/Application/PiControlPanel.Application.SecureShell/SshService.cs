@@ -145,7 +145,7 @@
 
             var resultString = JsonConvert.SerializeObject(
                 result,
-                Formatting.Indented,
+                Formatting.None,
                 new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
