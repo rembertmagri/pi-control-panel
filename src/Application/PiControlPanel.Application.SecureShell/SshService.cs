@@ -1,11 +1,13 @@
 ﻿namespace PiControlPanel.Application.SecureShell
 {
     using System;
+    using System.IO;
     using System.Net.WebSockets;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
 
@@ -40,33 +42,19 @@
                 return;
             }
 
-            var buffer = new byte[1024 * 4];
             this.logger.Info("SSH connection open");
-            var webSocketReceiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            while (!webSocketReceiveResult.CloseStatus.HasValue)
-            {
-                this.logger.Trace($"Received {webSocketReceiveResult.Count} bytes");
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, webSocketReceiveResult.Count), webSocketReceiveResult.MessageType, webSocketReceiveResult.EndOfMessage, CancellationToken.None);
-                webSocketReceiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            }
+            var webSocketData = await this.ReceiveWebSocketData(webSocket);
 
-            await webSocket.CloseAsync(webSocketReceiveResult.CloseStatus.Value, webSocketReceiveResult.CloseStatusDescription, CancellationToken.None);
-            this.logger.Info($"SSH connection closed with status {webSocketReceiveResult.CloseStatus.Value}");
+            while (webSocketData != null)
+            {
+                await this.ExecuteCommandAsync(webSocket, webSocketData);
+                webSocketData = await this.ReceiveWebSocketData(webSocket);
+            }
         }
 
         private async Task<bool> HandleAuthenticationHandshake(WebSocket webSocket)
         {
-            var buffer = new byte[1024 * 4];
-            var webSocketReceiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            if (webSocketReceiveResult.CloseStatus.HasValue)
-            {
-                this.logger.Warn($"SSH connection closed before authentication with status {webSocketReceiveResult.CloseStatus.Value}");
-                return false;
-            }
-
-            var jsonResult = Encoding.UTF8.GetString(buffer, 0, webSocketReceiveResult.Count);
-            this.logger.Trace($"Received string {jsonResult}");
-            var webSocketData = JsonConvert.DeserializeObject<WebSocketData>(jsonResult);
+            var webSocketData = await this.ReceiveWebSocketData(webSocket);
 
             var authenticated = await this.AuthenticateAsync(webSocketData);
             if (!authenticated)
@@ -76,6 +64,42 @@
             }
 
             return authenticated;
+        }
+
+        private async Task<WebSocketData> ReceiveWebSocketData(WebSocket webSocket)
+        {
+            var buffer = new byte[1024 * 4];
+            WebSocketReceiveResult result;
+            var resultString = string.Empty;
+
+            using (var stream = new MemoryStream())
+            {
+                do
+                {
+                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                    if (result.CloseStatus.HasValue)
+                    {
+                        await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                        this.logger.Info($"SSH connection closed with status {result.CloseStatus.Value}");
+                        return null;
+                    }
+
+                    if (result.Count == 0)
+                    {
+                        this.logger.Trace($"Socket received zero bytes with state {webSocket.State}");
+                        break;
+                    }
+
+                    stream.Write(buffer, 0, result.Count);
+                }
+                while (!result.EndOfMessage); // check end of message mark
+
+                resultString = Encoding.UTF8.GetString(stream.ToArray());
+            }
+
+            this.logger.Trace($"Received message: {resultString}");
+            return JsonConvert.DeserializeObject<WebSocketData>(resultString);
         }
 
         private async Task<bool> AuthenticateAsync(WebSocketData webSocketData)
@@ -95,6 +119,39 @@
 
             var userAccount = await this.securityService.GetUserAccountAsync(token);
             return userAccount?.Username != null && userAccount?.Password != null;
+        }
+
+        private async Task ExecuteCommandAsync(WebSocket webSocket, WebSocketData webSocketData)
+        {
+            if (!WebSocketDataType.StandardInput.Equals(webSocketData?.Type))
+            {
+                this.logger.Warn($"Invalid data type {webSocketData?.Type}");
+                return;
+            }
+
+            var command = webSocketData?.Payload;
+            if (string.IsNullOrEmpty(command))
+            {
+                this.logger.Warn($"Empty data payload, the command is required");
+                return;
+            }
+
+            var standardOutput = $"TODO: run command {command}";
+            var result = new WebSocketData()
+            {
+                Type = WebSocketDataType.StandardOutput,
+                Payload = standardOutput
+            };
+
+            var resultString = JsonConvert.SerializeObject(
+                result,
+                Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
+            var byteArray = Encoding.UTF8.GetBytes(resultString);
+            await webSocket.SendAsync(new ArraySegment<byte>(byteArray, 0, byteArray.Length), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 }

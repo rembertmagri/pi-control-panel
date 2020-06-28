@@ -11,8 +11,18 @@
         Token,
 
         /// <summary>
-        /// Command type.
+        /// Command standard input type.
         /// </summary>
-        Command
+        StandardInput,
+
+        /// <summary>
+        /// Command standard output type.
+        /// </summary>
+        StandardOutput,
+
+        /// <summary>
+        /// Command standard error type.
+        /// </summary>
+        StandardError
     }
 }

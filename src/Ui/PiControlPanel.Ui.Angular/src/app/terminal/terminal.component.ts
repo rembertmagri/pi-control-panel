@@ -42,8 +42,18 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Receive data from socket
     this.webSocket.onmessage = (messageEvent: MessageEvent) => {
-      const data = JSON.parse(messageEvent.data);
-      this.terminal.write(`${data.payload}\r\n$ `);
+      const data = JSON.parse(messageEvent.data) as IWebSocketData;
+      switch (data.type) {
+        case WebSocketDataType.STANDARD_OUTPUT:
+          this.terminal.write(`${data.payload}\r\n$ `);
+          break;
+        case WebSocketDataType.STANDARD_ERROR:
+          this.terminal.write(`ERROR: ${data.payload}\r\n$ `);
+          break;
+        default:
+          console.error(`Invalid data type: ${data.type} (payload was '${data.payload}')`);
+          break;
+      }
     };
 
     this.terminal.onKey((e: { key: string, domEvent: KeyboardEvent }) => {
@@ -53,7 +63,7 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
       if (ev.keyCode === 13) { //Enter
         this.terminal.write('\r\n');
         if (currentLine) {
-          const data = { type: WebSocketDataType.COMMAND, payload: currentLine } as IWebSocketData;
+          const data = { type: WebSocketDataType.STANDARD_INPUT, payload: currentLine } as IWebSocketData;
           this.webSocket.send(JSON.stringify(data));
           currentLine = "";
         }
