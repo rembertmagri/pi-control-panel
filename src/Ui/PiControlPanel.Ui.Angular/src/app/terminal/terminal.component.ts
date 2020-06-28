@@ -24,12 +24,6 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.fitAddon = new FitAddon();
     this.webSocket = new WebSocket(`ws://${environment.graphqlEndpoint}/shell`);
-    this.webSocket.onopen = (event: Event) => {
-      console.log(JSON.stringify(event));
-      const token = localStorage.getItem('jwt');
-      const data = { type: WebSocketDataType.TOKEN, payload: token } as IWebSocketData;
-      this.webSocket.send(JSON.stringify(data));
-    };
   }
 
   ngAfterViewInit() {
@@ -37,18 +31,28 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
     this.terminal.loadAddon(this.fitAddon);
     this.terminal.open(this.terminalDiv.nativeElement);
     this.fitAddon.fit();
-    this.terminal.write('$ ');
     this.terminal.focus();
+
+    this.webSocket.onopen = (event: Event) => {
+      console.log(JSON.stringify(event));
+      const token = localStorage.getItem('jwt');
+      this.webSocket.send(JSON.stringify(
+        { type: WebSocketDataType.TOKEN, payload: token } as IWebSocketData
+      ));
+      this.webSocket.send(JSON.stringify(
+        { type: WebSocketDataType.DIMENSIONS, payload: `${this.terminal.rows}|${this.terminal.cols}` } as IWebSocketData
+      ));
+    };
 
     // Receive data from socket
     this.webSocket.onmessage = (messageEvent: MessageEvent) => {
       const data = JSON.parse(messageEvent.data) as IWebSocketData;
       switch (data.type) {
         case WebSocketDataType.STANDARD_OUTPUT:
-          this.terminal.write(`${data.payload}\r\n$ `);
+          this.terminal.write(data.payload);
           break;
         case WebSocketDataType.STANDARD_ERROR:
-          this.terminal.write(`ERROR: ${data.payload}\r\n$ `);
+          this.terminal.write(`ERROR: ${data.payload}`);
           break;
         default:
           console.error(`Invalid data type: ${data.type} (payload was '${data.payload}')`);
@@ -62,14 +66,9 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (ev.keyCode === 13) { //Enter
         this.terminal.write('\r\n');
-        if (currentLine) {
-          const data = { type: WebSocketDataType.STANDARD_INPUT, payload: currentLine } as IWebSocketData;
-          this.webSocket.send(JSON.stringify(data));
-          currentLine = "";
-        }
-        else {
-          this.terminal.write('$ ');
-        }
+        const data = { type: WebSocketDataType.STANDARD_INPUT, payload: currentLine } as IWebSocketData;
+        this.webSocket.send(JSON.stringify(data));
+        currentLine = "";
       } else if (ev.keyCode === 8) { // Backspace
         // Do not delete the prompt
         if (currentLine) {

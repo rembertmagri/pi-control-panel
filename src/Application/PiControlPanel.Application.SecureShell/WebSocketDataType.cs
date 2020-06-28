@@ -11,6 +11,11 @@
         Token,
 
         /// <summary>
+        /// Dimensions type.
+        /// </summary>
+        Dimensions,
+
+        /// <summary>
         /// Command standard input type.
         /// </summary>
         StandardInput,

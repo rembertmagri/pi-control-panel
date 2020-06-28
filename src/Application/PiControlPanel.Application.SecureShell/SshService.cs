@@ -10,10 +10,13 @@
     using Newtonsoft.Json.Serialization;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
+    using PiControlPanel.Domain.Models.Authentication;
+    using Renci.SshNet;
 
     /// <inheritdoc/>
     public class SshService : ISshService
     {
+        private static readonly int BUFFERSIZE = 8 * 1024;
         private readonly ISecurityService securityService;
         private readonly ILogger logger;
 
@@ -35,40 +38,96 @@
         {
             this.logger.Debug($"Application layer -> SshService -> BindAsync");
 
-            var authenticated = await this.HandleAuthenticationHandshake(webSocket);
-            if (!authenticated)
+            var authenticatedAccount = await this.HandleAuthenticationHandshake(webSocket);
+            if (authenticatedAccount == null)
             {
-                this.logger.Warn($"Authentication handshake failed");
+                this.logger.Error($"Authentication handshake failed, closing socket");
+                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Could not authenticate", CancellationToken.None);
                 return;
             }
 
-            this.logger.Info("SSH connection open");
-            var webSocketData = await this.ReceiveWebSocketData(webSocket);
-
-            while (webSocketData != null)
+            var dimensions = await this.HandleTerminalDimensionsHandshake(webSocket);
+            if (dimensions == null)
             {
-                await this.ExecuteCommandAsync(webSocket, webSocketData);
-                webSocketData = await this.ReceiveWebSocketData(webSocket);
+                this.logger.Error($"Terminal dimensions handshake failed, closing socket");
+                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Could not get terminal dimensions", CancellationToken.None);
+                return;
+            }
+
+            using (var client = new SshClient("localhost", authenticatedAccount.Username, authenticatedAccount.Password))
+            {
+                client.Connect();
+                this.logger.Info($"SSH connection open, creating terminal with {dimensions.Rows} rows and {dimensions.Columns} columns");
+
+                using (var shellStream = client.CreateShellStream("xterm", dimensions.Rows, dimensions.Columns, 0, 0, BUFFERSIZE))
+                {
+                    this.KeepSendingWebSocketData(webSocket, shellStream);
+                    var webSocketData = await this.ReceiveWebSocketData(webSocket);
+                    while (webSocketData != null)
+                    {
+                        this.ExecuteCommand(webSocketData, shellStream);
+                        webSocketData = await this.ReceiveWebSocketData(webSocket);
+                    }
+                }
+
+                client.Disconnect();
             }
         }
 
-        private async Task<bool> HandleAuthenticationHandshake(WebSocket webSocket)
+        private async Task<UserAccount> HandleAuthenticationHandshake(WebSocket webSocket)
         {
             var webSocketData = await this.ReceiveWebSocketData(webSocket);
 
-            var authenticated = await this.AuthenticateAsync(webSocketData);
-            if (!authenticated)
+            if (!WebSocketDataType.Token.Equals(webSocketData?.Type))
             {
-                this.logger.Warn($"Closing socket, user could not be authenticated");
-                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Could not authenticate", CancellationToken.None);
+                this.logger.Error($"Invalid data type {webSocketData?.Type}, expected {WebSocketDataType.Token}");
+                return null;
             }
 
-            return authenticated;
+            var token = webSocketData?.Payload;
+            if (string.IsNullOrEmpty(token))
+            {
+                this.logger.Error($"Empty data payload, the JWT is required");
+                return null;
+            }
+
+            return await this.securityService.GetUserAccountAsync(token);
+        }
+
+        private async Task<TerminalDimensions> HandleTerminalDimensionsHandshake(WebSocket webSocket)
+        {
+            var webSocketData = await this.ReceiveWebSocketData(webSocket);
+
+            if (!WebSocketDataType.Dimensions.Equals(webSocketData?.Type))
+            {
+                this.logger.Error($"Invalid data type {webSocketData?.Type}, expected {WebSocketDataType.Dimensions}");
+                return null;
+            }
+
+            var payload = webSocketData?.Payload;
+            if (string.IsNullOrEmpty(payload))
+            {
+                this.logger.Error($"Empty data payload, the dimensions are required");
+                return null;
+            }
+
+            var dimensions = payload.Split('|');
+            if (dimensions.Length != 2 || !uint.TryParse(dimensions[0], out var rows) || !uint.TryParse(dimensions[1], out var columns))
+            {
+                this.logger.Error($"Could not parse terminal dimensions: {payload}");
+                return null;
+            }
+
+            return new TerminalDimensions()
+            {
+                Rows = rows,
+                Columns = columns
+            };
         }
 
         private async Task<WebSocketData> ReceiveWebSocketData(WebSocket webSocket)
         {
-            var buffer = new byte[1024 * 4];
+            var buffer = new byte[BUFFERSIZE];
             WebSocketReceiveResult result;
             var resultString = string.Empty;
 
@@ -81,7 +140,7 @@
                     if (result.CloseStatus.HasValue)
                     {
                         await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-                        this.logger.Info($"SSH connection closed with status {result.CloseStatus.Value}");
+                        this.logger.Warn($"SSH connection closed with status {result.CloseStatus.Value}");
                         return null;
                     }
 
@@ -102,56 +161,69 @@
             return JsonConvert.DeserializeObject<WebSocketData>(resultString);
         }
 
-        private async Task<bool> AuthenticateAsync(WebSocketData webSocketData)
+        private void KeepSendingWebSocketData(WebSocket webSocket, ShellStream shellStream)
         {
-            if (!WebSocketDataType.Token.Equals(webSocketData?.Type))
+            new Thread(async () =>
             {
-                this.logger.Warn($"Invalid data type {webSocketData?.Type}");
-                return false;
-            }
+                while (!webSocket.CloseStatus.HasValue && shellStream.CanRead)
+                {
+                    var buffer = new byte[BUFFERSIZE];
+                    string standardOutput;
+                    using (var stream = new MemoryStream())
+                    {
+                        var bytesRead = 0;
+                        var i = 0;
+                        do
+                        {
+                            bytesRead = await shellStream.ReadAsync(buffer);
+                            stream.Write(buffer, i, bytesRead);
+                            i += bytesRead;
+                        }
+                        while (bytesRead > 0); // end of message
 
-            var token = webSocketData?.Payload;
-            if (string.IsNullOrEmpty(token))
-            {
-                this.logger.Warn($"Empty data payload, the JWT is required");
-                return false;
-            }
+                        standardOutput = Encoding.UTF8.GetString(stream.ToArray());
+                        if (!string.IsNullOrEmpty(standardOutput))
+                        {
+                            var webSocketData = new WebSocketData()
+                            {
+                                Type = WebSocketDataType.StandardOutput,
+                                Payload = standardOutput
+                            };
+                            var resultString = JsonConvert.SerializeObject(
+                                webSocketData,
+                                Formatting.None,
+                                new JsonSerializerSettings
+                                {
+                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                });
+                            var byteArray = Encoding.UTF8.GetBytes(resultString);
+                            await webSocket.SendAsync(new ArraySegment<byte>(byteArray, 0, byteArray.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                        }
+                    }
+                }
 
-            var userAccount = await this.securityService.GetUserAccountAsync(token);
-            return userAccount?.Username != null && userAccount?.Password != null;
+                if (webSocket.CloseStatus.HasValue)
+                {
+                    this.logger.Warn($"Socket closed, stop getting shell response");
+                }
+
+                if (shellStream.CanRead)
+                {
+                    this.logger.Warn($"Can't read from shell, stop getting shell response");
+                }
+            }).Start();
         }
 
-        private async Task ExecuteCommandAsync(WebSocket webSocket, WebSocketData webSocketData)
+        private void ExecuteCommand(WebSocketData webSocketData, ShellStream shellStream)
         {
             if (!WebSocketDataType.StandardInput.Equals(webSocketData?.Type))
             {
-                this.logger.Warn($"Invalid data type {webSocketData?.Type}");
+                this.logger.Error($"Invalid data type {webSocketData?.Type}");
                 return;
             }
 
             var command = webSocketData?.Payload;
-            if (string.IsNullOrEmpty(command))
-            {
-                this.logger.Warn($"Empty data payload, the command is required");
-                return;
-            }
-
-            var standardOutput = $"TODO: run command {command}";
-            var result = new WebSocketData()
-            {
-                Type = WebSocketDataType.StandardOutput,
-                Payload = standardOutput
-            };
-
-            var resultString = JsonConvert.SerializeObject(
-                result,
-                Formatting.None,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
-            var byteArray = Encoding.UTF8.GetBytes(resultString);
-            await webSocket.SendAsync(new ArraySegment<byte>(byteArray, 0, byteArray.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            shellStream.WriteLine(command);
         }
     }
 }
