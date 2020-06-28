@@ -31,6 +31,12 @@
                 userContext.Username = usernameClaim.Value ?? string.Empty;
             }
 
+            var passwordClaim = graphQLUserContext.User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Password);
+            if (passwordClaim != null)
+            {
+                userContext.Password = passwordClaim.Value ?? string.Empty;
+            }
+
             userContext.IsSuperUser = graphQLUserContext.User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Roles.SuperUser);
 
             return userContext;

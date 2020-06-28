@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Raspberry Pi control panel on-demand services</Description>
+    <Description>Raspberry Pi control panel background services</Description>
     <Authors>Rembert Magri</Authors>
     <Copyright>Copyright 2019-2020 Rembert Magri et al. All rights reserved.</Copyright>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CliWrap" Version="3.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="SSH.NET" Version="2020.0.0-beta1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
-    <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>

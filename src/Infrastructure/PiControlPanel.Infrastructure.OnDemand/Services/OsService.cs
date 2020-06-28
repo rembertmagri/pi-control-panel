@@ -8,6 +8,7 @@
     using NLog;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Contracts.Infrastructure.OnDemand;
+    using PiControlPanel.Domain.Models;
     using PiControlPanel.Domain.Models.Hardware.Os;
     using PiControlPanel.Infrastructure.OnDemand.Util;
 
@@ -69,6 +70,26 @@
             var kernel = kernelInfo.Replace("Kernel:", string.Empty).Trim();
             this.Logger.Trace($"Kernel: '{kernel}'");
 
+            result = await BashCommands.CatSshdConfig.BashAsync();
+            this.Logger.Trace($"Result of '{BashCommands.CatSshdConfig}' command: '{result}'");
+            lines = result.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+            var portLine = lines.SingleOrDefault(line => line.StartsWith("Port "));
+            var sshPort = string.IsNullOrEmpty(portLine) ? 22 : int.Parse(portLine.Replace("Port ", string.Empty));
+            var netstat = string.Format(BashCommands.Netstat, sshPort);
+            var sshStarted = false;
+            try
+            {
+                result = await netstat.BashAsync();
+                this.Logger.Trace($"Result of '{netstat}' command: '{result}'");
+                sshStarted = !string.IsNullOrEmpty(netstat);
+            }
+            catch (BusinessException ex)
+            {
+                this.Logger.Error(ex, $"Error running '{netstat}' command");
+            }
+
             result = await BashCommands.SudoAptGetUpdate.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
             var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
@@ -90,6 +111,8 @@
                 Name = os,
                 Kernel = kernel,
                 Hostname = hostname,
+                SshStarted = sshStarted,
+                SshPort = sshPort,
                 UpgradeablePackages = upgradeablePackages
             };
         }

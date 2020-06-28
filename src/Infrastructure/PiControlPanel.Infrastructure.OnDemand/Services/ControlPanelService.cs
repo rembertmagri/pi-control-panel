@@ -200,5 +200,20 @@
 
             return await this.RebootAsync();
         }
+
+        /// <inheritdoc/>
+        public async Task<bool> StartSshAsync()
+        {
+            this.logger.Debug("Infra layer -> ControlPanelService -> StartSshAsync");
+            var startSshService = string.Format(BashCommands.SudoSystemctlStart, "ssh");
+            var result = await startSshService.BashAsync();
+            if (!string.IsNullOrEmpty(result))
+            {
+                this.logger.Error($"Result of '{startSshService}' command: '{result}', couldn't start the SSH server");
+                return false;
+            }
+
+            return true;
+        }
     }
 }

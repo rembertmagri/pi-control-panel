@@ -36,7 +36,7 @@ import {
   find,
   toNumber
 } from 'lodash';
-import { RealTimeModalComponent } from './modal/real-time-modal.component';
+import { RealTimeChartModalComponent } from './chart/real-time-chart-modal.component';
 import { CpuFrequencyService } from '@services/cpu-frequency.service';
 import { CpuSensorsStatusService } from '@services/cpu-sensors-status.service';
 import { CpuLoadStatusService } from '@services/cpu-load-status.service';
@@ -58,7 +58,7 @@ import { BytesPipe } from 'angular-pipes';
 export class DashboardComponent implements OnInit {
   raspberryPi: IRaspberryPi;
   errorMessage: string;
-  modalRef: BsModalRef;
+  chartModalRef: BsModalRef;
 
   subscribedToNewCpuFrequencies: boolean;
   subscribedToNewCpuSensorsStatuses: boolean;
@@ -142,9 +142,9 @@ export class DashboardComponent implements OnInit {
           result => {
             this.raspberryPi.cpu.frequency = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.frequencies = result.items;
-            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
-              this.modalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
-              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            if (!isNil(this.chartModalRef) && includes(this.selectedChartItems, ChartData[0].name)) {
+              this.chartModalRef.content.chartData[0].series = this.getOrderedAndMappedCpuNormalizedFrequencies();
+              this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
             }
             if (!this.subscribedToNewCpuFrequencies) {
               this.cpuFrequencyService.subscribeToNewCpuFrequencies();
@@ -169,9 +169,9 @@ export class DashboardComponent implements OnInit {
           result => {
             this.raspberryPi.cpu.sensorsStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.cpu.sensorsStatuses = result.items;
-            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
-              this.modalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
-              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            if (!isNil(this.chartModalRef) && includes(this.selectedChartItems, ChartData[1].name)) {
+              this.chartModalRef.content.chartData[1].series = this.getOrderedAndMappedCpuTemperatures();
+              this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
             }
             if (!this.subscribedToNewCpuSensorsStatuses) {
               this.cpuSensorsStatusService.subscribeToNewCpuSensorsStatuses();
@@ -197,9 +197,9 @@ export class DashboardComponent implements OnInit {
             this.raspberryPi.cpu.loadStatus = first(orderBy(result.items, 'dateTime', 'desc'));
             this.loadAverageGaugeChartData = this.getLoadAverageGaugeChartData();
             this.raspberryPi.cpu.loadStatuses = result.items;
-            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
-              this.modalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
-              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            if (!isNil(this.chartModalRef) && includes(this.selectedChartItems, ChartData[2].name)) {
+              this.chartModalRef.content.chartData[2].series = this.getOrderedAndMappedCpuLoadStatuses();
+              this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
             }
             if (!this.subscribedToNewCpuLoadStatuses) {
               this.cpuLoadStatusService.subscribeToNewCpuLoadStatuses();
@@ -224,9 +224,9 @@ export class DashboardComponent implements OnInit {
           result => {
             this.raspberryPi.ram.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.ram.statuses = result.items;
-            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
-              this.modalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
-              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            if (!isNil(this.chartModalRef) && includes(this.selectedChartItems, ChartData[3].name)) {
+              this.chartModalRef.content.chartData[3].series = this.getOrderedAndMappedRamStatuses();
+              this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
             }
             if (!this.subscribedToNewRamStatuses) {
               this.ramStatusService.subscribeToNewMemoryStatuses();
@@ -251,9 +251,9 @@ export class DashboardComponent implements OnInit {
           result => {
             this.raspberryPi.swapMemory.status = first(orderBy(result.items, 'dateTime', 'desc'));
             this.raspberryPi.swapMemory.statuses = result.items;
-            if (!isNil(this.modalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
-              this.modalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
-              this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+            if (!isNil(this.chartModalRef) && includes(this.selectedChartItems, ChartData[4].name)) {
+              this.chartModalRef.content.chartData[4].series = this.getOrderedAndMappedSwapMemoryStatuses();
+              this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
             }
             if (!this.subscribedToNewSwapMemoryStatuses) {
               this.swapMemoryStatusService.subscribeToNewMemoryStatuses();
@@ -344,14 +344,14 @@ export class DashboardComponent implements OnInit {
                 networkInterface.statuses = result.items;
                 const index = this.raspberryPi.network.networkInterfaces.indexOf(networkInterface);
                 this.networkInterfaceSpeedGaugeChartData[index] = this.getNetworkInterfaceSpeedGaugeChartData(networkInterface.status);
-                if (!isNil(this.modalRef)) {
+                if (!isNil(this.chartModalRef)) {
                   if (includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`)) {
-                    this.modalRef.content.chartData[5 + 2 * index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
-                    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                    this.chartModalRef.content.chartData[5 + 2 * index].series = this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName);
+                    this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
                   }
                   if (includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`)) {
-                    this.modalRef.content.chartData[5 + 2 * index + 1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
-                    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+                    this.chartModalRef.content.chartData[5 + 2 * index + 1].series = this.getOrderedAndMappedTxNetworkInterfaceNormalizedStatuses(interfaceName);
+                    this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
                   }
                 }
                 if (!this.subscribedToNewNetworkInterfaceStatuses[interfaceName]) {
@@ -436,15 +436,15 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  openModal() {
-    this.modalRef = this.modalService.show(
-      RealTimeModalComponent,
+  openChartModal() {
+    this.chartModalRef = this.modalService.show(
+      RealTimeChartModalComponent,
       {
         class: 'modal-xl'
       });
-    this.modalRef.content.chartData = [];
+    this.chartModalRef.content.chartData = [];
     forEach(ChartData, (chartDataItem) => {
-      this.modalRef.content.chartData.push(
+      this.chartModalRef.content.chartData.push(
         {
           name: chartDataItem.name,
           series: includes(this.selectedChartItems, chartDataItem.name) ?
@@ -455,14 +455,14 @@ export class DashboardComponent implements OnInit {
     if (!isNil(get(this.raspberryPi, 'network.networkInterfaces'))) {
       forEach(this.raspberryPi.network.networkInterfaces, (networkInterface) => {
         const interfaceName = networkInterface.name;
-        this.modalRef.content.chartData.push(
+        this.chartModalRef.content.chartData.push(
           {
             name: `Network ${interfaceName} Rx (B/s)`,
             series: includes(this.selectedChartItems, `Network ${interfaceName} Rx (B/s)`) ?
               this.getOrderedAndMappedRxNetworkInterfaceNormalizedStatuses(interfaceName) : []
           }
         );
-        this.modalRef.content.chartData.push(
+        this.chartModalRef.content.chartData.push(
           {
             name: `Network ${interfaceName} Tx (B/s)`,
             series: includes(this.selectedChartItems, `Network ${interfaceName} Tx (B/s)`) ?
@@ -471,7 +471,7 @@ export class DashboardComponent implements OnInit {
         );
       });
     }
-    this.modalRef.content.chartData = [...this.modalRef.content.chartData];
+    this.chartModalRef.content.chartData = [...this.chartModalRef.content.chartData];
   }
 
   reboot() {
@@ -575,6 +575,28 @@ export class DashboardComponent implements OnInit {
         },
         error => this.errorMessage = <any>error
       );
+  }
+
+  openTerminal() {
+    if (this.raspberryPi.os.sshStarted) {
+      this.router.navigate(['/terminal']);
+    }
+    else {
+      this.raspberryPiService.startSshServer()
+        .pipe(take(1))
+        .subscribe(
+          result => {
+            if (result) {
+              console.log('SSH server service started');
+              this.router.navigate(['/terminal']);
+            }
+            else {
+              alert('Error trying to start SSH server service');
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
   }
 
   getOrderedAndMappedCpuNormalizedFrequencies() {

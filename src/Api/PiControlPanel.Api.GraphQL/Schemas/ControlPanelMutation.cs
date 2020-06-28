@@ -83,6 +83,16 @@
                     return await controlPanelService.OverclockAsync(cpuMaxFrequencyLevel);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
+
+            this.FieldAsync<BooleanGraphType>(
+                "StartSsh",
+                resolve: async context =>
+                {
+                    logger.Info("StartSsh mutation");
+
+                    return await controlPanelService.StartSshAsync();
+                })
+                .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
         }
     }
 }

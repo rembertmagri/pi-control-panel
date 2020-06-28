@@ -120,6 +120,8 @@ export class RaspberryPiService {
               name
               kernel
               hostname
+              sshStarted
+              sshPort
               upgradeablePackages
               status {
                 uptime
@@ -226,6 +228,20 @@ export class RaspberryPiService {
     }).pipe(
       map(result => get(result.data, 'overclock')),
       catchError(this.errorHandlingService.handleError)
+    );
+  }
+
+  startSshServer(): Observable<boolean> {
+    this.showSpinner();
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation startSsh {
+          startSsh
+        }`
+    }).pipe(
+      map(result => get(result.data, 'startSsh')),
+      catchError(this.errorHandlingService.handleError),
+      finalize(() => this.stopSpinner())
     );
   }
 

@@ -21,5 +21,12 @@
         /// <param name="userAccount">The user account information.</param>
         /// <returns>The LoginResponse object.</returns>
         Task<LoginResponse> GetLoginResponseAsync(UserAccount userAccount);
+
+        /// <summary>
+        /// Recovers the username and password of the token issuee.
+        /// </summary>
+        /// <param name="token">The JWT string.</param>
+        /// <returns>The UserAccount object.</returns>
+        Task<UserAccount> GetUserAccountAsync(string token);
     }
 }

@@ -5,12 +5,17 @@
     using global::GraphQL.Server;
     using global::GraphQL.Server.Internal;
     using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
-    using LightInject;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using NLog;
     using PiControlPanel.Api.GraphQL.Schemas;
     using PiControlPanel.Api.GraphQL.Types.Output;
+    using PiControlPanel.Application.SecureShell;
+    using PiControlPanel.Application.Services;
+    using PiControlPanel.Domain.Contracts.Application;
+    using PiControlPanel.Domain.Models.Hardware.Memory;
 
     /// <summary>
     /// Contains extension methods for GraphQL services.
@@ -52,30 +57,43 @@
                 // Add GraphQL data loader to reduce the number of calls to our repository.
                 .AddDataLoader()
                 .Services
+                .AddSingleton<IDocumentExecuter, DocumentExecuter>()
+                .AddSingleton<IDocumentWriter, DocumentWriter>()
                 .AddTransient<IOperationMessageListener, JwtPayloadListener>()
-                .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
+                .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>))
+                .AddScoped<RaspberryPiType>()
+                .AddScoped<ControlPanelQuery>()
+                .AddScoped<ControlPanelMutation>()
+                .AddScoped<ControlPanelSubscription>()
+                .AddScoped<ControlPanelSchema>();
         }
 
         /// <summary>
-        /// Registers GraphQL services for LightInject service container.
+        /// Registers all required services to the collection.
         /// </summary>
-        /// <param name="container">The original service container.</param>
-        /// <returns>The altered service container.</returns>
-        public static IServiceContainer AddGraphQLServicesDependency(this IServiceContainer container)
+        /// <param name="services">The original service collection.</param>
+        /// <param name="configuration">The instance of the application configuration.</param>
+        /// <param name="logger">The instance of the application logger.</param>
+        /// <returns>The altered service collection.</returns>
+        public static IServiceCollection AddRequiredServices(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            ILogger logger)
         {
-            // Sets LightInject as GraphQL's dependency resolver
-            container.RegisterSingleton<IDependencyResolver>(s => new FuncDependencyResolver(container.GetInstance));
-
-            container.RegisterSingleton<IDocumentExecuter, DocumentExecuter>();
-            container.RegisterSingleton<IDocumentWriter, DocumentWriter>();
-
-            container.Register<RaspberryPiType>();
-            container.Register<ControlPanelQuery>();
-            container.Register<ControlPanelMutation>();
-            container.Register<ControlPanelSubscription>();
-            container.Register<ControlPanelSchema>();
-
-            return container;
+            return services
+                .AddScoped<ISshService, SshService>()
+                .AddScoped<ISecurityService, SecurityService>()
+                .AddScoped<IControlPanelService, ControlPanelService>()
+                .AddScoped<IChipsetService, ChipsetService>()
+                .AddScoped<ICpuService, CpuService>()
+                .AddScoped<IMemoryService<RandomAccessMemory, RandomAccessMemoryStatus>, MemoryService<RandomAccessMemory, RandomAccessMemoryStatus>>()
+                .AddScoped<IMemoryService<SwapMemory, SwapMemoryStatus>, MemoryService<SwapMemory, SwapMemoryStatus>>()
+                .AddScoped<IGpuService, GpuService>()
+                .AddScoped<IDiskService, DiskService>()
+                .AddScoped<IOsService, OsService>()
+                .AddScoped<INetworkService, NetworkService>()
+                .AddSingleton<IConfiguration>(factory => configuration)
+                .AddSingleton<ILogger>(factory => logger);
         }
     }
 }

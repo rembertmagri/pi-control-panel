@@ -49,5 +49,11 @@
         /// <param name="cpuMaxFrequencyLevel">The new CPU maximum frequency level.</param>
         /// <returns>Whether the operation was successful.</returns>
         Task<bool> OverclockAsync(CpuMaxFrequencyLevel cpuMaxFrequencyLevel);
+
+        /// <summary>
+        /// Starts the SSH server service.
+        /// </summary>
+        /// <returns>Whether the operation was successful.</returns>
+        Task<bool> StartSshAsync();
     }
 }

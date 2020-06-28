@@ -47,7 +47,8 @@
 
                     var userAccount = new UserAccount()
                     {
-                        Username = userContext.Username
+                        Username = userContext.Username,
+                        Password = userContext.Password
                     };
 
                     return await securityService.GetLoginResponseAsync(userAccount);

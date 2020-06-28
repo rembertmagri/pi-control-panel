@@ -9,7 +9,8 @@
           <div class='row form-group'>
             <div class='col-md-3'>Username:</div>
             <div class='col-md-6'>
-              <input type="text" class="form-control" name="username" #username="ngModel" [(ngModel)]="userAccount.username" required />
+              <input type="text" class="form-control" name="username" #username="ngModel"
+                [(ngModel)]="userAccount.username" required />
               <div *ngIf="username.invalid && (username.dirty || username.touched)" class="alert alert-danger">
                 <div *ngIf="username.errors.required">Username is required.</div>
               </div>
@@ -18,7 +19,8 @@
           <div class='row form-group'>
             <div class='col-md-3'>Password:</div>
             <div class='col-md-6'>
-              <input type="password" class="form-control" name="password" #password="ngModel" [(ngModel)]="userAccount.password" required />
+              <input type="password" class="form-control" name="password" #password="ngModel"
+                [(ngModel)]="userAccount.password" required />
               <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
                 <div *ngIf="password.errors.required">Password is required.</div>
               </div>
@@ -29,7 +31,8 @@
     </div>
     <div class='panel-footer'>
       <div class="btn-group">
-        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid"><i class="fa fa-floppy-o"></i> Login</button>
+        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid"><i class="fa fa-floppy-o"></i>
+          Login</button>
       </div>
     </div>
   </form>

@@ -30,11 +30,12 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\PiControlPanel.Application.BackgroundServices\PiControlPanel.Application.BackgroundServices.csproj" />
+    <ProjectReference Include="..\..\Application\PiControlPanel.Application.SecureShell\PiControlPanel.Application.SecureShell.csproj" />
     <ProjectReference Include="..\..\Application\PiControlPanel.Application.Services\PiControlPanel.Application.Services.csproj" />
     <ProjectReference Include="..\..\Domain\PiControlPanel.Domain.Contracts\PiControlPanel.Domain.Contracts.csproj" />
     <ProjectReference Include="..\..\Domain\PiControlPanel.Domain.Models\PiControlPanel.Domain.Models.csproj" />
