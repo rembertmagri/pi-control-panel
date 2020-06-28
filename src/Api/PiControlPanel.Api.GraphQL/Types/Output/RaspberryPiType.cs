@@ -2,7 +2,6 @@
 {
     using global::GraphQL.Types;
     using NLog;
-    using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 

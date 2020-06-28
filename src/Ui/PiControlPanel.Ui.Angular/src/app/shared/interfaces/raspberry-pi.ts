@@ -123,6 +123,8 @@ export interface IOs {
   name: string;
   kernel: string;
   hostname: string;
+  sshStarted: boolean;
+  sshPort: number;
   upgradeablePackages: number;
   status: IOsStatus;
   statuses: IOsStatus[];

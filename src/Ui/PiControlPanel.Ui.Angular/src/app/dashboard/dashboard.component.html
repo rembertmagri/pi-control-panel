@@ -4,9 +4,10 @@
       <div class="row d-flex justify-content-between">
         <img src="../assets/raspberry.gif">
         <h3>Raspberry Pi Control Panel</h3>
-        <nav>
-          <a routerLink="/terminal" routerLinkActive="active" class="btn btn-dark">Terminal</a>
-        </nav>
+        <button type="button" class="btn btn-dark" (click)="openTerminal()"
+          [disabled]="!isSuperUser && !raspberryPi.os.sshStarted">
+          Terminal
+        </button>
         <div class="btn-group" role="group" aria-label="Actions">
           <button type="button" class="btn btn-dark" (click)="reboot()" [disabled]="!isSuperUser">
             Reboot

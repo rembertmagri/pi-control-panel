@@ -78,5 +78,12 @@
             this.logger.Debug("Application layer -> ControlPanelService -> OverclockAsync");
             return this.onDemandService.OverclockAsync(cpuMaxFrequencyLevel);
         }
+
+        /// <inheritdoc/>
+        public Task<bool> StartSshAsync()
+        {
+            this.logger.Debug("Application layer -> ControlPanelService -> StartSshAsync");
+            return this.onDemandService.StartSshAsync();
+        }
     }
 }

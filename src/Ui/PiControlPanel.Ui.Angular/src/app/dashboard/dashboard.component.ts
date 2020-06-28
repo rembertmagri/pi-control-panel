@@ -577,6 +577,28 @@ export class DashboardComponent implements OnInit {
       );
   }
 
+  openTerminal() {
+    if (this.raspberryPi.os.sshStarted) {
+      this.router.navigate(['/terminal']);
+    }
+    else {
+      this.raspberryPiService.startSshServer()
+        .pipe(take(1))
+        .subscribe(
+          result => {
+            if (result) {
+              console.log('SSH server service started');
+              this.router.navigate(['/terminal']);
+            }
+            else {
+              alert('Error trying to start SSH server service');
+            }
+          },
+          error => this.errorMessage = <any>error
+        );
+    }
+  }
+
   getOrderedAndMappedCpuNormalizedFrequencies() {
     if (isNil(get(this.raspberryPi, 'cpu.frequencies'))) {
       return [];

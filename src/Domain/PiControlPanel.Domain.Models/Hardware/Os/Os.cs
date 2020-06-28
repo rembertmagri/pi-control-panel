@@ -21,6 +21,16 @@
         public string Hostname { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the SSH server is running.
+        /// </summary>
+        public bool SshStarted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SSH port.
+        /// </summary>
+        public int SshPort { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of upgradeable packages.
         /// </summary>
         public int UpgradeablePackages { get; set; }

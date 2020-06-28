@@ -139,5 +139,20 @@
         /// Clears the local repository of retrieved package files.
         /// </summary>
         public const string SudoAptgetAutoclean = "sudo apt-get autoclean";
+
+        /// <summary>
+        /// Concatenates SSH config file to standard output.
+        /// </summary>
+        public const string CatSshdConfig = "cat /etc/ssh/sshd_config";
+
+        /// <summary>
+        /// Prints network connections information.
+        /// </summary>
+        public const string Netstat = "netstat -tln | grep ':{0} '";
+
+        /// <summary>
+        /// Starts a service.
+        /// </summary>
+        public const string SudoSystemctlStart = "sudo systemctl start {0}";
     }
 }
