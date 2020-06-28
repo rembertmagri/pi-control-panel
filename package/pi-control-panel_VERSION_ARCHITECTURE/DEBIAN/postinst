@@ -50,7 +50,7 @@ case "$1" in
             fi
             if (dpkg --compare-versions "$2" lt 1.55) then
                 echo -e 'Applying db change: creating missing Os columns'
-				sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Os" ADD COLUMN "SshStarted" INTEGER NOT NULL DEFAULT 0;'
+                sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Os" ADD COLUMN "SshStarted" INTEGER NOT NULL DEFAULT 0;'
                 sqlite3 /var/db/picontrolpanel/picontrolpanel.db 'ALTER TABLE "Os" ADD COLUMN "SshPort" INTEGER NOT NULL DEFAULT 0;'
             fi
         fi

@@ -15,8 +15,6 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   fitAddon: FitAddon;
   webSocket: WebSocket;
 
-  constructor() { }
-
   ngOnInit() {
     this.terminal = new Terminal({
       cursorBlink: true,

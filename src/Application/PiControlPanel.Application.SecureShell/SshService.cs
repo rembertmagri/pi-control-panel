@@ -34,7 +34,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task BindAsync(WebSocket webSocket)
+        public async Task BindAsync(WebSocket webSocket, int sshPort)
         {
             this.logger.Debug($"Application layer -> SshService -> BindAsync");
 
@@ -54,7 +54,7 @@
                 return;
             }
 
-            using var client = new SshClient("localhost", authenticatedAccount.Username, authenticatedAccount.Password);
+            using var client = new SshClient("localhost", sshPort, authenticatedAccount.Username, authenticatedAccount.Password);
             client.Connect();
             this.logger.Info($"SSH connection open, creating terminal with {dimensions.Rows} rows and {dimensions.Columns} columns");
 

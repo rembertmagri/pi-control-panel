@@ -27,15 +27,17 @@
         /// </summary>
         /// <param name="context">Encapsulates all HTTP-specific information about an individual HTTP request.</param>
         /// <param name="sshService">The injected instance of SshService.</param>
+        /// <param name="operatingSystemService">The injected instance of OsService.</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        public async Task InvokeAsync(HttpContext context, ISshService sshService)
+        public async Task InvokeAsync(HttpContext context, ISshService sshService, IOsService operatingSystemService)
         {
             if ("/shell".Equals(context.Request.Path))
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    await sshService.BindAsync(webSocket);
+                    var os = await operatingSystemService.GetAsync();
+                    await sshService.BindAsync(webSocket, os.SshPort);
                 }
                 else
                 {
