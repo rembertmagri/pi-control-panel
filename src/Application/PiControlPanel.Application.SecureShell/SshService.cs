@@ -7,7 +7,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
     using NLog;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Models.Authentication;
@@ -58,16 +57,15 @@
             client.Connect();
             this.logger.Info($"SSH connection open, creating terminal with {dimensions.Rows} rows and {dimensions.Columns} columns");
 
-            using (var shellStream = client.CreateShellStream("xterm", dimensions.Rows, dimensions.Columns, 0, 0, BUFFERSIZE))
+            using var shellStream = client.CreateShellStream("xterm", dimensions.Rows, dimensions.Columns, 0, 0, BUFFERSIZE);
+            this.KeepSendingWebSocketData(webSocket, shellStream);
+            string webSocketRawData;
+            do
             {
-                this.KeepSendingWebSocketData(webSocket, shellStream);
-                var webSocketData = await this.ReceiveWebSocketData(webSocket);
-                while (webSocketData != null)
-                {
-                    this.ExecuteCommand(webSocketData, shellStream);
-                    webSocketData = await this.ReceiveWebSocketData(webSocket);
-                }
+                webSocketRawData = await this.ReceiveWebSocketRawData(webSocket);
+                shellStream.Write(webSocketRawData);
             }
+            while (webSocketRawData != null);
 
             client.Disconnect();
         }
@@ -125,38 +123,39 @@
 
         private async Task<WebSocketData> ReceiveWebSocketData(WebSocket webSocket)
         {
+            var webSocketRawData = await this.ReceiveWebSocketRawData(webSocket);
+            this.logger.Trace($"Received message: {webSocketRawData}");
+            return JsonConvert.DeserializeObject<WebSocketData>(webSocketRawData);
+        }
+
+        private async Task<string> ReceiveWebSocketRawData(WebSocket webSocket)
+        {
             var buffer = new byte[BUFFERSIZE];
             WebSocketReceiveResult result;
-            var resultString = string.Empty;
 
-            using (var stream = new MemoryStream())
+            using var stream = new MemoryStream();
+            do
             {
-                do
+                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                if (result.CloseStatus.HasValue)
                 {
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-                    if (result.CloseStatus.HasValue)
-                    {
-                        await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-                        this.logger.Warn($"SSH connection closed with status {result.CloseStatus.Value}");
-                        return null;
-                    }
-
-                    if (result.Count == 0)
-                    {
-                        this.logger.Trace($"Socket received zero bytes with state {webSocket.State}");
-                        break;
-                    }
-
-                    stream.Write(buffer, 0, result.Count);
+                    await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                    this.logger.Warn($"SSH connection closed with status {result.CloseStatus.Value}");
+                    return null;
                 }
-                while (!result.EndOfMessage); // check end of message mark
 
-                resultString = Encoding.UTF8.GetString(stream.ToArray());
+                if (result.Count == 0)
+                {
+                    this.logger.Trace($"Socket received zero bytes with state {webSocket.State}");
+                    break;
+                }
+
+                stream.Write(buffer, 0, result.Count);
             }
+            while (!result.EndOfMessage); // check end of message mark
 
-            this.logger.Trace($"Received message: {resultString}");
-            return JsonConvert.DeserializeObject<WebSocketData>(resultString);
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         private void KeepSendingWebSocketData(WebSocket webSocket, ShellStream shellStream)
@@ -166,7 +165,6 @@
                 while (!webSocket.CloseStatus.HasValue && shellStream.CanRead)
                 {
                     var buffer = new byte[BUFFERSIZE];
-                    string standardOutput;
                     using var stream = new MemoryStream();
                     var bytesRead = 0;
                     var i = 0;
@@ -176,25 +174,16 @@
                         stream.Write(buffer, i, bytesRead);
                         i += bytesRead;
                     }
-                    while (bytesRead > 0); // end of message
+                    while (bytesRead > 0); // end of message not reached
 
-                    standardOutput = Encoding.UTF8.GetString(stream.ToArray());
-                    if (!string.IsNullOrEmpty(standardOutput))
+                    var webSocketRawData = stream.ToArray();
+                    if (webSocketRawData.Length > 0)
                     {
-                        var webSocketData = new WebSocketData()
-                        {
-                            Type = WebSocketDataType.StandardOutput,
-                            Payload = standardOutput
-                        };
-                        var resultString = JsonConvert.SerializeObject(
-                            webSocketData,
-                            Formatting.None,
-                            new JsonSerializerSettings
-                            {
-                                ContractResolver = new CamelCasePropertyNamesContractResolver()
-                            });
-                        var byteArray = Encoding.UTF8.GetBytes(resultString);
-                        await webSocket.SendAsync(new ArraySegment<byte>(byteArray, 0, byteArray.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                        await webSocket.SendAsync(new ArraySegment<byte>(webSocketRawData, 0, webSocketRawData.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                    }
+                    else
+                    {
+                        Thread.Sleep(300); // if nothing to send, sleep for some time before checking again
                     }
                 }
 
@@ -208,18 +197,6 @@
                     this.logger.Trace($"Can't read from shell, stop getting shell response");
                 }
             }).Start();
-        }
-
-        private void ExecuteCommand(WebSocketData webSocketData, ShellStream shellStream)
-        {
-            if (!WebSocketDataType.StandardInput.Equals(webSocketData?.Type))
-            {
-                this.logger.Error($"Invalid data type {webSocketData?.Type}");
-                return;
-            }
-
-            var command = webSocketData?.Payload;
-            shellStream.WriteLine(command);
         }
     }
 }

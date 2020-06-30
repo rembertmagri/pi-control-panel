@@ -205,7 +205,7 @@
         public async Task<bool> StartSshAsync()
         {
             this.logger.Debug("Infra layer -> ControlPanelService -> StartSshAsync");
-            var startSshService = string.Format(BashCommands.SudoSystemctlStart, "ssh");
+            var startSshService = string.Format(BashCommands.SudoSystemctl, "start ssh");
             var result = await startSshService.BashAsync();
             if (!string.IsNullOrEmpty(result))
             {

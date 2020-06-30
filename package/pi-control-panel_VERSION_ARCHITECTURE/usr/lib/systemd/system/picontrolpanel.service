@@ -1,6 +1,7 @@
 [Unit]
 Description=Pi Control Panel service
-After=network.target
+Wants=network.target systemd-timesyncd.service
+After=network.target systemd-timesyncd.service
 StartLimitIntervalSec=0
 
 [Service]

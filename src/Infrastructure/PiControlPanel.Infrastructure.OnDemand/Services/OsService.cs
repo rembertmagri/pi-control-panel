@@ -83,7 +83,7 @@
             {
                 result = await netstat.BashAsync();
                 this.Logger.Trace($"Result of '{netstat}' command: '{result}'");
-                sshStarted = !string.IsNullOrEmpty(netstat);
+                sshStarted = !string.IsNullOrEmpty(result);
             }
             catch (BusinessException ex)
             {

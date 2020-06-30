@@ -5,8 +5,5 @@ export interface IWebSocketData {
 
 export enum WebSocketDataType {
   TOKEN = 'Token',
-  DIMENSIONS = 'Dimensions',
-  STANDARD_INPUT = 'StandardInput',
-  STANDARD_OUTPUT = 'StandardOutput',
-  STANDARD_ERROR = 'StandardError'
+  DIMENSIONS = 'Dimensions'
 }

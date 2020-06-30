@@ -151,8 +151,8 @@
         public const string Netstat = "netstat -tln | grep ':{0} '";
 
         /// <summary>
-        /// Starts a service.
+        /// Controls the systemd system and service manager.
         /// </summary>
-        public const string SudoSystemctlStart = "sudo systemctl start {0}";
+        public const string SudoSystemctl = "sudo systemctl {0}";
     }
 }

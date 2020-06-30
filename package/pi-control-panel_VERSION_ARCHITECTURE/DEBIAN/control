@@ -1,8 +1,8 @@
 Package: pi-control-panel
-Version: 1.55
+Version: 1.56
 Architecture: armhf
 Essential: no
 Priority: optional
-Depends: procps,sqlite3
+Depends: sqlite3,systemd,systemd-sysv,libraspberrypi-bin,coreutils,procps,openssl,sed,net-tools,apt
 Maintainer: Rembert Magri
 Description: Raspberry Pi Control Panel
