@@ -83,13 +83,14 @@
             {
                 result = await netstat.BashAsync();
                 this.Logger.Trace($"Result of '{netstat}' command: '{result}'");
-                sshStarted = !string.IsNullOrEmpty(netstat);
+                sshStarted = !string.IsNullOrEmpty(result);
             }
             catch (BusinessException ex)
             {
                 this.Logger.Error(ex, $"Error running '{netstat}' command");
             }
 
+            await this.SynchronizeSystemClock();
             result = await BashCommands.SudoAptGetUpdate.BashAsync();
             this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
             var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
@@ -129,6 +130,53 @@
                 Uptime = uptimeResult,
                 DateTime = DateTime.Now
             };
+        }
+
+        private async Task SynchronizeSystemClock()
+        {
+            var result = await BashCommands.Timedatectl.BashAsync();
+            this.Logger.Trace($"Result of '{BashCommands.Timedatectl}' command: '{result}'");
+            var lines = result.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+            var systemClockSynchronizedLine = lines.Single(line => line.StartsWith("System clock synchronized: "));
+            var systemClockSynchronized = systemClockSynchronizedLine.Replace("System clock synchronized: ", string.Empty);
+            if ("yes".Equals(systemClockSynchronized))
+            {
+                this.Logger.Info($"System clock already synchronized");
+                return;
+            }
+
+            var systemctlReload = string.Format(BashCommands.SudoSystemctl, "daemon-reload");
+            result = await systemctlReload.BashAsync();
+            if (!string.IsNullOrEmpty(result))
+            {
+                this.Logger.Warn($"Result of '{systemctlReload}' command: '{result}', couldn't reload systemd manager configuration");
+                return;
+            }
+
+            var systemctlRestartTimesync = string.Format(BashCommands.SudoSystemctl, "restart systemd-timesyncd");
+            result = await systemctlRestartTimesync.BashAsync();
+            if (!string.IsNullOrEmpty(result))
+            {
+                this.Logger.Warn($"Result of '{systemctlRestartTimesync}' command: '{result}', couldn't restart clock synchronization daemon");
+                return;
+            }
+
+            result = await BashCommands.Timedatectl.BashAsync();
+            this.Logger.Trace($"Result of '{BashCommands.Timedatectl}' command: '{result}'");
+            lines = result.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries);
+            systemClockSynchronizedLine = lines.Single(line => line.StartsWith("System clock synchronized: "));
+            systemClockSynchronized = systemClockSynchronizedLine.Replace("System clock synchronized: ", string.Empty);
+            if (!"yes".Equals(systemClockSynchronized))
+            {
+                this.Logger.Warn($"systemClockSynchronized='{systemClockSynchronized}', couldn't synchronize the system clock");
+                return;
+            }
+
+            this.Logger.Info($"The system clock has been synchronized");
         }
     }
 }
