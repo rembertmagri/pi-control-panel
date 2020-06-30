@@ -154,10 +154,5 @@
         /// Controls the systemd system and service manager.
         /// </summary>
         public const string SudoSystemctl = "sudo systemctl {0}";
-
-        /// <summary>
-        /// Controls the system time and date.
-        /// </summary>
-        public const string Timedatectl = "timedatectl";
     }
 }

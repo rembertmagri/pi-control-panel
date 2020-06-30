@@ -174,12 +174,16 @@
                         stream.Write(buffer, i, bytesRead);
                         i += bytesRead;
                     }
-                    while (bytesRead > 0); // end of message
+                    while (bytesRead > 0); // end of message not reached
 
                     var webSocketRawData = stream.ToArray();
                     if (webSocketRawData.Length > 0)
                     {
                         await webSocket.SendAsync(new ArraySegment<byte>(webSocketRawData, 0, webSocketRawData.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                    }
+                    else
+                    {
+                        Thread.Sleep(300); // if nothing to send, sleep for some time before checking again
                     }
                 }
 
