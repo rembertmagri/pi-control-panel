@@ -183,7 +183,7 @@
                     }
                     else
                     {
-                        Thread.Sleep(300); // if nothing to send, sleep for some time before checking again
+                        Thread.Sleep(100); // if nothing to send, sleep for some time before checking again
                     }
                 }
 
