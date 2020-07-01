@@ -90,20 +90,25 @@
                 this.Logger.Error(ex, $"Error running '{netstat}' command");
             }
 
-            result = await BashCommands.SudoAptGetUpdate.BashAsync();
-            this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
-            var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
-            result = await aptGetUpgradeSimulateCommand.BashAsync();
-            this.Logger.Trace($"Result of '{aptGetUpgradeSimulateCommand}' command: '{result}'");
-            lines = result.Split(
-                new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries);
-            var upgradeablePackagesSummary = lines.Single(line => line.EndsWith(" not upgraded."));
-            if (!int.TryParse(
-                upgradeablePackagesSummary.Substring(0, upgradeablePackagesSummary.IndexOf(" ") + 1),
-                out var upgradeablePackages))
+            var upgradeablePackages = 0;
+            var systemClockSynchronized = await this.SystemClockSynchronized(4);
+            if (systemClockSynchronized)
             {
-                this.Logger.Warn($"Could not parse upgradeable packages: '{upgradeablePackagesSummary}'");
+                result = await BashCommands.SudoAptGetUpdate.BashAsync();
+                this.Logger.Trace($"Result of '{BashCommands.SudoAptGetUpdate}' command: '{result}'");
+                var aptGetUpgradeSimulateCommand = string.Format(BashCommands.SudoAptGetUpgrade, "s");
+                result = await aptGetUpgradeSimulateCommand.BashAsync();
+                this.Logger.Trace($"Result of '{aptGetUpgradeSimulateCommand}' command: '{result}'");
+                lines = result.Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries);
+                var upgradeablePackagesSummary = lines.Single(line => line.EndsWith(" not upgraded."));
+                if (!int.TryParse(
+                    upgradeablePackagesSummary.Substring(0, upgradeablePackagesSummary.IndexOf(" ") + 1),
+                    out upgradeablePackages))
+                {
+                    this.Logger.Warn($"Could not parse upgradeable packages: '{upgradeablePackagesSummary}'");
+                }
             }
 
             return new Os()
@@ -129,6 +134,46 @@
                 Uptime = uptimeResult,
                 DateTime = DateTime.Now
             };
+        }
+
+        private async Task<bool> SystemClockSynchronized(int maxAttempts)
+        {
+            for (var attempts = 0; attempts < maxAttempts; attempts++)
+            {
+                var result = await BashCommands.Timedatectl.BashAsync();
+                this.Logger.Trace($"Result of '{BashCommands.Timedatectl}' command: '{result}'");
+                var lines = result.Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries);
+                var systemClockSynchronizedLine = lines.Single(line => line.StartsWith("System clock synchronized: "));
+                var systemClockSynchronized = systemClockSynchronizedLine.Replace("System clock synchronized: ", string.Empty);
+                if ("yes".Equals(systemClockSynchronized))
+                {
+                    this.Logger.Info($"System clock synchronized after {attempts + 1} attempts");
+                    return true;
+                }
+
+                var systemctlReload = string.Format(BashCommands.SudoSystemctl, "daemon-reload");
+                result = await systemctlReload.BashAsync();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    this.Logger.Warn($"Result of '{systemctlReload}' command: '{result}', couldn't reload systemd manager configuration");
+                    return false;
+                }
+
+                var systemctlRestartTimesync = string.Format(BashCommands.SudoSystemctl, "restart systemd-timesyncd");
+                result = await systemctlRestartTimesync.BashAsync();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    this.Logger.Warn($"Result of '{systemctlRestartTimesync}' command: '{result}', couldn't restart clock synchronization daemon");
+                    return false;
+                }
+
+                await Task.Delay(15000);
+            }
+
+            this.Logger.Info($"Failed to synchronize system clock after {maxAttempts} attempts");
+            return false;
         }
     }
 }
