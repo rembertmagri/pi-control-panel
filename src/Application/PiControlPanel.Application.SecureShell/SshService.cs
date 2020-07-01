@@ -165,21 +165,10 @@
                 while (!webSocket.CloseStatus.HasValue && shellStream.CanRead)
                 {
                     var buffer = new byte[BUFFERSIZE];
-                    using var stream = new MemoryStream();
-                    var bytesRead = 0;
-                    var i = 0;
-                    do
+                    var bytesRead = await shellStream.ReadAsync(buffer, 0, BUFFERSIZE);
+                    if (bytesRead > 0)
                     {
-                        bytesRead = await shellStream.ReadAsync(buffer);
-                        stream.Write(buffer, i, bytesRead);
-                        i += bytesRead;
-                    }
-                    while (bytesRead > 0); // end of message not reached
-
-                    var webSocketRawData = stream.ToArray();
-                    if (webSocketRawData.Length > 0)
-                    {
-                        await webSocket.SendAsync(new ArraySegment<byte>(webSocketRawData, 0, webSocketRawData.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                        await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, bytesRead), WebSocketMessageType.Text, true, CancellationToken.None);
                     }
                     else
                     {

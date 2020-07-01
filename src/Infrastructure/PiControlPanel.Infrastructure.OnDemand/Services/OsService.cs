@@ -1,6 +1,7 @@
 ﻿namespace PiControlPanel.Infrastructure.OnDemand.Services
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
@@ -91,7 +92,7 @@
             }
 
             var upgradeablePackages = 0;
-            var systemClockSynchronized = await this.SystemClockSynchronized(4);
+            var systemClockSynchronized = await this.WaitSystemClockSynchronized(60000);
             if (systemClockSynchronized)
             {
                 result = await BashCommands.SudoAptGetUpdate.BashAsync();
@@ -136,9 +137,12 @@
             };
         }
 
-        private async Task<bool> SystemClockSynchronized(int maxAttempts)
+        private async Task<bool> WaitSystemClockSynchronized(int timeoutInMilliseconds)
         {
-            for (var attempts = 0; attempts < maxAttempts; attempts++)
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            while (stopWatch.Elapsed.TotalMilliseconds < timeoutInMilliseconds)
             {
                 var result = await BashCommands.Timedatectl.BashAsync();
                 this.Logger.Trace($"Result of '{BashCommands.Timedatectl}' command: '{result}'");
@@ -149,30 +153,16 @@
                 var systemClockSynchronized = systemClockSynchronizedLine.Replace("System clock synchronized: ", string.Empty);
                 if ("yes".Equals(systemClockSynchronized))
                 {
-                    this.Logger.Info($"System clock synchronized after {attempts + 1} attempts");
+                    stopWatch.Stop();
+                    this.Logger.Info($"System clock synchronized after {stopWatch.Elapsed.TotalMilliseconds} ms");
                     return true;
-                }
-
-                var systemctlReload = string.Format(BashCommands.SudoSystemctl, "daemon-reload");
-                result = await systemctlReload.BashAsync();
-                if (!string.IsNullOrEmpty(result))
-                {
-                    this.Logger.Warn($"Result of '{systemctlReload}' command: '{result}', couldn't reload systemd manager configuration");
-                    return false;
-                }
-
-                var systemctlRestartTimesync = string.Format(BashCommands.SudoSystemctl, "restart systemd-timesyncd");
-                result = await systemctlRestartTimesync.BashAsync();
-                if (!string.IsNullOrEmpty(result))
-                {
-                    this.Logger.Warn($"Result of '{systemctlRestartTimesync}' command: '{result}', couldn't restart clock synchronization daemon");
-                    return false;
                 }
 
                 await Task.Delay(15000);
             }
 
-            this.Logger.Info($"Failed to synchronize system clock after {maxAttempts} attempts");
+            stopWatch.Stop();
+            this.Logger.Info($"System clock not synchronized after {stopWatch.Elapsed.TotalMilliseconds} ms");
             return false;
         }
     }
