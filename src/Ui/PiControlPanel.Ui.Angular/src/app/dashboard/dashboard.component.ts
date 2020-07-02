@@ -57,7 +57,7 @@ import { BytesPipe } from 'angular-pipes';
 })
 export class DashboardComponent implements OnInit {
   raspberryPi: IRaspberryPi;
-  errorMessage: string;
+  alert: { message: string, type: string, logout: boolean };
   chartModalRef: BsModalRef;
 
   subscribedToNewCpuFrequencies: boolean;
@@ -120,6 +120,7 @@ export class DashboardComponent implements OnInit {
     private networkInterfaceStatusService: NetworkInterfaceStatusService) { }
 
   ngOnInit() {
+    this.alert = null;
     this.raspberryPi = this._route.snapshot.data['raspberryPi'];
     this.isSuperUser = this.authService.isSuperUser();
 
@@ -132,7 +133,7 @@ export class DashboardComponent implements OnInit {
         result => {
           console.log(result ? `Token refreshed @ ${new Date()}` : "Failed to refresh token");
         },
-        error => this.errorMessage = <any>error
+        error => this.alert = { message: error, type: 'danger', logout: false }
       );
 
     if (!isNil(get(this.raspberryPi, 'cpu.frequency'))) {
@@ -153,12 +154,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `CPU frequency refetched @ ${new Date()}` : "Failed to refetch CPU frequency");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewCpuFrequencies = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -180,12 +181,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `CPU sensors status refetched @ ${new Date()}` : "Failed to refetch CPU sensors status");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewCpuSensorsStatuses = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -208,12 +209,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `CPU load status refetched @ ${new Date()}` : "Failed to refetch CPU load status");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewCpuLoadStatuses = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -235,12 +236,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `RAM status refetched @ ${new Date()}` : "Failed to refetch RAM status");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewRamStatuses = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -262,12 +263,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `Swap memory status refetched @ ${new Date()}` : "Failed to refetch swap memory status");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewSwapMemoryStatuses = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -285,12 +286,12 @@ export class DashboardComponent implements OnInit {
                   result => {
                     console.log(result ? `OS status refetched @ ${new Date()}` : "Failed to refetch OS status");
                   },
-                  error => this.errorMessage = <any>error
+                  error => this.alert = { message: error, type: 'danger', logout: false }
                 );
               this.subscribedToNewOsStatuses = true;
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
 
@@ -314,13 +315,13 @@ export class DashboardComponent implements OnInit {
                         result => {
                           console.log(result ? `Disk file system statuses refetched @ ${new Date()}` : "Failed to refetch disk file system statuses");
                         },
-                        error => this.errorMessage = <any>error
+                        error => this.alert = { message: error, type: 'danger', logout: false }
                       );
                   }
                   this.subscribedToNewDiskFileSystemStatuses[fileSystemName] = true;
                 }
               },
-              error => this.errorMessage = <any>error
+              error => this.alert = { message: error, type: 'danger', logout: false }
             );
       }
     }
@@ -362,13 +363,13 @@ export class DashboardComponent implements OnInit {
                         result => {
                           console.log(result ? `Network interface statuses refetched @ ${new Date()}` : "Failed to refetch network interface statuses");
                         },
-                        error => this.errorMessage = <any>error
+                        error => this.alert = { message: error, type: 'danger', logout: false }
                       );
                   }
                   this.subscribedToNewNetworkInterfaceStatuses[interfaceName] = true;
                 }
               },
-              error => this.errorMessage = <any>error
+              error => this.alert = { message: error, type: 'danger', logout: false }
             );
       }
     }
@@ -480,14 +481,13 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         result => {
           if (result) {
-            alert('Rebooting...');
-            this.logout();
+            this.alert = { message: 'Rebooting...', type: 'success', logout: true };
           }
           else {
-            alert('Error');
+            this.alert = { message: 'Error trying to reboot', type: 'danger', logout: false };
           }
         },
-        error => this.errorMessage = <any>error
+        error => this.alert = { message: error, type: 'danger', logout: false }
       );
   }
 
@@ -497,14 +497,13 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         result => {
           if (result) {
-            alert('Shutting down...');
-            this.logout();
+            this.alert = { message: 'Shutting down...', type: 'success', logout: true };
           }
           else {
-            alert('Error');
+            this.alert = { message: 'Error trying to shutdown', type: 'danger', logout: false };
           }
         },
-        error => this.errorMessage = <any>error
+        error => this.alert = { message: error, type: 'danger', logout: false }
       );
   }
 
@@ -512,15 +511,16 @@ export class DashboardComponent implements OnInit {
     this.raspberryPiService.updateRaspberryPi()
       .pipe(take(1))
       .subscribe(
-        result => {
+        (result) => {
           if (result) {
-            alert('Raspberry Pi firmware updated');
+            this.alert = { message: 'Raspberry Pi firmware updated', type: 'success', logout: false };
           }
           else {
-            alert('Raspberry Pi firmware already up-to-date');
+            this.alert = { message: 'Raspberry Pi firmware already up-to-date', type: 'info', logout: false };
           }
         },
-        error => this.errorMessage = <any>error
+        (error) => this.alert = { message: error, type: 'danger', logout: false },
+        () => this.raspberryPi.os.upgradeablePackages = 0
       );
   }
 
@@ -535,17 +535,17 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         result => {
           if (result) {
-            alert(`Process #${processId} killed`);
+            this.alert = { message: `Process #${processId} killed`, type: 'info', logout: false };
           }
           else {
-            alert(`Process #${processId} was already terminated`);
+            this.alert = { message: `Process #${processId} was already terminated`, type: 'warning', logout: false };
           }
           this.raspberryPi.cpu.loadStatus.processes =
             remove(
               this.raspberryPi.cpu.loadStatus.processes,
               (process) => process.processId !== processId);
         },
-        error => this.errorMessage = <any>error
+        error => this.alert = { message: error, type: 'danger', logout: false }
       );
   }
 
@@ -566,14 +566,13 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         result => {
           if (result) {
-            alert(`Raspberry Pi overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level, rebooting...`);
-            this.logout();
+            this.alert = { message: `Raspberry Pi overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level, rebooting...`, type: 'success', logout: true };
           }
           else {
-            alert(`Raspberry Pi already overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level`);
+            this.alert = { message: `Raspberry Pi already overclocked to ${CpuMaxFrequencyLevel[cpuMaxFrequencyLevel]} level`, type: 'warning', logout: false };
           }
         },
-        error => this.errorMessage = <any>error
+        error => this.alert = { message: error, type: 'danger', logout: false }
       );
   }
 
@@ -591,10 +590,10 @@ export class DashboardComponent implements OnInit {
               this.router.navigate(['/terminal']);
             }
             else {
-              alert('Error trying to start SSH server service');
+              this.alert = { message: 'Error trying to start SSH server service', type: 'danger', logout: false };
             }
           },
-          error => this.errorMessage = <any>error
+          error => this.alert = { message: error, type: 'danger', logout: false }
         );
     }
   }
@@ -754,6 +753,13 @@ export class DashboardComponent implements OnInit {
 
   formatNetworkInterfaceSpeedAxisTick(speed) {
     return `${(new BytesPipe()).transform(toNumber(speed.replace(/,/g, '')), 1)}/s`;
+  }
+
+  closeAlert() {
+    if (this.alert.logout) {
+      this.logout();
+    }
+    this.alert = null;
   }
 
 }

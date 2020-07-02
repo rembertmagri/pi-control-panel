@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AlertModule } from 'ngx-bootstrap/alert';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -60,6 +61,7 @@ export const routes: Routes = [
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(routes),
+    AlertModule.forRoot(),
     AccordionModule.forRoot(),
     SortableModule.forRoot(),
     PopoverModule.forRoot(),

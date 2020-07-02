@@ -13,7 +13,6 @@ import { isNil, get } from 'lodash';
   styleUrls: ['./real-time-chart-modal.component.css']
 })
 export class RealTimeChartModalComponent implements OnInit {
-  errorMessage: string;
   public chartData: any[];
   colorScheme = {
     domain: [

@@ -25,6 +25,9 @@
     </div>
   </div>
   <div class="card-body">
+    <alert [type]="alert.type" [dismissible]="true" [dismissOnTimeout]="5000" (onClosed)="closeAlert()" *ngIf="alert">
+      <strong>{{alert.type | titlecase}}:</strong> {{alert.message}}
+    </alert>
     <div class="container-fluid">
 
       <div class="row">

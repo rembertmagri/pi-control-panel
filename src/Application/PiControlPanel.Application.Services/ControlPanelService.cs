@@ -11,16 +11,22 @@
     public class ControlPanelService : IControlPanelService
     {
         private readonly Infra.IControlPanelService onDemandService;
+        private readonly IOsService operatingSystemService;
         private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlPanelService"/> class.
         /// </summary>
         /// <param name="onDemandService">The infrastructure layer on demand service.</param>
+        /// <param name="operatingSystemService">The application layer OsService.</param>
         /// <param name="logger">The NLog logger instance.</param>
-        public ControlPanelService(Infra.IControlPanelService onDemandService, ILogger logger)
+        public ControlPanelService(
+            Infra.IControlPanelService onDemandService,
+            IOsService operatingSystemService,
+            ILogger logger)
         {
             this.onDemandService = onDemandService;
+            this.operatingSystemService = operatingSystemService;
             this.logger = logger;
         }
 
@@ -39,10 +45,18 @@
         }
 
         /// <inheritdoc/>
-        public Task<bool> UpdateAsync()
+        public async Task<bool> UpdateAsync()
         {
             this.logger.Debug("Application layer -> ControlPanelService -> UpdateAsync");
-            return this.onDemandService.UpdateAsync();
+
+            var updated = await this.onDemandService.UpdateAsync();
+            if (updated)
+            {
+                await this.operatingSystemService.SaveAsync();
+                return true;
+            }
+
+            return false;
         }
 
         /// <inheritdoc/>
