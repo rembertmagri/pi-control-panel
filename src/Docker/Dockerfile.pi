@@ -1,17 +1,6 @@
 # Base Stage
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm32v7 AS base
-
-	# QEMU
-RUN apt-get update && apt-get install -y --no-install-recommends qemu-user-static binfmt-support
-RUN update-binfmts --enable qemu-arm
-RUN update-binfmts --display qemu-arm
-RUN mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-RUN echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
-RUN cp -v /usr/bin/qemu-arm-static .
-
-	# Required packages
 RUN apt-get update && apt-get -yq install sudo procps sqlite3 net-tools
-
 	# Create pi user
 RUN useradd -m pi
 RUN echo pi:raspberry | chpasswd
