@@ -3,10 +3,14 @@ version: '3.7'
 services:
 
   picontrolpanel:
-    image: rembert/pi-control-panel
+    image: raspberry/picontrolpanel:prod
     container_name: raspberry_picontrolpanel
+    build:
+      context: ../.
+      dockerfile: Docker/Dockerfile
     environment:
       - TZ=America/Toronto
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - '8080:8080'
 
