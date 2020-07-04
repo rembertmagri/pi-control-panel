@@ -47,5 +47,5 @@ COPY --from=publish-api /app/publish .
 COPY --from=build-ui /app/dist ./PiControlPanel.Ui.Angular/dist
 RUN mkdir -p /var/db/picontrolpanel
 RUN mkdir -p /var/log/picontrolpanel
-#ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
+ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
 HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:8080/healthcheck || exit 1
