@@ -13,7 +13,7 @@ services:
     ports:
       - '8081:8080'
     volumes:
-      - '/usr/bin:/usr/bin'
+      - '/usr/bin:/usr/bin:ro'
 
   portainer:
     image: portainer/portainer
