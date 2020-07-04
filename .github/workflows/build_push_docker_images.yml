@@ -1,0 +1,29 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [ master ]
+    paths: 
+      - 'package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control'
+
+jobs:
+  release_version:
+    name: Docker Build and Push (linux-arm)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Get package version
+      id: get_debian_package_version
+      shell: bash
+      run: |
+        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+    - name: Docker Build and Push
+      uses: docker/build-push-action@v1
+      with:
+        username: rembert
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        repository: rembert/pi-control-panel
+        path: src
+        dockerfile: src/Docker/Dockerfile.pi
+        tags: ${{ steps.get_debian_package_version.outputs.version }}-pi
