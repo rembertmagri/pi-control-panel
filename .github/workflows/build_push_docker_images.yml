@@ -18,11 +18,6 @@ jobs:
       shell: bash
       run: |
         echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-    - name: QEMU Preparation
-      run: |
-        pwd
-        chmod u+x src/Docker/qemu.sh
-        sudo src/Docker/qemu.sh
     - name: Docker Build and Push
       uses: docker/build-push-action@v1
       with:
