@@ -13,7 +13,7 @@ services:
     ports:
       - '8081:8080'
     volumes:
-      - '/usr/bin/vcgencmd:/usr/bin/vcgencmd'
+      - '/usr/bin:/usr/bin'
 
   portainer:
     image: portainer/portainer
