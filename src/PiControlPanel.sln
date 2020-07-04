@@ -31,10 +31,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Application.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{C3258F8D-3220-4835-85CA-3AA0F24029BE}"
 	ProjectSection(SolutionItems) = preProject
-		Docker\docker-compose.pi.yml = Docker\docker-compose.pi.yml
+		Docker\docker-compose.pi32.yml = Docker\docker-compose.pi32.yml
+		Docker\docker-compose.pi64.yml = Docker\docker-compose.pi64.yml
 		Docker\docker-compose.yml = Docker\docker-compose.yml
 		Docker\Dockerfile = Docker\Dockerfile
-		Docker\Dockerfile.pi = Docker\Dockerfile.pi
+		Docker\Dockerfile.pi32 = Docker\Dockerfile.pi32
+		Docker\Dockerfile.pi64 = Docker\Dockerfile.pi64
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Infrastructure.Persistence.Entities", "Infrastructure\PiControlPanel.Infrastructure.Persistence.Entities\PiControlPanel.Infrastructure.Persistence.Entities.csproj", "{75BA719A-D861-47E2-AC8F-E6C839B1D689}"
@@ -47,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Tests.UnitTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Tests.IntegrationTests", "Tests\PiControlPanel.Tests.IntegrationTests\PiControlPanel.Tests.IntegrationTests.csproj", "{6BC85964-863B-48C6-BEA8-E3C94A1D6235}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiControlPanel.Application.SecureShell", "Application\PiControlPanel.Application.SecureShell\PiControlPanel.Application.SecureShell.csproj", "{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Application.SecureShell", "Application\PiControlPanel.Application.SecureShell\PiControlPanel.Application.SecureShell.csproj", "{3E9421D1-1227-4466-9D9C-BE7C879D9B0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
