@@ -19,19 +19,17 @@ jobs:
       run: |
         echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
     - name: QEMU Preparation
-      shell: bash
       run: |
-        sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support
-        sudo update-binfmts --enable qemu-arm
-        sudo update-binfmts --display qemu-arm
-        sudo echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
-        sudo cp -v /usr/bin/qemu-arm-static .
+        pwd
+        chmod u+x src/Docker/qemu.sh
+        sudo src/Docker/qemu.sh
     - name: Docker Build and Push
       uses: docker/build-push-action@v1
       with:
         username: rembert
         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         repository: rembert/pi-control-panel
+        build_args: QEMU=true
         path: src
         dockerfile: src/Docker/Dockerfile.pi
         tags: ${{ steps.get_debian_package_version.outputs.version }}-pi
