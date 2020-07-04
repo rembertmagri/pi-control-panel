@@ -1,0 +1,51 @@
+# Base Stage
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm64v8 AS base
+RUN apt-get update && apt-get -yq install sudo procps sqlite3 net-tools
+	# Create pi user
+RUN useradd -m pi
+RUN echo pi:raspberry | chpasswd
+RUN usermod -aG sudo pi
+WORKDIR /app
+EXPOSE 8080
+
+# Build Stage
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster-arm64v8 AS build-api
+WORKDIR /src
+COPY ["Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj", "Api/PiControlPanel.Api.GraphQL/"]
+COPY ["Application/PiControlPanel.Application.BackgroundServices/PiControlPanel.Application.BackgroundServices.csproj", "Application/PiControlPanel.Application.BackgroundServices/"]
+COPY ["Application/PiControlPanel.Application.SecureShell/PiControlPanel.Application.SecureShell.csproj", "Application/PiControlPanel.Application.SecureShell/"]
+COPY ["Application/PiControlPanel.Application.Services/PiControlPanel.Application.Services.csproj", "Application/PiControlPanel.Application.Services/"]
+COPY ["Domain/PiControlPanel.Domain.Contracts/PiControlPanel.Domain.Contracts.csproj", "Domain/PiControlPanel.Domain.Contracts/"]
+COPY ["Domain/PiControlPanel.Domain.Models/PiControlPanel.Domain.Models.csproj", "Domain/PiControlPanel.Domain.Models/"]
+COPY ["Infrastructure/PiControlPanel.Infrastructure.OnDemand/PiControlPanel.Infrastructure.OnDemand.csproj", "Infrastructure/PiControlPanel.Infrastructure.OnDemand/"]
+COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence/PiControlPanel.Infrastructure.Persistence.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence/"]
+COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/PiControlPanel.Infrastructure.Persistence.Contracts.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/"]
+COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiControlPanel.Infrastructure.Persistence.Entities.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/"]
+RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj"
+COPY . .
+WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/build
+
+# Publish Stage
+FROM build-api AS publish-api
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/publish
+RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
+
+# Build UI Stage
+FROM node:14.4-buster-slim as build-ui
+WORKDIR /app
+COPY ["Ui/PiControlPanel.Ui.Angular/package.json", "./package.json"]
+COPY ["Ui/PiControlPanel.Ui.Angular/package-lock.json", "./package-lock.json"]
+RUN npm install
+COPY ["Ui/PiControlPanel.Ui.Angular", "."]
+RUN npm run ng build -- --prod
+
+# Runtime Stage
+FROM base AS final
+WORKDIR /app
+COPY --from=publish-api /app/publish .
+COPY --from=build-ui /app/dist ./PiControlPanel.Ui.Angular/dist
+RUN mkdir -p /var/db/picontrolpanel
+RUN mkdir -p /var/log/picontrolpanel
+ENTRYPOINT ["./PiControlPanel.Api.GraphQL"]
+HEALTHCHECK --interval=10s --timeout=20s --retries=3 CMD curl --fail http://localhost:8080/healthcheck || exit 1
