@@ -1,15 +1,15 @@
 Package: pi-control-panel
-Version: 1.71
+Version: 1.72
 Architecture: armhf
 Essential: no
 Depends: sqlite3,systemd,systemd-sysv,libraspberrypi-bin,coreutils,procps,openssl,sed,net-tools,apt
 Maintainer: Rembert Magri
 Priority: optional
 Section: utils
-Filename: pool/main/p/pi-control-panel/pi-control-panel_1.71_armhf.deb
-Size: 17635632
-SHA256: a2e83e3f9a9f8f411b0eb95ac68df95c425f0ec685eb5420a7a762c01f2acb62
-SHA1: 4187f68e8c5d72be0bb373b78a8e370d169cf582
-MD5sum: 039af9279480444e85132369e6723acc
+Filename: pool/main/p/pi-control-panel/pi-control-panel_1.72_armhf.deb
+Size: 17638524
+SHA256: cca5532b069fc3c05eb6010d46f6822f410adada51fb4dd509193dbf93917a46
+SHA1: 5b08895910d408a11bdcfb7e610387f69b457d70
+MD5sum: 1f8c4f55a1bf5b90b5f816bd4a6a2476
 Description: Raspberry Pi Control Panel
 
