@@ -9,7 +9,7 @@ WORKDIR /app
 EXPOSE 8080
 
 # Build API Stage
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build-api
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-api
 WORKDIR /src
 COPY ["Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj", "Api/PiControlPanel.Api.GraphQL/"]
 COPY ["Application/PiControlPanel.Application.BackgroundServices/PiControlPanel.Application.BackgroundServices.csproj", "Application/PiControlPanel.Application.BackgroundServices/"]
