@@ -26,7 +26,7 @@ jobs:
         repository: rembert/pi-control-panel
         path: src
         dockerfile: src/Docker/Dockerfile
-        tags: ${{ steps.get_debian_package_version.outputs.version }},latest
+        tags: ${{ steps.get_debian_package_version.outputs.version }}-amd64,latest-amd64
     - name: Enable QEMU
       shell: bash
       run: |
@@ -41,7 +41,7 @@ jobs:
         repository: rembert/pi-control-panel
         path: src
         dockerfile: src/Docker/Dockerfile.pi32
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm32v7,latest
+        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm32v7,latest-arm32v7
     - name: Docker Build and Push (linux-arm64)
       uses: docker/build-push-action@v1
       with:
@@ -50,4 +50,4 @@ jobs:
         repository: rembert/pi-control-panel
         path: src
         dockerfile: src/Docker/Dockerfile.pi64
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest
+        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm32v7
