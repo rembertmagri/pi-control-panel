@@ -50,4 +50,4 @@ jobs:
         repository: rembert/pi-control-panel
         path: src
         dockerfile: src/Docker/Dockerfile.pi64
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm32v7
+        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm64v8
