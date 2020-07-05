@@ -21,14 +21,14 @@ COPY ["Infrastructure/PiControlPanel.Infrastructure.OnDemand/PiControlPanel.Infr
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence/PiControlPanel.Infrastructure.Persistence.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/PiControlPanel.Infrastructure.Persistence.Contracts.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiControlPanel.Infrastructure.Persistence.Entities.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/"]
-RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj"
+RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj" -r linux-arm
 COPY . .
 WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
-RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/build
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-arm -o /app/build
 
 # Publish Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-build -r linux-arm -o /app/publish
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage

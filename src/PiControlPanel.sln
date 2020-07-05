@@ -31,7 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiControlPanel.Application.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{C3258F8D-3220-4835-85CA-3AA0F24029BE}"
 	ProjectSection(SolutionItems) = preProject
-		Docker\docker-compose.pi.yml = Docker\docker-compose.pi.yml
+		Docker\docker-compose.build.yml = Docker\docker-compose.build.yml
+		Docker\docker-compose.pi.build.yml = Docker\docker-compose.pi.build.yml
 		Docker\docker-compose.yml = Docker\docker-compose.yml
 		Docker\Dockerfile = Docker\Dockerfile
 		Docker\Dockerfile.pi = Docker\Dockerfile.pi

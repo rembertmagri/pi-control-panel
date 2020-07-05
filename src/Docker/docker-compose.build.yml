@@ -3,8 +3,8 @@ version: '3.7'
 services:
 
   picontrolpanel:
-    image: raspberry/picontrolpanel:prod
-    container_name: raspberry_picontrolpanel
+    image: rembert/pi-control-panel:dev
+    container_name: picontrolpanel
     build:
       context: ../.
       dockerfile: Docker/Dockerfile

@@ -4,7 +4,7 @@ services:
 
   picontrolpanel:
     image: rembert/pi-control-panel
-    container_name: raspberry_picontrolpanel
+    container_name: picontrolpanel
     environment:
       - TZ=America/Toronto
     ports:
