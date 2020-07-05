@@ -165,6 +165,7 @@ jobs:
     - name: Install required packages
       shell: bash
       run: |
+        sudo apt-get update
         sudo apt-get -y install dpkg-sig reprepro
     - name: Get package version
       id: get_debian_package_version
