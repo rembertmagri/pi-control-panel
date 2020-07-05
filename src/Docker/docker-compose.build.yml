@@ -12,7 +12,7 @@ services:
       - TZ=America/Toronto
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
-      - '8080:8080'
+      - '8081:8080'
 
   portainer:
     image: portainer/portainer

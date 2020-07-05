@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 
 services:
 
@@ -8,7 +8,7 @@ services:
     environment:
       - TZ=America/Toronto
     ports:
-      - '8080:8080'
+      - '8081:8080'
 
   portainer:
     image: portainer/portainer
