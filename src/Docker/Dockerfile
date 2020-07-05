@@ -28,7 +28,7 @@ RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r 
 
 # Publish API Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-build -r linux-x64 -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-x64 -o /app/publish
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage
