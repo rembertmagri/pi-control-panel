@@ -128,6 +128,7 @@
 
             services.AddHostedService<NetworkWorker>();
             services.AddHostedService<DiskWorker>();
+            services.AddHostedService<ChipsetWorker>();
             services.AddHostedService<MemoryWorker<RandomAccessMemory, RandomAccessMemoryStatus>>();
             services.AddHostedService<MemoryWorker<SwapMemory, SwapMemoryStatus>>();
             services.AddHostedService<NetworkInterfaceStatusWorker>();
@@ -135,7 +136,6 @@
             if (!this.IsRunningInContainer())
             {
                 services.AddHostedService<CpuWorker>();
-                services.AddHostedService<ChipsetWorker>();
                 services.AddHostedService<GpuWorker>();
                 services.AddHostedService<OsWorker>();
                 services.AddHostedService<CpuFrequencyWorker>();
