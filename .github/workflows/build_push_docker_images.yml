@@ -12,43 +12,43 @@ jobs:
     name: Docker Build and Push
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Get package version
-      id: get_debian_package_version
-      shell: bash
-      run: |
-        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-    - name: Docker Build and Push (linux-amd64)
-      uses: docker/build-push-action@v1
-      with:
-        username: rembert
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        repository: rembert/pi-control-panel
-        path: src
-        dockerfile: src/Docker/Dockerfile
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-amd64,latest-amd64
-    - name: Enable QEMU
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install qemu binfmt-support qemu-user-static
-        sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    - name: Docker Build and Push (linux-arm32)
-      uses: docker/build-push-action@v1
-      with:
-        username: rembert
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        repository: rembert/pi-control-panel
-        path: src
-        dockerfile: src/Docker/Dockerfile.pi32
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm32v7,latest-arm32v7
-    - name: Docker Build and Push (linux-arm64)
-      uses: docker/build-push-action@v1
-      with:
-        username: rembert
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        repository: rembert/pi-control-panel
-        path: src
-        dockerfile: src/Docker/Dockerfile.pi64
-        tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm64v8
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Get package version
+        id: get_debian_package_version
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+      - name: Docker Build and Push (linux-amd64)
+        uses: docker/build-push-action@v1
+        with:
+          username: rembert
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          repository: rembert/pi-control-panel
+          path: src
+          dockerfile: src/Docker/Dockerfile
+          tags: ${{ steps.get_debian_package_version.outputs.version }}-amd64,latest-amd64
+      - name: Enable QEMU
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install qemu binfmt-support qemu-user-static
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - name: Docker Build and Push (linux-arm32)
+        uses: docker/build-push-action@v1
+        with:
+          username: rembert
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          repository: rembert/pi-control-panel
+          path: src
+          dockerfile: src/Docker/Dockerfile.pi32
+          tags: ${{ steps.get_debian_package_version.outputs.version }}-arm32v7,latest-arm32v7
+      - name: Docker Build and Push (linux-arm64)
+        uses: docker/build-push-action@v1
+        with:
+          username: rembert
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          repository: rembert/pi-control-panel
+          path: src
+          dockerfile: src/Docker/Dockerfile.pi64
+          tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm64v8

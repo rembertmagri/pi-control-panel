@@ -32,7 +32,7 @@ RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage
-FROM node:14.4-buster-slim as build-ui
+FROM node:14.5-buster-slim as build-ui
 WORKDIR /app
 COPY ["Ui/PiControlPanel.Ui.Angular/package.json", "./package.json"]
 COPY ["Ui/PiControlPanel.Ui.Angular/package-lock.json", "./package-lock.json"]

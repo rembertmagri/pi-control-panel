@@ -11,7 +11,7 @@
     <DockerfileContext>../..</DockerfileContext>
     <UiPath>../../Ui/PiControlPanel.Ui.Angular/</UiPath>
     <PublishTrimmed>true</PublishTrimmed>
-    <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
+    <RuntimeIdentifiers>linux-x64,linux-arm64,linux-arm</RuntimeIdentifiers>
     <Version>1.0.0</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>

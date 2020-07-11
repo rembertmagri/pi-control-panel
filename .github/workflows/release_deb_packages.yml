@@ -12,193 +12,193 @@ jobs:
     name: Set Release Version
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Get package version
-      id: get_debian_package_version
-      shell: bash
-      run: |
-        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-    - name: Set package version
-      shell: bash
-      run: |
-        sed -i 's/<Version>1.0.0<\/Version>/<Version>${{ steps.get_debian_package_version.outputs.version }}.0<\/Version>/g' src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj
-        sed -i 's/"version": "1.0.0",/"version": "${{ steps.get_debian_package_version.outputs.version }}.0",/g' src/Ui/PiControlPanel.Ui.Angular/package.json
-    - name: Upload results for job dotnet_build
-      uses: actions/upload-artifact@v2
-      with:
-        name: checkout
-        path: .
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Get package version
+        id: get_debian_package_version
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+      - name: Set package version
+        shell: bash
+        run: |
+          sed -i 's/<Version>1.0.0<\/Version>/<Version>${{ steps.get_debian_package_version.outputs.version }}.0<\/Version>/g' src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj
+          sed -i 's/"version": "1.0.0",/"version": "${{ steps.get_debian_package_version.outputs.version }}.0",/g' src/Ui/PiControlPanel.Ui.Angular/package.json
+      - name: Upload results for job dotnet_build
+        uses: actions/upload-artifact@v2
+        with:
+          name: checkout
+          path: .
         
   dotnet_build_linux-arm:
     name: .NET Core Build linux-arm
     needs: [release_version]
     runs-on: ubuntu-latest
     steps:
-    - name: Download result from job release_version
-      uses: actions/download-artifact@v2
-      with:
-        name: checkout
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Build
-      run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm
-    - name: Upload results for job create_debian_packages
-      uses: actions/upload-artifact@v2
-      with:
-        name: package_linux-arm
-        path: package
+      - name: Download result from job release_version
+        uses: actions/download-artifact@v2
+        with:
+          name: checkout
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Build
+        run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm
+      - name: Upload results for job create_debian_packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: package_linux-arm
+          path: package
 
   dotnet_build_linux-arm64:
     name: .NET Core Build linux-arm64
     needs: [release_version]
     runs-on: ubuntu-latest
     steps:
-    - name: Download result from job release_version
-      uses: actions/download-artifact@v2
-      with:
-        name: checkout
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Build
-      run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm64
-    - name: Upload results for job create_debian_packages
-      uses: actions/upload-artifact@v2
-      with:
-        name: package_linux-arm64
-        path: package
+      - name: Download result from job release_version
+        uses: actions/download-artifact@v2
+        with:
+          name: checkout
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Build
+        run: dotnet build src/Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj /p:DeployOnBuild=true /p:PublishProfile=RaspberryPi_linux-arm64
+      - name: Upload results for job create_debian_packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: package_linux-arm64
+          path: package
 
   create_debian_packages:
     name: Debian Packages Build
     needs: [dotnet_build_linux-arm, dotnet_build_linux-arm64]
     runs-on: ubuntu-latest
     steps:
-    - name: Download result from job dotnet_build_linux-arm
-      uses: actions/download-artifact@v2
-      with:
-        name: package_linux-arm
-        path: package_linux-arm
-    - name: Download result from job dotnet_build_linux-arm64
-      uses: actions/download-artifact@v2
-      with:
-        name: package_linux-arm64
-        path: package_linux-arm64
-    - name: Get package version
-      id: get_debian_package_version
-      shell: bash
-      run: |
-        echo "::set-output name=version::$(grep 'Version:' package_linux-arm/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-    - name: Create Debian package (linux-arm)
-      shell: bash
-      run: |
-        cd package_linux-arm
-        mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
-        chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/etc/sudoers.d/picontrolpanel-nopasswd
-        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/opt/picontrolpanel/PiControlPanel.Api.GraphQL
-        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/DEBIAN/p*
-        dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
-    - name: Create Debian package (linux-arm64)
-      shell: bash
-      run: |
-        cd package_linux-arm64
-        sed -i 's/Architecture: armhf/Architecture: arm64/g' pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
-        mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
-        chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/etc/sudoers.d/picontrolpanel-nopasswd
-        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/opt/picontrolpanel/PiControlPanel.Api.GraphQL
-        chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/DEBIAN/p*
-        dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ steps.get_debian_package_version.outputs.version }}
-        release_name: Release ${{ steps.get_debian_package_version.outputs.version }}
-        body: |
-          Changes in this Release:
-          - First Change
-          - Second Change
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset (armhf)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./package_linux-arm/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
-        asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
-        asset_content_type: application/vnd.debian.binary-package
-    - name: Upload Release Asset (arm64)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./package_linux-arm64/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
-        asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
-        asset_content_type: application/vnd.debian.binary-package
-    - name: Upload results for job publish_debian_packages
-      uses: actions/upload-artifact@v2
-      with:
-        name: packages
-        path: package_linux*/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
+      - name: Download result from job dotnet_build_linux-arm
+        uses: actions/download-artifact@v2
+        with:
+          name: package_linux-arm
+          path: package_linux-arm
+      - name: Download result from job dotnet_build_linux-arm64
+        uses: actions/download-artifact@v2
+        with:
+          name: package_linux-arm64
+          path: package_linux-arm64
+      - name: Get package version
+        id: get_debian_package_version
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(grep 'Version:' package_linux-arm/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+      - name: Create Debian package (linux-arm)
+        shell: bash
+        run: |
+          cd package_linux-arm
+          mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
+          chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/etc/sudoers.d/picontrolpanel-nopasswd
+          chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/opt/picontrolpanel/PiControlPanel.Api.GraphQL
+          chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf/DEBIAN/p*
+          dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf
+      - name: Create Debian package (linux-arm64)
+        shell: bash
+        run: |
+          cd package_linux-arm64
+          sed -i 's/Architecture: armhf/Architecture: arm64/g' pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control
+          mv pi-control-panel_VERSION_ARCHITECTURE pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
+          chmod 0440 pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/etc/sudoers.d/picontrolpanel-nopasswd
+          chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/opt/picontrolpanel/PiControlPanel.Api.GraphQL
+          chmod +x pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64/DEBIAN/p*
+          dpkg-deb --build pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.get_debian_package_version.outputs.version }}
+          release_name: Release ${{ steps.get_debian_package_version.outputs.version }}
+          body: |
+            Changes in this Release:
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset (armhf)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./package_linux-arm/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
+          asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_armhf.deb
+          asset_content_type: application/vnd.debian.binary-package
+      - name: Upload Release Asset (arm64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./package_linux-arm64/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
+          asset_name: pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm64.deb
+          asset_content_type: application/vnd.debian.binary-package
+      - name: Upload results for job publish_debian_packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: package_linux*/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
 
   publish_debian_packages:
     name: Debian Packages Publish
     needs: [create_debian_packages]
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.PAT_FOR_GITHUB_ACTIONS }}
-    - name: Download result from job create_debian_packages
-      uses: actions/download-artifact@v2
-      with:
-        name: packages
-        path: temp
-    - name: Install required packages
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install dpkg-sig reprepro
-    - name: Get package version
-      id: get_debian_package_version
-      shell: bash
-      run: |
-        echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-    - name: Sign Debian packages
-      shell: bash
-      env:
-        DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE: ${{ secrets.DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE }}
-        DEBIAN_PACKAGE_REPO_PRIVATE_KEY: ${{ secrets.DEBIAN_PACKAGE_REPO_PRIVATE_KEY }}
-      run: |
-        cd debian_repo
-        export GPG_TTY=$(tty)
-        echo "$DEBIAN_PACKAGE_REPO_PRIVATE_KEY" > private.key
-        gpg --batch --pinentry-mode loopback --passphrase "$DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE" --allow-secret-key-import --import private.key
-        rm private.key
-        dpkg-sig --sign builder --gpg-options '--batch --pinentry-mode loopback --passphrase "$DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE"' ../temp/**/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
-    - name: Publish signed packages to Debian Repository
-      shell: bash
-      run: |
-        cd debian_repo
-        reprepro -S utils includedeb buster ../temp/**/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
-        rm -rf ../temp
-    - name: Fixing access permissions of Debian maintainer scripts before committing
-      shell: bash
-      run: |
-        chmod +x package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/p*
-    - name: Commit Debian Repository changes
-      run: |
-          git config --global user.name 'Rembert Magri'
-          git config --global user.email 'rembertmagri@users.noreply.github.com'
-          git add debian_repo/**
-          git commit -m 'Debian Repository updated with Release ${{ steps.get_debian_package_version.outputs.version }}'
-          git push
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_FOR_GITHUB_ACTIONS }}
+      - name: Download result from job create_debian_packages
+        uses: actions/download-artifact@v2
+        with:
+          name: packages
+          path: temp
+      - name: Install required packages
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install dpkg-sig reprepro
+      - name: Get package version
+        id: get_debian_package_version
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
+      - name: Sign Debian packages
+        shell: bash
+        env:
+          DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE: ${{ secrets.DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE }}
+          DEBIAN_PACKAGE_REPO_PRIVATE_KEY: ${{ secrets.DEBIAN_PACKAGE_REPO_PRIVATE_KEY }}
+        run: |
+          cd debian_repo
+          export GPG_TTY=$(tty)
+          echo "$DEBIAN_PACKAGE_REPO_PRIVATE_KEY" > private.key
+          gpg --batch --pinentry-mode loopback --passphrase "$DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE" --allow-secret-key-import --import private.key
+          rm private.key
+          dpkg-sig --sign builder --gpg-options '--batch --pinentry-mode loopback --passphrase "$DEBIAN_PACKAGE_REPO_KEY_PASSPHRASE"' ../temp/**/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
+      - name: Publish signed packages to Debian Repository
+        shell: bash
+        run: |
+          cd debian_repo
+          reprepro -S utils includedeb buster ../temp/**/pi-control-panel_${{ steps.get_debian_package_version.outputs.version }}_arm*.deb
+          rm -rf ../temp
+      - name: Fixing access permissions of Debian maintainer scripts before committing
+        shell: bash
+        run: |
+          chmod +x package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/p*
+      - name: Commit Debian Repository changes
+        run: |
+            git config --global user.name 'Rembert Magri'
+            git config --global user.email 'rembertmagri@users.noreply.github.com'
+            git add debian_repo/**
+            git commit -m 'Debian Repository updated with Release ${{ steps.get_debian_package_version.outputs.version }}'
+            git push

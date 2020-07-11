@@ -9,6 +9,16 @@ services:
       - TZ=America/Toronto
     ports:
       - '8081:8080'
+    volumes:
+      - '/boot/:/boot/:ro'
+      - '/bin/:/bin/:ro'
+      - '/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro'
+      - '/etc/sudoers:/etc/sudoers:ro'
+      - '/lib/:/lib/:ro'
+      - '/proc/:/proc/:ro'
+      - '/sbin/:/sbin/:ro'
+      - '/usr/bin/:/usr/bin/:ro'
+      - '/usr/lib/:/usr/lib/:ro'
 
   portainer:
     image: portainer/portainer
