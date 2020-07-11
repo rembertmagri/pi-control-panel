@@ -2,6 +2,8 @@
 {
     /// <summary>
     /// Contains the bash commands used to retrieve information from Raspberry Pi.
+    /// The commands are ensured to be present by having their respective packages listed as
+    ///     dependencies in package\pi-control-panel_VERSION_ARCHITECTURE\DEBIAN\control.
     /// </summary>
     public class BashCommands
     {

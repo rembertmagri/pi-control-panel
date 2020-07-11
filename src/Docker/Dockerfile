@@ -1,5 +1,5 @@
 # Base Stage
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm64v8 AS base
 RUN apt-get update && apt-get -yq install sudo procps sqlite3 net-tools
 	# Create pi user
 RUN useradd -m pi
@@ -21,18 +21,18 @@ COPY ["Infrastructure/PiControlPanel.Infrastructure.OnDemand/PiControlPanel.Infr
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence/PiControlPanel.Infrastructure.Persistence.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/PiControlPanel.Infrastructure.Persistence.Contracts.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Contracts/"]
 COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiControlPanel.Infrastructure.Persistence.Entities.csproj", "Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/"]
-RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj" -r linux-x64
+RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj" -r linux-arm64
 COPY . .
 WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
-RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-x64 -o /app/build
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-arm64
 
 # Publish API Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-x64 -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-build -r linux-arm64 -o /app/publish
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage
-FROM node:14.4-buster-slim as build-ui
+FROM node:14.5-buster-slim as build-ui
 WORKDIR /app
 COPY ["Ui/PiControlPanel.Ui.Angular/package.json", "./package.json"]
 COPY ["Ui/PiControlPanel.Ui.Angular/package-lock.json", "./package-lock.json"]

@@ -8,7 +8,7 @@ RUN usermod -aG sudo pi
 WORKDIR /app
 EXPOSE 8080
 
-# Build Stage
+# Build API Stage
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-api
 WORKDIR /src
 COPY ["Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj", "Api/PiControlPanel.Api.GraphQL/"]
@@ -24,11 +24,11 @@ COPY ["Infrastructure/PiControlPanel.Infrastructure.Persistence.Entities/PiContr
 RUN dotnet restore "Api/PiControlPanel.Api.GraphQL/PiControlPanel.Api.GraphQL.csproj" -r linux-arm
 COPY . .
 WORKDIR "/src/Api/PiControlPanel.Api.GraphQL"
-RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-arm -o /app/build
+RUN dotnet build "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-arm
 
-# Publish Stage
+# Publish API Stage
 FROM build-api AS publish-api
-RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-restore -r linux-arm -o /app/publish
+RUN dotnet publish "PiControlPanel.Api.GraphQL.csproj" -c Release --no-build -r linux-arm -o /app/publish
 RUN chmod +x /app/publish/PiControlPanel.Api.GraphQL
 
 # Build UI Stage

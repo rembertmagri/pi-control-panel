@@ -1,58 +1,59 @@
 name: Pull Request Check
 
 on:
-  workflow_dispatch:
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - dev
 
 jobs:
   super_linter:
     name: Lint Code Base
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Super Linter
-      uses: docker://github/super-linter:v2.1.0
-      env:
-        VALIDATE_ALL_CODEBASE: false
-        VALIDATE_TYPESCRIPT_STANDARD: false
-        VALIDATE_TYPESCRIPT_ES: true
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Super Linter
+        uses: docker://github/super-linter:v2.1.0
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
+          VALIDATE_TYPESCRIPT_ES: true
         
   dotnet_build_and_test_pr:
     name: Build and Test .Net
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Restore
-      run: dotnet restore src/PiControlPanel.sln
-    - name: Build
-      run: dotnet build src/PiControlPanel.sln --configuration Release --no-restore
-    - name: Test
-      run: dotnet test src/PiControlPanel.sln --configuration Release --no-build --verbosity normal
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Restore
+        run: dotnet restore src/PiControlPanel.sln
+      - name: Build
+        run: dotnet build src/PiControlPanel.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test src/PiControlPanel.sln --configuration Release --no-build --verbosity normal
 
   nodejs_build_and_test_pr:
     name: Build and Test Angular
     needs: [super_linter]
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '13.10.1'
-    - name: Install
-      run: npm install
-      working-directory: src/Ui/PiControlPanel.Ui.Angular
-    - name: Build
-      run: npm run build --if-present
-      working-directory: src/Ui/PiControlPanel.Ui.Angular
-    - name: Test
-      run: CI=true npm test
-      working-directory: src/Ui/PiControlPanel.Ui.Angular
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '13.10.1'
+      - name: Install
+        run: npm install
+        working-directory: src/Ui/PiControlPanel.Ui.Angular
+      - name: Build
+        run: npm run build --if-present
+        working-directory: src/Ui/PiControlPanel.Ui.Angular
+      - name: Test
+        run: CI=true npm test
+        working-directory: src/Ui/PiControlPanel.Ui.Angular
