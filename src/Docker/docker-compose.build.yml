@@ -7,9 +7,8 @@ services:
     container_name: picontrolpanel
     build:
       context: ../.
-      dockerfile: Docker/Dockerfile
+      dockerfile: Docker/Dockerfile.pi64
     environment:
-      - TZ=America/Toronto
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - '8081:8080'

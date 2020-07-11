@@ -1,9 +1,9 @@
-version: '3.7'
+version: '3.3'
 
 services:
 
   picontrolpanel:
-    image: rembert/pi-control-panel:latest-amd64
+    image: rembert/pi-control-panel:latest
     container_name: picontrolpanel
     environment:
       - TZ=America/Toronto

@@ -19,15 +19,6 @@ jobs:
         shell: bash
         run: |
           echo "::set-output name=version::$(grep 'Version:' package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control | awk -F  ": " '{print $2}')"
-      - name: Docker Build and Push (linux-amd64)
-        uses: docker/build-push-action@v1
-        with:
-          username: rembert
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-          repository: rembert/pi-control-panel
-          path: src
-          dockerfile: src/Docker/Dockerfile
-          tags: ${{ steps.get_debian_package_version.outputs.version }}-amd64,latest-amd64
       - name: Enable QEMU
         shell: bash
         run: |
@@ -50,5 +41,5 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           repository: rembert/pi-control-panel
           path: src
-          dockerfile: src/Docker/Dockerfile.pi64
-          tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm64v8
+          dockerfile: src/Docker/Dockerfile
+          tags: ${{ steps.get_debian_package_version.outputs.version }}-arm64v8,latest-arm64v8,latest
