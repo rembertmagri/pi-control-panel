@@ -1,5 +1,5 @@
 Package: pi-control-panel
-Version: 1.77
+Version: 1.78
 Architecture: armhf
 Essential: no
 Priority: optional
