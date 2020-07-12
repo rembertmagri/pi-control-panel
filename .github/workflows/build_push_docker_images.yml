@@ -3,7 +3,8 @@ name: Build and Push Docker Images
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches:
+      - master
     paths: 
       - 'package/pi-control-panel_VERSION_ARCHITECTURE/DEBIAN/control'
 

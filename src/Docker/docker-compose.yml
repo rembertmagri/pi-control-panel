@@ -5,8 +5,6 @@ services:
   picontrolpanel:
     image: rembert/pi-control-panel:latest
     container_name: picontrolpanel
-    environment:
-      - TZ=America/Toronto
     ports:
       - '8081:8080'
     volumes:
