@@ -1,6 +1,9 @@
 # Base Stage
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm64v8 AS base
-RUN apt-get update && apt-get -yq install sudo procps sqlite3 net-tools
+FROM arm64v8/debian:buster-slim AS base
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+RUN apt-get update \
+  && apt-get install -yq --no-install-recommends curl ca-certificates sudo procps sqlite3 net-tools \
+  && rm -rf /var/lib/apt/lists/*
 	# Create pi user
 RUN useradd -m pi
 RUN echo pi:raspberry | chpasswd

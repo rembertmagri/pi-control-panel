@@ -5,8 +5,6 @@ services:
   picontrolpanel:
     image: rembert/pi-control-panel:latest-arm32v7
     container_name: picontrolpanel
-    environment:
-      - TZ=America/Toronto
     ports:
       - '8081:8080'
     volumes:
@@ -19,17 +17,3 @@ services:
       - '/sbin/:/sbin/:ro'
       - '/usr/bin/:/usr/bin/:ro'
       - '/usr/lib/:/usr/lib/:ro'
-
-  portainer:
-    image: portainer/portainer
-    container_name: portainer
-    command: --no-auth
-    restart: always
-    ports:
-      - '9000:9000'
-    volumes:
-      - 'portainer_data:/data'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-
-volumes:
-  portainer_data:
