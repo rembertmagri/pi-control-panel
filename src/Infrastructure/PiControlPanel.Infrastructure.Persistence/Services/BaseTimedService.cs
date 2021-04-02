@@ -82,50 +82,56 @@
 
             if (pagingInput.First.HasValue)
             {
-                entities = entities.OrderBy(t => t.DateTime);
-                if (!string.IsNullOrEmpty(pagingInput.After))
+                if (totalCount > pagingInput.First.Value)
                 {
-                    var afterEntity = await entities
-                        .FirstAsync(e => e.ID == Guid.Parse(pagingInput.After));
-                    if (afterEntity == null)
+                    entities = entities.OrderBy(t => t.DateTime);
+                    if (!string.IsNullOrEmpty(pagingInput.After))
                     {
-                        throw new ArgumentOutOfRangeException("After", $"No entity found with id={pagingInput.After}");
+                        var afterEntity = await entities
+                            .FirstAsync(e => e.ID == Guid.Parse(pagingInput.After));
+                        if (afterEntity == null)
+                        {
+                            throw new ArgumentOutOfRangeException("After", $"No entity found with id={pagingInput.After}");
+                        }
+
+                        totalSkipped = entities
+                            .Count(e => e.DateTime <= afterEntity.DateTime);
+                        entities = entities
+                            .Where(e => e.DateTime > afterEntity.DateTime);
                     }
 
-                    totalSkipped = entities
-                        .Count(e => e.DateTime <= afterEntity.DateTime);
                     entities = entities
-                        .Where(e => e.DateTime > afterEntity.DateTime);
+                            .Take(pagingInput.First.Value);
+                    hasNextPage = totalSkipped + pagingInput.First.Value < totalCount;
+                    hasPreviousPage = totalSkipped != 0;
                 }
-
-                entities = entities
-                        .Take(pagingInput.First.Value);
-                hasNextPage = totalSkipped + pagingInput.First.Value < totalCount;
-                hasPreviousPage = totalSkipped != 0;
             }
             else if (pagingInput.Last.HasValue)
             {
-                entities = entities.OrderByDescending(t => t.DateTime);
-                if (!string.IsNullOrEmpty(pagingInput.Before))
+                if (totalCount > pagingInput.Last.Value)
                 {
-                    var beforeEntity = await entities
-                        .FirstAsync(e => e.ID == Guid.Parse(pagingInput.Before));
-                    if (beforeEntity == null)
+                    entities = entities.OrderByDescending(t => t.DateTime);
+                    if (!string.IsNullOrEmpty(pagingInput.Before))
                     {
-                        throw new ArgumentOutOfRangeException("Before", $"No entity found with id={pagingInput.Before}");
+                        var beforeEntity = await entities
+                            .FirstAsync(e => e.ID == Guid.Parse(pagingInput.Before));
+                        if (beforeEntity == null)
+                        {
+                            throw new ArgumentOutOfRangeException("Before", $"No entity found with id={pagingInput.Before}");
+                        }
+
+                        totalSkipped = entities
+                            .Count(e => e.DateTime >= beforeEntity.DateTime);
+                        entities = entities
+                            .Where(e => e.DateTime < beforeEntity.DateTime);
                     }
 
-                    totalSkipped = entities
-                        .Count(e => e.DateTime >= beforeEntity.DateTime);
                     entities = entities
-                        .Where(e => e.DateTime < beforeEntity.DateTime);
+                            .Take(pagingInput.Last.Value)
+                            .OrderBy(t => t.DateTime);
+                    hasNextPage = totalSkipped != 0;
+                    hasPreviousPage = totalSkipped + pagingInput.Last.Value < totalCount;
                 }
-
-                entities = entities
-                        .Take(pagingInput.Last.Value)
-                        .OrderBy(t => t.DateTime);
-                hasNextPage = totalSkipped != 0;
-                hasPreviousPage = totalSkipped + pagingInput.Last.Value < totalCount;
             }
 
             var result = await entities.ToListAsync();
