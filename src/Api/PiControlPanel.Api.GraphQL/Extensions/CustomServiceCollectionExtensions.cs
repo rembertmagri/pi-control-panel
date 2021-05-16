@@ -44,7 +44,7 @@
                     {
                         options.EnableMetrics = hostingEnvironment.IsDevelopment();
                     })
-                .AddNewtonsoftJson()
+                .AddSystemTextJson()
 
                 // Adds all graph types in the current assembly with a scoped lifetime.
                 .AddGraphTypes(ServiceLifetime.Scoped)

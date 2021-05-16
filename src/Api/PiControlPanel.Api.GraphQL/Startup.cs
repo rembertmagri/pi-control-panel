@@ -54,8 +54,6 @@
 
             services.AddRequiredServices(this.configuration, this.logger);
 
-            services.AddGraphQL();
-
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
