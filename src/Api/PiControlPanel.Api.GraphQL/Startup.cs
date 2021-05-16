@@ -52,9 +52,9 @@
         {
             services.AddCors(); // enables Access-Control-Allow-Origin (angular calling graphql methods)
 
-            services.AddCustomGraphQL();
-
             services.AddRequiredServices(this.configuration, this.logger);
+
+            services.AddGraphQL();
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -88,6 +88,8 @@
                         };
                     }
                 });
+
+            services.AddCustomGraphQL();
 
             services.AddHealthChecks();
 
