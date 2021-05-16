@@ -1,15 +1,15 @@
 Package: pi-control-panel
-Version: 1.79
+Version: 1.80
 Architecture: arm64
 Essential: no
 Depends: sqlite3,systemd,systemd-sysv,libraspberrypi-bin,coreutils,procps,openssl,sed,net-tools,apt
 Maintainer: Rembert Magri
 Priority: optional
 Section: utils
-Filename: pool/main/p/pi-control-panel/pi-control-panel_1.79_arm64.deb
-Size: 17366120
-SHA256: 1c7e9ec97999aedd9bffaa51bb31a72ccc32bbe6029a7de043f5cf7069e0f2e9
-SHA1: 773aea5b8eb4b8465efffdcc5a900cd70adf8b07
-MD5sum: 3bec88c4339d3f7927f3ab6dfadeefc6
+Filename: pool/main/p/pi-control-panel/pi-control-panel_1.80_arm64.deb
+Size: 17221204
+SHA256: 5d843082a17d4304b8418502c6b4445aa394eed24358f3ef98189ba0be02a050
+SHA1: 985be4312f71d37a8a3c1b9c8113abc7e921eaa8
+MD5sum: 094af6939e1ab65907ae72104c3158c4
 Description: Raspberry Pi Control Panel
 
