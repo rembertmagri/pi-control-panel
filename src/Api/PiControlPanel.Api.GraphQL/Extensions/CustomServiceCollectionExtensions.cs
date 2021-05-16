@@ -8,9 +8,11 @@
     using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
     using global::GraphQL.Validation;
     using LightInject;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using NLog;
     using PiControlPanel.Api.GraphQL.Middlewares;
     using PiControlPanel.Api.GraphQL.Schemas;
@@ -30,15 +32,17 @@
         /// Adds custom GraphQL configuration to the service collection.
         /// </summary>
         /// <param name="services">The original service collection.</param>
+        /// <param name="hostingEnvironment">The hosting environment reference.</param>
         /// <returns>The altered service collection.</returns>
         public static IServiceCollection AddCustomGraphQL(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IWebHostEnvironment hostingEnvironment)
         {
             return services
                 .AddGraphQL(
                     options =>
                     {
-                        options.EnableMetrics = true;
+                        options.EnableMetrics = hostingEnvironment.IsDevelopment();
                     })
                 .AddNewtonsoftJson()
 

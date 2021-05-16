@@ -89,7 +89,7 @@
                     }
                 });
 
-            services.AddCustomGraphQL();
+            services.AddCustomGraphQL(this.webHostEnvironment);
 
             services.AddHealthChecks();
 
