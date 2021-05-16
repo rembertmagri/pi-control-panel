@@ -28,7 +28,7 @@
         /// <param name="serviceRegistry">LightInject's service registry.</param>
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IUnitOfWork, UnitOfWork>();
+            serviceRegistry.Register<IUnitOfWork, UnitOfWork>(new PerRequestLifeTime());
 
             serviceRegistry.Register<Contracts.Persistence.IChipsetService, Persistence.ChipsetService>();
             serviceRegistry.Register<Contracts.Persistence.Cpu.ICpuService, Persistence.Cpu.CpuService>();
