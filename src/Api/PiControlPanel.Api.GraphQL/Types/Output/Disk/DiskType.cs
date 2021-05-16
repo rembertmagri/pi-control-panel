@@ -26,8 +26,8 @@
                 resolve: context =>
                 {
                     logger.Debug("FileSystem field");
-                    var name = context.GetArgument<string>("name");
-                    return context.Source.FileSystems.SingleOrDefault(i => i.Name == name);
+                    var name = context.Arguments["name"].Value;
+                    return context.Source.FileSystems.SingleOrDefault(i => i.Name.Equals(name));
                 });
         }
     }

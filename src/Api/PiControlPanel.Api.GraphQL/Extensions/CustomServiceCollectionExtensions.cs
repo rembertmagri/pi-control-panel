@@ -1,20 +1,24 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
+    using System.Security.Claims;
     using global::GraphQL;
-    using global::GraphQL.Http;
+    using global::GraphQL.Authorization;
+    using global::GraphQL.Instrumentation;
     using global::GraphQL.Server;
-    using global::GraphQL.Server.Internal;
     using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
-    using Microsoft.AspNetCore.Hosting;
+    using global::GraphQL.Validation;
+    using LightInject;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using NLog;
+    using PiControlPanel.Api.GraphQL.Middlewares;
     using PiControlPanel.Api.GraphQL.Schemas;
     using PiControlPanel.Api.GraphQL.Types.Output;
     using PiControlPanel.Application.SecureShell;
     using PiControlPanel.Application.Services;
     using PiControlPanel.Domain.Contracts.Application;
+    using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
     /// <summary>
@@ -26,20 +30,17 @@
         /// Adds custom GraphQL configuration to the service collection.
         /// </summary>
         /// <param name="services">The original service collection.</param>
-        /// <param name="webHostEnvironment">The instance of the web host environment.</param>
         /// <returns>The altered service collection.</returns>
         public static IServiceCollection AddCustomGraphQL(
-            this IServiceCollection services, IWebHostEnvironment webHostEnvironment)
+            this IServiceCollection services)
         {
             return services
                 .AddGraphQL(
                     options =>
                     {
-                        // Show stack traces in exceptions. Don't turn this on in production.
-                        options.ExposeExceptions = webHostEnvironment.IsDevelopment();
-
                         options.EnableMetrics = true;
                     })
+                .AddNewtonsoftJson()
 
                 // Adds all graph types in the current assembly with a scoped lifetime.
                 .AddGraphTypes(ServiceLifetime.Scoped)
@@ -57,15 +58,50 @@
                 // Add GraphQL data loader to reduce the number of calls to our repository.
                 .AddDataLoader()
                 .Services
-                .AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<IDocumentWriter, DocumentWriter>()
-                .AddTransient<IOperationMessageListener, JwtPayloadListener>()
-                .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>))
-                .AddScoped<RaspberryPiType>()
-                .AddScoped<ControlPanelQuery>()
-                .AddScoped<ControlPanelMutation>()
-                .AddScoped<ControlPanelSubscription>()
-                .AddScoped<ControlPanelSchema>();
+                .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
+        }
+
+        /// <summary>
+        /// Adds required services to GraphQL.
+        /// </summary>
+        /// <param name="container">The original service container.</param>
+        /// <returns>The altered service container.</returns>
+        public static IServiceContainer AddGraphQLServicesDependency(this IServiceContainer container)
+        {
+            container.RegisterSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            container.RegisterSingleton<IAuthorizationEvaluator, AuthorizationEvaluator>();
+            container.RegisterTransient<IValidationRule, AuthorizationValidationRule>();
+
+            container.RegisterSingleton(s =>
+            {
+                var authSettings = new AuthorizationSettings();
+
+                authSettings.AddPolicy(
+                    AuthorizationPolicyName.AuthenticatedPolicy,
+                    p => p
+                        .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
+                        .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
+                        .RequireClaim(ClaimTypes.Role, new string[] { Roles.User }));
+                authSettings.AddPolicy(
+                    AuthorizationPolicyName.SuperUserPolicy,
+                    p => p
+                        .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
+                        .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
+                        .RequireClaim(ClaimTypes.Role, new string[] { Roles.SuperUser }));
+
+                return authSettings;
+            });
+
+            container.RegisterSingleton<IDocumentExecuter, DocumentExecuter>();
+            container.RegisterTransient<IOperationMessageListener, JwtPayloadListener>();
+            container.Register<IFieldMiddleware, LoggerMiddleware>();
+            container.Register<RaspberryPiType>();
+            container.Register<ControlPanelQuery>();
+            container.Register<ControlPanelMutation>();
+            container.Register<ControlPanelSubscription>();
+            container.Register<ControlPanelSchema>();
+
+            return container;
         }
 
         /// <summary>
