@@ -4,7 +4,6 @@
     using System.IO;
     using System.Reflection;
     using Boxed.AspNetCore;
-    using LightInject.Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -53,7 +52,6 @@
         /// <returns>The web host builder.</returns>
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseLightInject()
                 .UseIf(
                     x => string.IsNullOrEmpty(x.GetSetting(WebHostDefaults.ContentRootKey)),
                     x => x.UseContentRoot(Directory.GetCurrentDirectory()))

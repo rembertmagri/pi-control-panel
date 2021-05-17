@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using Boxed.AspNetCore;
     using global::GraphQL.Server;
-    using LightInject;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -52,7 +51,9 @@
         {
             services.AddCors(); // enables Access-Control-Allow-Origin (angular calling graphql methods)
 
-            services.AddRequiredServices(this.configuration, this.logger);
+            services.AddInfrastructureServices();
+
+            services.AddApplicationServices(this.configuration, this.logger);
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -127,20 +128,6 @@
             {
                 configuration.RootPath = "PiControlPanel.Ui.Angular/dist";
             });
-        }
-
-        /// <summary>
-        ///     This method is used to add services directly to LightInject.
-        /// </summary>
-        /// <param name="container">LightInject service container.</param>
-        public void ConfigureContainer(IServiceContainer container)
-        {
-            container.SetDefaultLifetime<PerScopeLifetime>();
-
-            container.AddGraphQLServicesDependency();
-
-            // Registers all services required for the Application layer
-            container.RegisterFrom<ApplicationCompositionRoot>();
         }
 
         /// <summary>

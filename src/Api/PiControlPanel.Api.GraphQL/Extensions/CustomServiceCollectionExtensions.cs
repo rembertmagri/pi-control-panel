@@ -7,7 +7,6 @@
     using global::GraphQL.Server;
     using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
     using global::GraphQL.Validation;
-    using LightInject;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -62,21 +61,22 @@
                 // Add GraphQL data loader to reduce the number of calls to our repository.
                 .AddDataLoader()
                 .Services
-                .AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
+                .AddGraphQLServicesDependency();
         }
 
         /// <summary>
         /// Adds required services to GraphQL.
         /// </summary>
-        /// <param name="container">The original service container.</param>
+        /// <param name="services">The original service collection.</param>
         /// <returns>The altered service container.</returns>
-        public static IServiceContainer AddGraphQLServicesDependency(this IServiceContainer container)
+        public static IServiceCollection AddGraphQLServicesDependency(this IServiceCollection services)
         {
-            container.RegisterSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            container.RegisterSingleton<IAuthorizationEvaluator, AuthorizationEvaluator>();
-            container.RegisterTransient<IValidationRule, AuthorizationValidationRule>();
+            services.AddTransient(typeof(IGraphQLExecuter<>), typeof(InstrumentingGraphQLExecutor<>));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IAuthorizationEvaluator, AuthorizationEvaluator>();
+            services.AddTransient<IValidationRule, AuthorizationValidationRule>();
 
-            container.RegisterSingleton(s =>
+            services.AddSingleton(s =>
             {
                 var authSettings = new AuthorizationSettings();
 
@@ -96,16 +96,16 @@
                 return authSettings;
             });
 
-            container.RegisterSingleton<IDocumentExecuter, DocumentExecuter>();
-            container.RegisterTransient<IOperationMessageListener, JwtPayloadListener>();
-            container.Register<IFieldMiddleware, LoggerMiddleware>();
-            container.Register<RaspberryPiType>();
-            container.Register<ControlPanelQuery>();
-            container.Register<ControlPanelMutation>();
-            container.Register<ControlPanelSubscription>();
-            container.Register<ControlPanelSchema>();
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddTransient<IOperationMessageListener, JwtPayloadListener>();
+            services.AddScoped<IFieldMiddleware, LoggerMiddleware>();
+            services.AddScoped<RaspberryPiType>();
+            services.AddScoped<ControlPanelQuery>();
+            services.AddScoped<ControlPanelMutation>();
+            services.AddScoped<ControlPanelSubscription>();
+            services.AddScoped<ControlPanelSchema>();
 
-            return container;
+            return services;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@
         /// <param name="configuration">The instance of the application configuration.</param>
         /// <param name="logger">The instance of the application logger.</param>
         /// <returns>The altered service collection.</returns>
-        public static IServiceCollection AddRequiredServices(
+        public static IServiceCollection AddApplicationServices(
             this IServiceCollection services,
             IConfiguration configuration,
             ILogger logger)

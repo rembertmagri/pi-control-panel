@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Application\PiControlPanel.Application.Services\PiControlPanel.Application.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\" />
+  </ItemGroup>
+
 </Project>
