@@ -17,7 +17,7 @@
         /// <typeparam name="T">The model generic type parameter.</typeparam>
         /// <param name="context">The GraphQL connection context.</param>
         /// <returns>The paging input object.</returns>
-        public static PagingInput GetPagingInput<T>(this IResolveConnectionContext<T> context)
+        public static PagingInput GetPagingInput<T>(this ResolveConnectionContext<T> context)
         {
             return new PagingInput()
             {

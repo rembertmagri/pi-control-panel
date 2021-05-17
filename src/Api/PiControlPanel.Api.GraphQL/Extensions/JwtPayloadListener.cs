@@ -43,7 +43,7 @@
             }
 
             var user = this.httpContextAccessor.HttpContext.User;
-            context.Properties["GraphQLUserContext"] = new GraphQLUserContext(user);
+            context.Properties["GraphQLUserContext"] = new GraphQLUserContext() { User = user };
 
             return Task.CompletedTask;
         }

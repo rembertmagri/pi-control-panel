@@ -1,12 +1,12 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Schemas
 {
-    using global::GraphQL;
-    using global::GraphQL.MicrosoftDI;
+    using global::GraphQL.Authorization;
     using global::GraphQL.Types;
+    using NLog;
+    using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Api.GraphQL.Types.Input;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
-    using PiControlPanel.Domain.Models;
     using PiControlPanel.Domain.Models.Enums;
 
     /// <summary>
@@ -17,79 +17,79 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlPanelMutation"/> class.
         /// </summary>
-        public ControlPanelMutation()
+        /// <param name="controlPanelService">The application layer ControlPanelService.</param>
+        /// <param name="logger">The NLog logger instance.</param>
+        public ControlPanelMutation(IControlPanelService controlPanelService, ILogger logger)
         {
             this.AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("Reboot")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "Reboot",
+                resolve: async context =>
                 {
+                    logger.Info("Reboot mutation");
+
                     return await controlPanelService.RebootAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("Shutdown")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "Shutdown",
+                resolve: async context =>
                 {
+                    logger.Info("Shutdown mutation");
+
                     return await controlPanelService.ShutdownAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("Update")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "Update",
+                resolve: async context =>
                 {
+                    logger.Info("Update mutation");
+
                     return await controlPanelService.UpdateAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("Kill")
-                .Argument<NonNullGraphType<IntGraphType>, int>("ProcessId", "the process identitfier")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "Kill",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "ProcessId" }),
+                resolve: async context =>
                 {
-                    var userContext = context.UserContext["UserContext"] as UserContext;
+                    logger.Info("Kill mutation");
+
+                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var userContext = graphQLUserContext.GetUserContext();
+
                     var processId = context.GetArgument<int>("processId");
 
                     return await controlPanelService.KillAsync(userContext, processId);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.AuthenticatedPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("Overclock")
-                .Argument<NonNullGraphType<CpuMaxFrequencyLevelType>, CpuMaxFrequencyLevel>("CpuMaxFrequencyLevel", "the CPU max level")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "Overclock",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<CpuMaxFrequencyLevelType>> { Name = "CpuMaxFrequencyLevel" }),
+                resolve: async context =>
                 {
+                    logger.Info("Overclock mutation");
+
                     var cpuMaxFrequencyLevel = context.GetArgument<CpuMaxFrequencyLevel>("cpuMaxFrequencyLevel");
 
                     return await controlPanelService.OverclockAsync(cpuMaxFrequencyLevel);
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);
 
-            this.Field<BooleanGraphType, bool>()
-                .Name("StartSsh")
-                .Resolve()
-                .WithScope()
-                .WithService<IControlPanelService>()
-                .ResolveAsync(async (context, controlPanelService) =>
+            this.FieldAsync<BooleanGraphType>(
+                "StartSsh",
+                resolve: async context =>
                 {
+                    logger.Info("StartSsh mutation");
+
                     return await controlPanelService.StartSshAsync();
                 })
                 .AuthorizeWith(AuthorizationPolicyName.SuperUserPolicy);

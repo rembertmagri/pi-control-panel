@@ -26,8 +26,8 @@
                 resolve: context =>
                 {
                     logger.Debug("NetworkInterface field");
-                    var name = context.Arguments["name"].Value;
-                    return context.Source.NetworkInterfaces.SingleOrDefault(i => i.Name.Equals(name));
+                    var name = context.GetArgument<string>("name");
+                    return context.Source.NetworkInterfaces.SingleOrDefault(i => i.Name == name);
                 });
         }
     }
