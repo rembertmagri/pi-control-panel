@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpOverrides;
+    using Microsoft.AspNetCore.Server.Kestrel.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -99,6 +100,10 @@
             });
 
             // Allowing Synchronous calls to be made in the pipeline
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
             services.Configure<IISServerOptions>(options =>
             {
                 options.AllowSynchronousIO = true;
