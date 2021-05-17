@@ -1,13 +1,12 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Extensions
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using global::GraphQL;
     using global::GraphQL.Execution;
-    using global::GraphQL.Instrumentation;
     using global::GraphQL.Server;
-    using global::GraphQL.Server.Internal;
     using global::GraphQL.Types;
     using global::GraphQL.Validation;
     using Microsoft.Extensions.Options;
@@ -40,10 +39,11 @@
             string operationName,
             string query,
             Inputs variables,
-            object context,
+            IDictionary<string, object> context,
+            IServiceProvider requestServices,
             CancellationToken cancellationToken = default)
         {
-            var result = await base.ExecuteAsync(operationName, query, variables, context, cancellationToken);
+            var result = await base.ExecuteAsync(operationName, query, variables, context, requestServices, cancellationToken);
 
             if (this.options.EnableMetrics)
             {
@@ -54,25 +54,6 @@
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        protected override ExecutionOptions GetOptions(
-            string operationName,
-            string query,
-            Inputs variables,
-            object context,
-            CancellationToken cancellationToken)
-        {
-            var options = base.GetOptions(operationName, query, variables, context, cancellationToken);
-
-            if (this.options.EnableMetrics)
-            {
-                // Add instrumentation to measure how long field resolvers take to execute.
-                options.FieldMiddleware.Use<InstrumentFieldsMiddleware>();
-            }
-
-            return options;
         }
     }
 }
