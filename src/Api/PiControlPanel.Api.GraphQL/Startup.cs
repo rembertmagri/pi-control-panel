@@ -122,10 +122,6 @@
             });
 
             // Allowing Synchronous calls to be made in the pipeline
-            services.Configure<KestrelServerOptions>(options =>
-            {
-                options.AllowSynchronousIO = true;
-            });
             services.Configure<IISServerOptions>(options =>
             {
                 options.AllowSynchronousIO = true;
