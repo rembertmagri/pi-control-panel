@@ -4,6 +4,7 @@
     using global::GraphQL;
     using global::GraphQL.Authorization;
     using global::GraphQL.Instrumentation;
+    using global::GraphQL.NewtonsoftJson;
     using global::GraphQL.Server;
     using global::GraphQL.Server.Transports.Subscriptions.Abstractions;
     using global::GraphQL.Validation;
@@ -44,7 +45,6 @@
                     {
                         options.EnableMetrics = hostingEnvironment.IsDevelopment();
                     })
-                .AddSystemTextJson()
 
                 // Adds all graph types in the current assembly with a scoped lifetime.
                 .AddGraphTypes(ServiceLifetime.Scoped)
@@ -96,6 +96,7 @@
                 return authSettings;
             });
 
+            container.RegisterSingleton<IDocumentWriter, DocumentWriter>();
             container.RegisterSingleton<IDocumentExecuter, DocumentExecuter>();
             container.RegisterTransient<IOperationMessageListener, JwtPayloadListener>();
             container.Register<IFieldMiddleware, LoggerMiddleware>();

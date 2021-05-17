@@ -19,11 +19,10 @@
 
   <ItemGroup>
     <PackageReference Include="Boxed.AspNetCore" Version="5.1.2" />
-    <PackageReference Include="GraphQL" Version="4.5.0" />
     <PackageReference Include="GraphQL.Authorization" Version="4.0.0" />
     <PackageReference Include="GraphQL.MicrosoftDI" Version="4.5.0" />
+    <PackageReference Include="GraphQL.NewtonsoftJson" Version="4.5.0" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="5.0.2" />
-    <PackageReference Include="GraphQL.Server.Transports.AspNetCore.SystemTextJson" Version="5.0.2" />
     <PackageReference Include="GraphQL.Server.Transports.WebSockets" Version="4.4.1" />
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="5.0.2" />
     <PackageReference Include="LightInject.Microsoft.AspNetCore.Hosting" Version="2.3.5" />
