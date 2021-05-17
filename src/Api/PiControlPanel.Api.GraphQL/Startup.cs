@@ -1,10 +1,14 @@
 ﻿namespace PiControlPanel.Api.GraphQL
 {
     using System;
+    using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
     using Boxed.AspNetCore;
+    using global::GraphQL;
     using global::GraphQL.Server;
+    using global::GraphQL.Server.Ui.Playground;
+    using LightInject;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -21,6 +25,7 @@
     using PiControlPanel.Application.BackgroundServices;
     using PiControlPanel.Application.BackgroundServices.Cpu;
     using PiControlPanel.Application.Services;
+    using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models.Hardware.Memory;
 
     /// <summary>
@@ -52,9 +57,12 @@
         {
             services.AddCors(); // enables Access-Control-Allow-Origin (angular calling graphql methods)
 
-            services.AddInfrastructureServices();
+            services.AddGraphQL(options => { options.ExposeExceptions = true; })
+                .AddUserContextBuilder(context => new GraphQLUserContext { User = context.User });
 
-            services.AddApplicationServices(this.configuration, this.logger);
+            services.AddCustomGraphQL(this.webHostEnvironment);
+
+            services.AddRequiredServices(this.configuration, this.logger);
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -89,7 +97,21 @@
                     }
                 });
 
-            services.AddCustomGraphQL(this.webHostEnvironment);
+            services.AddGraphQLAuth(settings =>
+            {
+                settings.AddPolicy(
+                    AuthorizationPolicyName.AuthenticatedPolicy,
+                    p => p
+                        .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
+                        .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
+                        .RequireClaim(ClaimTypes.Role, new string[] { Roles.User }));
+                settings.AddPolicy(
+                    AuthorizationPolicyName.SuperUserPolicy,
+                    p => p
+                        .RequireClaim(CustomClaimTypes.IsAnonymous, new string[] { bool.FalseString })
+                        .RequireClaim(CustomClaimTypes.IsAuthenticated, new string[] { bool.TrueString })
+                        .RequireClaim(ClaimTypes.Role, new string[] { Roles.SuperUser }));
+            });
 
             services.AddHealthChecks();
 
@@ -136,6 +158,19 @@
         }
 
         /// <summary>
+        ///     This method is used to add services directly to LightInject.
+        /// </summary>
+        /// <param name="container">LightInject service container.</param>
+        public void ConfigureContainer(IServiceContainer container)
+        {
+            // Sets LightInject as GraphQL's dependency resolver
+            container.RegisterSingleton<IDependencyResolver>(s => new FuncDependencyResolver(container.GetInstance));
+
+            // Registers all services required for the Application layer
+            container.RegisterFrom<ApplicationCompositionRoot>();
+        }
+
+        /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app">IApplicationBuilder.</param>
@@ -146,7 +181,7 @@
                     !webHostEnvironment.IsProduction(),
                     a => a
                         .UseDeveloperExceptionPage()
-                        .UseGraphQLPlayground("/playground"));
+                        .UseGraphQLPlayground(new GraphQLPlaygroundOptions() { Path = "/playground" }));
 
             // Enables Access-Control-Allow-Origin (angular calling webapi methods)
             app.UseCors(builder => builder

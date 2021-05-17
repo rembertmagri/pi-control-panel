@@ -1,14 +1,15 @@
 ﻿namespace PiControlPanel.Api.GraphQL.Schemas
 {
-    using global::GraphQL;
+    using global::GraphQL.Authorization;
     using global::GraphQL.Types;
+    using NLog;
+    using PiControlPanel.Api.GraphQL.Extensions;
     using PiControlPanel.Api.GraphQL.Types.Output;
     using PiControlPanel.Api.GraphQL.Types.Input;
     using PiControlPanel.Domain.Contracts.Application;
     using PiControlPanel.Domain.Contracts.Constants;
     using PiControlPanel.Domain.Models.Authentication;
     using PiControlPanel.Api.GraphQL.Types.Output.Authentication;
-    using PiControlPanel.Domain.Models;
 
     /// <summary>
     /// The root query GraphQL type.
@@ -19,7 +20,8 @@
         /// Initializes a new instance of the <see cref="ControlPanelQuery"/> class.
         /// </summary>
         /// <param name="securityService">The application layer SecurityService.</param>
-        public ControlPanelQuery(ISecurityService securityService)
+        /// <param name="logger">The NLog logger instance.</param>
+        public ControlPanelQuery(ISecurityService securityService, ILogger logger)
         {
             this.FieldAsync<LoginResponseType>(
                 "Login",
@@ -27,6 +29,8 @@
                     new QueryArgument<UserAccountInputType> { Name = "UserAccount" }),
                 resolve: async context =>
                 {
+                    logger.Info("Login query");
+
                     var userAccount = context.GetArgument<UserAccount>("userAccount");
 
                     return await securityService.LoginAsync(userAccount);
@@ -36,7 +40,10 @@
                 "RefreshToken",
                 resolve: async context =>
                 {
-                    var userContext = context.UserContext["UserContext"] as UserContext;
+                    logger.Info("RefreshToken query");
+
+                    var graphQLUserContext = context.UserContext as GraphQLUserContext;
+                    var userContext = graphQLUserContext.GetUserContext();
 
                     var userAccount = new UserAccount()
                     {
@@ -52,6 +59,8 @@
                 "RaspberryPi",
                 resolve: context =>
                 {
+                    logger.Info("RaspberryPi query");
+
                     // Retuning empty object to make GraphQL resolve the RaspberryPiType fields
                     // https://graphql-dotnet.github.io/docs/getting-started/query-organization/
                     return new { };
