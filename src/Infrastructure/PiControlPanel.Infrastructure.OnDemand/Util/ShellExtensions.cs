@@ -19,15 +19,12 @@
         /// <returns>The result of the bash command.</returns>
         public static async Task<string> BashAsync(this string cmd)
         {
-            var escapedArgs = cmd.Replace("\"", "\\\"");
-            var command = Cli.Wrap("/bin/bash").WithArguments($"-c \"{escapedArgs}\"");
+            var command = Cli.Wrap("/bin/bash").WithArguments(new[] { "-c", cmd });
 
             try
             {
                 var result = await command.ExecuteBufferedAsync();
-                return result?.StandardOutput == null ?
-                    string.Empty :
-                    result.StandardOutput.TrimEnd(Environment.NewLine.ToCharArray());
+                return result.StandardOutput.TrimEnd(Environment.NewLine.ToCharArray());
             }
             catch (CommandExecutionException ex)
             {
